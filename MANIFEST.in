@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include weekly_planner *.css
+recursive-include weekly_planner *.csv
+recursive-include weekly_planner *.html
+recursive-include weekly_planner *.ico
+recursive-include weekly_planner *.js
+recursive-include weekly_planner *.json
+recursive-include weekly_planner *.md
+recursive-include weekly_planner *.png
+recursive-include weekly_planner *.py
+recursive-include weekly_planner *.svg
+recursive-include weekly_planner *.txt
+recursive-exclude weekly_planner *.pyc
