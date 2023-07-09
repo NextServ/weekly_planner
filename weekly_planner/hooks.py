@@ -7,6 +7,9 @@ app_description = "Weekly Planner for Monstessori Guides"
 app_email = "ton@serviotech.com"
 app_license = "MIT"
 
+# Custom fields added to the Instructor doctype
+fixtures = ["Custom Field"]
+            
 # Includes in <head>
 # ------------------
 
