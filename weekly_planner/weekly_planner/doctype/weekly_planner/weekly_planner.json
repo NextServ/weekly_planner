@@ -2,7 +2,7 @@
  "actions": [],
  "allow_rename": 1,
  "autoname": "format:{instructor}-{student_group}-{start_date}",
- "creation": "2023-07-08 22:17:44.651768",
+ "creation": "2023-07-10 23:36:21.347045",
  "default_view": "List",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -12,9 +12,9 @@
   "student_group",
   "start_date",
   "description",
-  "amended_from",
   "route",
-  "is_published"
+  "is_published",
+  "amended_from"
  ],
  "fields": [
   {
@@ -46,6 +46,18 @@
    "label": "Description"
   },
   {
+   "fieldname": "route",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Route"
+  },
+  {
+   "default": "1",
+   "fieldname": "is_published",
+   "fieldtype": "Check",
+   "label": "Is Published?"
+  },
+  {
    "fieldname": "amended_from",
    "fieldtype": "Link",
    "label": "Amended From",
@@ -53,18 +65,6 @@
    "options": "Weekly Planner",
    "print_hide": 1,
    "read_only": 1
-  },
-  {
-   "fieldname": "route",
-   "fieldtype": "Data",
-   "label": "Route"
-  },
-  {
-   "default": "1",
-   "fieldname": "is_published",
-   "fieldtype": "Check",
-   "hidden": 1,
-   "label": "Is Published?"
   }
  ],
  "has_web_view": 1,
@@ -72,7 +72,7 @@
  "is_published_field": "is_published",
  "is_submittable": 1,
  "links": [],
- "modified": "2023-07-09 15:53:44.287377",
+ "modified": "2023-07-10 23:42:14.618166",
  "modified_by": "Administrator",
  "module": "Weekly Planner",
  "name": "Weekly Planner",
@@ -90,39 +90,8 @@
    "role": "System Manager",
    "share": 1,
    "write": 1
-  },
-  {
-   "amend": 1,
-   "cancel": 1,
-   "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Head Instructor",
-   "select": 1,
-   "share": 1,
-   "submit": 1,
-   "write": 1
-  },
-  {
-   "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Instructor",
-   "select": 1,
-   "share": 1,
-   "submit": 1,
-   "write": 1
   }
  ],
- "quick_entry": 1,
  "route": "planner",
  "sort_field": "modified",
  "sort_order": "DESC",

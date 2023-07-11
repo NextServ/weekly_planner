@@ -3,8 +3,9 @@
 
 # import frappe
 from frappe.website.website_generator import WebsiteGenerator
-# from frappe.website.website_generator import WebsiteGenerator
 
-class WeeklyPlanner(Document):
-	pass
-	
+class WeeklyPlanner(WebsiteGenerator):
+	def before_saves(self):
+		name = self.name.replace(" ", "") 	# Remove spaces from name
+		route = "/planner/" + name
+		self.route = route

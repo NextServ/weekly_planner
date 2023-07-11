@@ -5,7 +5,6 @@ import webbrowser
 def get_context(context):
     context.title = "Weekly Planner"
     context.banner_image = frappe.db.get_single_value("Website Settings", "banner_image")
-    context.root_url = get_root_url()
 
     # Make sure user has the correct role
     acceptable_roles = ["Instructor", "Head Instructor", "System Manager"]
@@ -23,12 +22,18 @@ def get_context(context):
 
     # Load weekly planners (all for Head Instructor and System Manager, only for current instructor otherwise)
     if is_head_instructor:
-        planners = frappe.get_all("Weekly Planner", fields=["instructor", "student_group", "start_date", "docstatus"])
+        planners = frappe.get_all("Weekly Planner", fields=["name", "instructor", "student_group", "start_date", "docstatus"])
     elif is_instructor:
         # Retrieve Instructor from User
-        instructor = frappe.get_all("Instructor", fields=["instructor_name", "user"], filters={"user": frappe.session.user})
-        planners = frappe.get_all("Weekly Planner", filters={"instructor": instructor[0].instructor_name}, \
-            fields=["instructor", "student_group", "start_date", "docstatus"])
+        instructor = frappe.get_all("Instructor", fields=["name", "instructor_name", "user"], filters={"user": frappe.session.user})
+
+        # Test to see if instructor exists and throw an error if not
+        if len(instructor) == 0:        
+            frappe.throw("No instructor record found for user {0}".format(frappe.session.user))
+            context.invalid_role = True
+        else:
+            planners = frappe.get_all("Weekly Planner", filters={"instructor": instructor[0].instructor_name}, \
+                fields=["name", "instructor", "student_group", "start_date", "docstatus"])
     
     # Add record counters to each planner
     if not context.invalid_role:
@@ -40,6 +45,3 @@ def get_context(context):
         context.weekly_planners = planners
 
     return context
-
-def get_root_url():
-    return frappe.utils.get_url()

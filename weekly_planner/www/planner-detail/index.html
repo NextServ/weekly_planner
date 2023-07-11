@@ -1,0 +1,264 @@
+{% extends "templates/web.html" %}
+
+{% block title %} Abba's Orchard {% endblock %}
+
+{% block head_include %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+{% endblock %}
+
+{% block breadcrumbs %}
+{% endblock %}
+
+{% block page_content %}
+<!-- Header -->
+<header class="container">
+  <hgroup>
+    <!-- how to insert image -->
+    <h1 href="https://google.com"><img src="{{ banner_image }}" alt="The Abba's Orchard" width="300" height="100"></h1>
+  </hgroup>
+  <nav>
+    <ul>
+      <li><strong>Weekly Planner Detail</strong></li>
+    </ul>
+    <ul>
+      <li><a href="#">Link</a></li>
+      <li><a href="#">Link</a></li>
+      {% if invalid_role %}
+      {% else %}
+      <li><a href="#" role="button">Submit Planner</a></li>
+      {% endif %}
+    </ul>
+  </nav>
+</header>
+<!-- ./ Header -->
+
+<!-- Main -->
+<main class="container-md">
+
+  <!-- Error -->
+  {% if invalid_role %}
+    <section id="error">
+      <article>
+        <header>Invalid Role!</header>
+        You are not authorized to access this page. Please contact your administrator for more
+        information.
+      </article>
+    </section>
+    <!-- ./Error -->
+
+  {% else %}
+    <!-- Planner Header -->
+    <p><p>
+    <section id="header" class="container-md">
+      <form>
+        <!-- Grid -->
+        <div class="grid">
+      
+          <label for="instructor">
+            Instructor
+            <input type="text" value="{{ planner.instructor }}" readonly>
+          </label>
+      
+          <label for="student_group">
+            Student Group
+            <input type="text" value="{{ planner.student_group }}" readonly>
+          </label>
+        </div>
+    </section>
+    <!-- ./ Planner Header -->
+  
+    {% if empty_planner > 0 %}
+      <!-- Tables -->
+      <section id="tables" class="container-md">
+        <figure>
+            <table role="grid" id="items_table">
+              <thead>
+                  <tr>
+                  <!-- display table header titles vertically -->
+                  <style>
+                      .rotated-text {
+                      font-size: medium;
+                      transform: rotate(-45deg); /* Rotate the text by 45 degrees */
+                      white-space: nowrap; /* Keep the text on one line */
+                      text-align: left;
+                      vertical-align: top;
+                      padding-left: 5em;
+                      height: 200px;
+                      }
+                  </style>
+                  
+                  <th scope="col"><div><span><br><br><br>#</span></div></th>
+                  <th scope="col"><div><span><br><br><br>Material</span></div></th>
+
+                  {% for student in student_headers %}
+                    <th scope="col" class="rotated-text"><div><span>{{ student }}<br><i>insert age here</i></span></div></th>
+                  {% endfor %}
+                  </tr>
+              </thead>
+
+              <tbody>
+                {% for topic in topic_headers -%}
+                <tr>
+                  <th scope="row">
+                    1
+                  </th>
+                  <th scope="row">
+                    {{ topic }}
+                  </th>
+                  {% for student in student_headers -%}
+                    <td>
+                      {% if planner_details[topic][student] %}
+                          {% for item in planner_details[topic][student] %}
+                            <span class="badge badge-pill badge-primary">
+                                {{ item.lesson_status[0] }} {{ item.date }}
+                            </span>
+                          {% endfor %}
+                      {% else %}
+                          <span></span>
+                      {% endif %}
+                    </td>
+                {% endfor %}
+                </tr>
+            {%- endfor %}            
+              </tbody>
+            </table>
+        </figure>
+      </section>
+      <!-- ./ Tables -->
+    
+    {% else %}
+      <article>
+        <header>Empty Planner!</header>
+        You have not added any items to your planner. Please add items to your planner.
+      </article>
+    {% endif %}
+
+    <!-- CRUD Buttons -->
+    <section id="crud">
+      <nav>
+        <ul>
+          <li><a href="#" role="button">Add Students</a></li>
+          <li><a href="#" role="button">Add Topics</a></li>
+        </ul>
+      </nav>
+    </section>
+    <!-- ./CRUD Buttons -->
+
+    <!-- Modal -->
+    <section id="modal">
+        <h2>Modal</h2>
+        <button class="contrast" data-target="modal-example" onclick="toggleModal(event)">
+            Launch demo modal
+        </button>
+    </section>
+    <!-- ./ Modal -->
+
+    <!-- Accordions -->
+    <section id="accordions">
+        <h2>Accordions</h2>
+        <details>
+            <summary>Accordion 1</summary>
+            <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque urna diam,
+            tincidunt nec porta sed, auctor id velit. Etiam venenatis nisl ut orci consequat, vitae
+            tempus quam commodo. Nulla non mauris ipsum. Aliquam eu posuere orci. Nulla convallis
+            lectus rutrum quam hendrerit, in facilisis elit sollicitudin. Mauris pulvinar pulvinar
+            mi, dictum tristique elit auctor quis. Maecenas ac ipsum ultrices, porta turpis sit
+            amet, congue turpis.
+            </p>
+        </details>
+        <details open>
+            <summary>Accordion 2</summary>
+            <ul>
+            <li>Vestibulum id elit quis massa interdum sodales.</li>
+            <li>Nunc quis eros vel odio pretium tincidunt nec quis neque.</li>
+            <li>Quisque sed eros non eros ornare elementum.</li>
+            <li>Cras sed libero aliquet, porta dolor quis, dapibus ipsum.</li>
+            </ul>
+        </details>
+    </section>
+    <!-- ./ Accordions -->
+
+    <!-- Article-->
+    <article id="article">
+        <h2>Article</h2>
+        <p>
+            Nullam dui arcu, malesuada et sodales eu, efficitur vitae dolor. Sed ultricies dolor non
+            ante vulputate hendrerit. Vivamus sit amet suscipit sapien. Nulla iaculis eros a elit
+            pharetra egestas. Nunc placerat facilisis cursus. Sed vestibulum metus eget dolor pharetra
+            rutrum.
+        </p>
+        <footer>
+            <small>Duis nec elit placerat, suscipit nibh quis, finibus neque.</small>
+        </footer>
+    </article>
+    <!-- ./ Article-->
+
+    <!-- Progress -->
+    <section id="progress">
+        <h2>Progress bar</h2>
+        <progress id="progress-1" value="25" max="100"></progress>
+        <progress id="progress-2"></progress>
+    </section>
+    <!-- ./ Progress -->
+
+    <!-- Loading -->
+    <section id="loading">
+        <h2>Loading</h2>
+        <article aria-busy="true"></article>
+        <button aria-busy="true">Please wait…</button>
+    </section>
+    <!-- ./ Loading -->
+
+  {% endif %}
+
+  <!-- Footer -->
+  <footer class="container">
+    <small
+      >Built with <a href="https://picocss.com">Pico</a> •
+      <a href="https://github.com/picocss/examples/blob/master/v1-preview/index.html"
+        >Source code</a
+      ></small
+    >
+  </footer>
+  <!-- ./ Footer -->
+
+  <!-- Modal example -->
+  <dialog id="modal-example">
+    <article>
+      <a
+        href="#close"
+        aria-label="Close"
+        class="close"
+        data-target="modal-example"
+        onclick="toggleModal(event)"
+      ></a>
+      <h3>Confirm your action!</h3>
+      <p>
+        Cras sit amet maximus risus. Pellentesque sodales odio sit amet augue finibus
+        pellentesque. Nullam finibus risus non semper euismod.
+      </p>
+      <footer>
+        <a
+          href="#cancel"
+          role="button"
+          class="secondary"
+          data-target="modal-example"
+          onclick="toggleModal(event)"
+          >Cancel</a
+        ><a href="#confirm" role="button" data-target="modal-example" onclick="toggleModal(event)"
+          >Confirm</a
+        >
+      </footer>
+    </article>
+  </dialog>
+  <!-- ./ Modal example -->
+
+  <!-- Minimal theme switcher -->
+  <script src="js/minimal-theme-switcher.js"></script>
+
+  <!-- Modal -->
+  <script src="js/modal.js"></script>  
+</main>
+<!-- ./ Main -->
+{% endblock %}
