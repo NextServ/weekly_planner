@@ -8,7 +8,7 @@ app_email = "ton@serviotech.com"
 app_license = "MIT"
 
 # Custom fields added to the Instructor doctype
-fixtures = ["Custom Field"]
+# fixtures = ["Custom Field"]
             
 # Includes in <head>
 # ------------------

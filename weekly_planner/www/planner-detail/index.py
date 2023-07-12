@@ -96,7 +96,6 @@ def load_planner_details(planner_name):
 
             student_headers.append(working_dict)
 
-
     # Load up the rows
     row = -1
     for topic in topics:
