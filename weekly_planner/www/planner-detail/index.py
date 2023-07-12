@@ -102,14 +102,8 @@ def load_planner_details(planner_name):
             for col_header in student_headers:
                 r += 1
                 c += 1
-                # lesson = [entry for entry in lessons if entry["topic"] == topic.topic and \
-                #     entry["student"] == col_header["student"]]
-                for entry in lessons:
-                    if entry["topic"] == topic.topic and entry["student"] == col_header["student"]:
-                        lesson = entry
-                        break
-                    else:
-                        lesson = ""
+                lesson = [entry for entry in lessons if entry["topic"] == topic.topic and \
+                    entry["student"] == col_header["student"]]
 
                 planner_details[topic.topic][col_header["student"]] = lesson
 
