@@ -1,0 +1,11 @@
+/* [data-theme=light],
+:root:not([data-theme=dark]) {
+  --background-color: #fff;
+  --color: hsl(205, 17%, 22%); 
+}
+
+@media only screen and (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --background-color: #11191f;
+    --color: hsl(205, 16%, 77%);
+} */
