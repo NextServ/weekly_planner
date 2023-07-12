@@ -124,7 +124,7 @@ def load_planner_details(planner_name):
             
             # loop through keys (john, peter)
             for col_header in student_headers.keys():
-                topic_schedule = [entry for entry in entries if entry["topic"] == topic.topic and \
+                topic_schedule = [entry for entry in lessons if entry["topic"] == topic.topic and \
                     entry["student"] == col_header]
                 planner_details[topic.topic][col_header] = topic_schedule
 
