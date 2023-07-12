@@ -72,7 +72,7 @@ def load_planner_details(planner_name):
 
     # planner_details = [["" for row in range(num_students)] for col in range(num_topics)]
     planner_details = {}
-    student_headers = []
+    student_headers = {}
     topic_headers = []
     working_dict =  {}
 
@@ -94,7 +94,7 @@ def load_planner_details(planner_name):
                 "months_old": months
             }
 
-            student_headers.append(working_dict)
+            student_headers[student.student] = working_dict
 
     # Load up the rows
     row = -1
@@ -102,9 +102,12 @@ def load_planner_details(planner_name):
         if not topic.topic in topic_headers:
             topic_headers.append(topic.topic)
             planner_details[topic.topic] = {}
+            i = -1
             for col_header in student_headers:
-                topic_schedule = [item for item in entries if item["topic"] == topic.topic and item["student"] == col_header]
-                planner_details[topic.topic][col_header] = topic_schedule
+                i += 1
+                topic_schedule = [entry for entry in entries if entry["topic"] == topic.topic and \
+                    entry["student"] == col_header[i]]
+                planner_details[topic.topic][col_header[i]] = topic_schedule
 
     return topic_headers, student_headers, planner_details
 
