@@ -47,7 +47,7 @@ def get_context(context):
     # context.entries = frappe.get_all("Planner Lesson", filters={"parent": planner_name}, fields=["*"])
     # context.empty_planner = len(context.student_headers) + len(context.topic_headers) + len(context.entries)
 
-    topic_headers, student_headers, planner_details = load_planner_details(planner_name)
+    topic_headers, student_headers, planner_details = load_planner_details(planner_name) # this function returns three values
     context.topic_headers = topic_headers
     context.planner_details = planner_details
     context.student_headers = student_headers
@@ -64,11 +64,7 @@ def load_planner_details(planner_name):
                              WHERE p.parent = %(p_name)s''', {"format": "%Y%m", "p_name": planner_name}, as_dict=True)
 
     topics = frappe.get_all("Planner Topic", filters={"parent": planner_name}, fields=["*"])
-    entries = frappe.get_all("Planner Lesson", filters={"parent": planner_name}, fields=["*"])
-
-    # Build a array with number of columns equal to number of students and rows equal to number of topics
-    num_students = len(students) + 1
-    num_topics = len(topics)
+    lessons = frappe.get_all("Planner Lesson", filters={"parent": planner_name}, fields=["*"])
 
     # planner_details = [["" for row in range(num_students)] for col in range(num_topics)]
     planner_details = {}
