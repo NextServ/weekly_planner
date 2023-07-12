@@ -59,7 +59,7 @@
 
     <br />
     <h2>Planner Details</h2>
-    {{ planner_details }}
+    <!-- {{ planner_details }} -->
 
     {% if empty_planner > 0 %}
       <!-- Tables -->
@@ -84,8 +84,18 @@
             <th scope="col"><div style="width: 3%"><span>Material</span></div></th>
 
             {% for student in student_headers %}
-              <th scope="col" ><div><span>{{ student_headers[student]["last_name"] }}, {{  student_headers[student]["first_name"] }}
-                <p><i>{{ student_headers[student]["years_old"] }} Years {{ student_headers[student]["months_old"] }} Months</i></p></span></div></th>
+                <th scope="col" >
+                    <div>
+                        {{ student_headers[student]["last_name"] }}, {{  student_headers[student]["first_name"] }}
+                        <div>
+                            {% if student_headers[student]["date_of_birth"] %}
+                                <i>{{ student_headers[student]["years_old"] }} Years {{ student_headers[student]["months_old"] }} Months</i>
+                            {% else %}
+                                <span></span>
+                            {% endif %}
+                        </div>                        
+                    </div>
+                </th>
             {% endfor %}
           </tr>
         </thead>
@@ -94,7 +104,7 @@
           {% for topic in topic_headers -%}
             <tr>
               <th scope="row">
-                1
+                {{ loop.index }}
               </th>
               <th scope="row">
                 {{ topic }}
@@ -103,9 +113,9 @@
                 <td>
                   {% if planner_details[topic][student] %}
                     {% for item in planner_details[topic][student] %}
-                      <span class="badge badge-pill badge-primary" text-align="center">
-                          {{ item.lesson_status[0] }} {{ item.date }}
-                      </span>
+                    <span class="badge badge-pill badge-primary" text-align="center">
+                        {{ item.lesson_status[0] }} {{ item.date }}
+                    </span>
                     {% endfor %}
                   {% else %}
                       <span></span>

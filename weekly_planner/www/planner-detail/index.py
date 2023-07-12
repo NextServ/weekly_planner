@@ -74,40 +74,63 @@ def load_planner_details(planner_name):
     planner_details = {}
     student_headers = {}
     topic_headers = []
-    working_dict =  {}
 
     # Load up the columns
     for student in students:
         if student.student not in student_headers:
+            student_info =  {}
 
             # Calculate age in years and months
-            years = int(diff_months(date.today(), student.date_of_birth) / 12)
-            months = years % 12
+            years = None
+            months = None
+            if student.date_of_birth:
+                years = int(diff_months(date.today(), student.date_of_birth) / 12)
+                months = years % 12
 
             # working_dict = "{'student': '" + student.student + "', 'first_name': '" + student.first_name + "', 'last_name': '" + student.last_name + "', "
             # working_dict = working_dict + "'years_old': '" + str(years) + "', 'months_old': '" + str(months) + "'}"
-            working_dict = {
+            student_info = {
                 "student": student.student,
                 "first_name": student.first_name,
                 "last_name": student.last_name,
                 "years_old": years,
-                "months_old": months
+                "months_old": months,
+                "date_of_birth": student.date_of_birth
             }
 
-            student_headers[student.student] = working_dict
+            student_headers[student.student] = student_info
 
     # Load up the rows
-    row = -1
     for topic in topics:
         if not topic.topic in topic_headers:
             topic_headers.append(topic.topic)
             planner_details[topic.topic] = {}
-            i = -1
-            for col_header in student_headers:
-                i += 1
+
+            # student_header sample data
+            # {
+            #     "john": {
+            #         "student": "john",
+            #         "first_name": "john",
+            #         "last_name": "dela cruz",
+            #         "years_old": 12,
+            #         "months_old": 4,
+            #         "date_of_birth": "2010-01-08"
+            #     },
+            #     "peter": {
+            #         "student": "peter",
+            #         "first_name": "peter",
+            #         "last_name": "parker",
+            #         "years_old": 15,
+            #         "months_old": 3,
+            #         "date_of_birth": "2010-03-05"
+            #     }
+            # }
+            
+            # loop through keys (john, peter)
+            for col_header in student_headers.keys():
                 topic_schedule = [entry for entry in entries if entry["topic"] == topic.topic and \
-                    entry["student"] == col_header[i]]
-                planner_details[topic.topic][col_header[i]] = topic_schedule
+                    entry["student"] == col_header]
+                planner_details[topic.topic][col_header] = topic_schedule
 
     return topic_headers, student_headers, planner_details
 
