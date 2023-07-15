@@ -1,22 +1,30 @@
 {% extends "templates/web.html" %}
 
-{% block title %} Weekly Planner {% endblock %}
+{% block title %} {{ _("Weekly Planner") }} {% endblock %}
 
 {% block head_include %}
-<!-- <link rel="stylesheet" href="/weekly_planner/assets/css/pico.min.css"> -->
-<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"> -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/dataTables.bootstrap5.min.css">
+
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.5/js/dataTables.bootstrap5.min.js"></script> 
 {% endblock %}
 
 
 {% block breadcrumbs %}
 {% endblock %}
 
+{% block header %}
+    <!-- override -->
+{% endblock %} 
+
 {% block page_content %}
 <!-- Header -->
 <header class="container">
   <div>
     <div>
-        <h3>Welcome to the Weekly Planner</h3>
+        <h3>{{ _("Welcome to the Weekly Planner") }}</h3>
     </div>
   </div>
 </header>
@@ -27,63 +35,60 @@
   {% if invalid_role %}
     <br /><br /><br />
     <div class="shadow alert alert-warning alert-dismissible fade show" role="alert">
-      <strong>Invalid role!</strong> You are not authorized to access this page. Please contact your administrator for more
-      information.
+      <strong>{{ _("Invalid role!") }}</strong>{{ _("You are not authorized to access this page. Please contact your administrator for more
+      information.") }}
     </div>
     
 
   {% else %}
     <!-- Load list of Weekly Planners -->   
     <div class="mt-4">
-        The tool will allow your Montessori Guides prepare their weekly lesson plans and submit them for approval.
+      {{ _("The tool will allow your Montessori Guides prepare their weekly lesson plans and submit them for approval.") }}
         <br /><br /><br />
     </div>
-      <table class="table table-striped" id="main_table">
-        <thead>
-          <tr>
-            <!-- display table header titles vertically -->
-            <style>
-              .rotated-text {
-                transform: rotate(-45deg); /* Rotate the text by 90 degrees */
-                white-space: nowrap; /* Keep the text on one line */
-                text-align: left;
-                height: 200px;
-              }
-            </style>
-              <th scope="col">#</th>
-              <th scope="col">Instructor</th>
-              <th scope="col">Student Group</th>
-              <th scope="col">Start Date</th>
-              <th scope="col">Status</th>
-              <th scope="col" text-align="left">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for planner in weekly_planners %}
+
+    <table class="table table-md table-striped" style="width: 100%" id="main_table">
+      <thead>
+        <tr>
+          <!-- display table header titles vertically -->
+          <style>
+            .rotated-text {
+              transform: rotate(-45deg); /* Rotate the text by 90 degrees */
+              white-space: nowrap; /* Keep the text on one line */
+              text-align: left;
+              height: 200px;
+            }
+          </style>
+            <th scope="col">#</th>
+            <th scope="col">{{ _("Instructor") }}</th>
+            <th scope="col">{{ _("Student Group") }}</th>
+            <th scope="col">{{ _("Start Date") }}</th>
+            <th scope="col">{{ _("Status") }}</th>
+            <th scope="col" text-align="left">{{ _("Action") }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for planner in weekly_planners %}
           <tr>
             <th scope="row">{{ planner.counter }}</th>
             <td>{{ planner.instructor }}</td>
             <td>{{ planner.student_group }}</td>
             <td>{{ planner.start_date }}</td>
             {% if planner.docstatus == 0 %}
-            <td>Draft</td>
+              <td>{{ _("Draft") }}</td>
             {% elif planner.docstatus == 1 %}
-            <td color="Green">Submitted</td>
+              <td color="Green">{{ _("Submitted") }}</td>
             {% elif planner.docstatus == 2 %}
-            <td color="Red">Cancelled</td>
+              <td color="Red">{{ _("Cancelled") }}</td>
             {% endif %}
             <td class="badge badge-primary" text-align="right" planner-name="{{ planner.name }}" onclick="open_planner_detail()">Edit</td>
           </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+        {% endfor %}
+      </tbody>
+    </table>
 
-        <br />
-        <button type="button" class="btn btn-primary">New Planner</button>
-    </div>
+    <br />
+    <button type="button" class="btn btn-primary">{{ _("New Planner") }}</button>
   {% endif %} 
 </main>
-{% endblock %}
-
-{% block base_scripts %}
 {% endblock %}

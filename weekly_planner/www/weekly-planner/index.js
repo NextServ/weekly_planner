@@ -1,11 +1,6 @@
-// $(document).ready( function () {
-//     $('#main_table').DataTable();
-// } );
-
-frappe.ready( function () {
-    alert("Hello, world!");
-    $('#main_table').DataTable();
-} );
+frappe.ready(function() {
+    new DataTable('#main_table');
+})
 
 // Write a function to receive data from index.html and use it to open another page
 function open_planner_detail(e = event) {

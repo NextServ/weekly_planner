@@ -1,7 +1,6 @@
 # weekly_planner details
 import frappe
 from datetime import date
-import webbrowser
 
 def get_context(context):
     context.banner_image = frappe.db.get_single_value("Website Settings", "banner_image")
@@ -52,6 +51,8 @@ def get_context(context):
     context.planner_details = planner_details
     context.student_headers = student_headers
     context.empty_planner = len(context.student_headers) + len(context.topic_headers) + len(context.planner_details)
+    context.campuses = frappe.get_all("Campus", fields=["campus_name"])
+    context.student_groups = frappe.get_all("Student Group", fields=["student_group_name"])
 
     return context
 
@@ -63,8 +64,11 @@ def load_planner_details(planner_name):
                              ON p.student = s.name
                              WHERE p.parent = %(p_name)s''', {"format": "%Y%m", "p_name": planner_name}, as_dict=True)
 
+    # lessons = frappe.get_all("Planner Lesson", filters={"parent": planner_name}, fields=["*"])
     topics = frappe.get_all("Planner Topic", filters={"parent": planner_name}, fields=["*"])
-    lessons = frappe.get_all("Planner Lesson", filters={"parent": planner_name}, fields=["*"])
+    lessons = frappe.db.sql('''SELECT p.date, p.student, p.topic, l.abbreviation from `tabPlanner Lesson` p
+                            INNER JOIN `tabLesson Status` l ON p.lesson_status = l.name
+                            WHERE parent = %(p_name)s''', {"p_name": planner_name}, as_dict=True)
 
     # planner_details = [["" for row in range(num_students)] for col in range(num_topics)]
     planner_details = {}
@@ -102,27 +106,7 @@ def load_planner_details(planner_name):
             topic_headers.append(topic.topic)
             planner_details[topic.topic] = {}
 
-            # student_header sample data
-            # {
-            #     "john": {
-            #         "student": "john",
-            #         "first_name": "john",
-            #         "last_name": "dela cruz",
-            #         "years_old": 12,
-            #         "months_old": 4,
-            #         "date_of_birth": "2010-01-08"
-            #     },
-            #     "peter": {
-            #         "student": "peter",
-            #         "first_name": "peter",
-            #         "last_name": "parker",
-            #         "years_old": 15,
-            #         "months_old": 3,
-            #         "date_of_birth": "2010-03-05"
-            #     }
-            # }
-            
-            # loop through keys (john, peter)
+            # loop through keys
             for col_header in student_headers.keys():
                 topic_schedule = [entry for entry in lessons if entry["topic"] == topic.topic and \
                     entry["student"] == col_header]
