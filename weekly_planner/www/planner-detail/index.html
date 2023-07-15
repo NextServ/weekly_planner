@@ -214,12 +214,12 @@
 
         <div class="modal-body">
           <!-- Input group for the filters to apply to the Students table below-->
-          <div class="container-fluid px-4 py-4 border bg-light">
+          <div class="container-fluid px-2 py-2 border bg-light">
             <div class="row">
               <div class="col">
                 <!-- write code below that will accept text input then build a dropdown below containing items that matches the text input-->
-                <label>{{_("Filter by Campus (blank for All)") }}
-                  <input class="input-group-text text-align-left" list="campuses" name="selected_campus" /></label>
+                <label>{{_("Filter by Campus (disabled for now)") }}
+                  <input class="input-group-text text-align-left" list="campuses" name="selected_campus" id="selected_campus" readonly></label>
                 <datalist id="campuses">
                   {% for campus in campuses %}
                     <option value="{{ campus.campus_name }}">
@@ -227,9 +227,8 @@
                 </datalist>
               </div>
               <div class="col">
-                <!-- write code below that will accept text input then build a dropdown below containing items that matches the text input-->
                 <label>{{_("Filter by Student Group (blank for All)") }}
-                  <input class="input-group-text" list="student_groups" name="selected_group" /></label>
+                  <input class="input-group-text" list="student_groups" name="selected_group" id="selected_group"/></label>
                 <datalist id="student_groups">
                   {% for group in student_groups %}
                     <option value="{{ group.student_group_name }}">
@@ -246,11 +245,19 @@
               </div>
             </div>
           </div>
+
+          <!-- Students table -->
+          <br />
+          <table class="table table-md table-striped" style="width: 100%"  id="students_table"></table>
+          <!-- ./ Students table-->
         </div>
 
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-dismiss="modal">{{ _("Cancel") }}</button>
-          <button type="button" class="btn btn-secondary" planner-name="{{ planner.name }}" onclick="delete_planner()" data-dismiss="modal">{{ _("Add") }}</button>
+          <div class="btn-group" role="group" aria-label="List Actions">
+            <button type="button" class="btn btn-primary" id="add_button">{{ _("Add Selected") }}</button>
+            <button type="button" class="btn btn-secondary" id="clear_button">{{ _("Clear Selection") }}</button>
+          </div>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ _("Cancel") }}</button>
         </div>
       </div>
     </div>

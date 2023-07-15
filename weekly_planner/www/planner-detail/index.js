@@ -1,6 +1,7 @@
 frappe.ready(function() {
     // $('#items_table').DataTable();
     new DataTable('#items_table');
+
 })
 
 function go_to_main() {
@@ -28,4 +29,68 @@ function delete_planner(e = event) {
             }
         }
     });
+}
+
+function show_students(e = event) {
+    clear_students_table();
+
+    // Retrieve students from Frappe
+    frappe.call({
+        method: "weekly_planner.www.planner-detail.planner_actions.get_students_for_selection",
+        args: {
+            "selected_campus": document.getElementById("selected_campus").value,
+            "selected_group": document.getElementById("selected_group").value,
+        },
+
+        callback: function(students) {
+            if (students.message) {
+                var student_table = document.getElementById("students_table");
+
+                // Show the students table
+                student_table.innerHTML = "";
+
+                // Build the student_table with columns student, campus and group using the dataset returned from get_students_for_selection method
+                var student_table_html = '<thead><tr><th>First Name</th><th>Last Name</th><th>DOB</th></tr></thead><tbody>';
+                
+                students.message.forEach((student) => {
+                    student_table_html += '<tr><td>' + student.first_name + '</td><td>' + student.last_name + '</td><td>' + 
+                        student.date_of_birth + '</td></tr>';
+                });
+                student_table_html += '</tbody>';
+
+                // Add the table to the page
+                student_table.innerHTML = student_table_html;
+                const table = new DataTable('#students_table');
+                
+
+                table.on('click', 'tbody tr', function (e) {
+                    e.currentTarget.classList.toggle('selected');
+                });
+                
+                document.querySelector('#button').addEventListener('click', function () {
+                    alert(table.rows('.selected').data().length + ' row(s) selected');
+                });
+
+                document.querySelector('#clear_button').addEventListener('click', function () {
+                    table.rows('.selected').nodes().each((row) => row.classList.toggle('selected'));
+                });
+            
+            }
+        }
+    });
+}
+
+function clear_students_table() {
+    // Check to see if students_table already has rows; if it does, delete all rows
+    var student_table = document.getElementById("students_table");
+    
+    // Clear the sudent_table if there are rows in it
+    if (student_table.rows.length > 0) {
+        // Clear the table
+        student_table.innerHTML = "";
+
+        var table = DataTable('#students_table')
+        table.empty();
+    }
+    
 }

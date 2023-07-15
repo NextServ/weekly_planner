@@ -75,13 +75,14 @@
             <td>{{ planner.student_group }}</td>
             <td>{{ planner.start_date }}</td>
             {% if planner.docstatus == 0 %}
-              <td>{{ _("Draft") }}</td>
+              <td class="badge bg-secondary">{{_("Draft") }}</td>
             {% elif planner.docstatus == 1 %}
-              <td color="Green">{{ _("Submitted") }}</td>
+              <td class="badge bg-success">{{_("Submitted") }}</td>
             {% elif planner.docstatus == 2 %}
-              <td color="Red">{{ _("Cancelled") }}</td>
+              <td class="badge bg-warning">{{_("Cancelled") }}</td>
             {% endif %}
-            <td class="badge badge-primary" text-align="right" planner-name="{{ planner.name }}" onclick="open_planner_detail()">Edit</td>
+            <td class="badge badge-primary" planner-name="{{ planner.name }}" onclick="open_planner_detail()">
+              <span style="text-align: center;" class="translate-middle-x">Edit</span></td>
           </tr>
         {% endfor %}
       </tbody>

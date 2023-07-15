@@ -117,3 +117,4 @@ def load_planner_details(planner_name):
 
 def diff_months(d1, d2):
     return (d1.year - d2.year) * 12 + d1.month - d2.month
+
