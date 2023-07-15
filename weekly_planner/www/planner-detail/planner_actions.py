@@ -18,14 +18,14 @@ def new_planner():
     pass
 
 
-@frappe.whitelist()
-def show_students():
-    pass
-
-
 @frappe.whitelist()    
-def add_students():
-    pass
+def add_students(selected_student, planner_name):
+    # Add students in the Planner Student table for each student selected
+    for student in selected_student:
+        frappe.db.sql('''INSERT INTO `tabPlanner Student` (parent, student) 
+                      VALUES (%(p_name)s, %(student)s)''', {"p_name": planner_name, "student": student})
+
+    return "success"
 
 
 @frappe.whitelist()
@@ -56,7 +56,7 @@ def get_students_for_selection(selected_campus, selected_group):
         students = frappe.db.sql(sql, {"campus": selected_campus}, as_dict=True)
     elif selected_group:
         # frappe.msgprint(selected_group + " selected but no campus")
-        sql = '''SELECT s.first_name, s.last_name, s.date_of_birth FROM `tabStudent Group Student` g
+        sql = '''SELECT s.name, s.first_name, s.last_name, s.date_of_birth FROM `tabStudent Group Student` g
                 INNER JOIN `tabStudent` s ON g.student = s.name 
                 WHERE g.parent = %(group)s'''
         students = frappe.db.sql(sql, {"group": selected_group}, as_dict=True)

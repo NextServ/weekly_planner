@@ -46,7 +46,7 @@ function show_students(e = event) {
             if (students.message) {
                 var student_table = document.getElementById("students_table");
 
-                // Show the students table
+                // Show the students tableClass 1
                 student_table.innerHTML = "";
 
                 // Build the student_table with columns student, campus and group using the dataset returned from get_students_for_selection method
@@ -60,21 +60,51 @@ function show_students(e = event) {
 
                 // Add the table to the page
                 student_table.innerHTML = student_table_html;
-                const table = new DataTable('#students_table');
-                
+                const table = new DataTable('#students_table');                
 
                 table.on('click', 'tbody tr', function (e) {
                     e.currentTarget.classList.toggle('selected');
                 });
                 
-                document.querySelector('#button').addEventListener('click', function () {
-                    alert(table.rows('.selected').data().length + ' row(s) selected');
-                });
-
                 document.querySelector('#clear_button').addEventListener('click', function () {
+                    // todo: fix this
                     table.rows('.selected').nodes().each((row) => row.classList.toggle('selected'));
                 });
-            
+
+                // Add selected students to the planner
+                document.querySelector('#add_button').addEventListener('click', function () {
+                    // Get the selected students
+                    var selected_students = table.rows('.selected').data();
+
+                    // Output to console.log details of each student in selected_students
+                    selected_students.forEach((student) => {
+                        console.log(student);
+                    });
+
+                    // Add the selected students to the planner
+                    // frappe.call({
+                    //     method: "weekly_planner.www.planner-detail.planner_actions.add_students",
+                    //     args: {
+                    //         "selected_students": selected_students,
+                    //         "planner_name": planner_name
+                    //     },
+
+                    //     return: function(r) {
+                    //         if (!r.exc) {
+                    //             // Go back to the main page
+                    //             reload_items_table();
+                    //         } else {
+                    //             frappe.show_alert(
+                    //                 {
+                    //                     message: __("Error loading students!"),
+                    //                     indicator: "red",
+                    //                 },
+                    //                 3
+                    //             );
+                    //         }
+                    //     }
+                    // });
+                });
             }
         }
     });
@@ -93,4 +123,11 @@ function clear_students_table() {
         table.empty();
     }
     
+}
+
+function reload_items_table() {
+    // Refresh the items table
+    var container = document.getElementById("items_table");
+    var content = container.innerHTML;
+    container.innerHTML= content; 
 }
