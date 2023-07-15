@@ -152,8 +152,7 @@ function reload_items_table() {
 function show_topics(e) {
     // Retrieve topics from Frappe
     planner_name = getQueryVariable("planner-name");
-    planner_name = planner.name.replace("%20", " ");  // remove %20s
-    alert(planner_name)
+    planner_name = planner_name.replace("%20", " ");  // remove %20s
 
     frappe.call({
         method: "weekly_planner.www.planner-detail.planner_actions.get_topics_for_selection",
