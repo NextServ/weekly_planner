@@ -64,3 +64,13 @@ def get_students_for_selection(selected_campus, selected_group):
         students = frappe.db.sql('''SELECT first_name, last_name, date_of_birth FROM `tabStudent`''', as_dict=True)
 
     return students
+
+
+@frappe.whitelist()
+def get_topics_for_selection(planner_name):
+    # Retrieve topics that are not already in Planner Topic
+    sql = '''SELECT name, topic_name FROM `tabTopic` WHERE name NOT IN
+            (SELECT topic FROM `tabPlanner Topic` WHERE parent = %(planner_name)s)'''
+    topics = frappe.db.sql(sql, {"planner_nam": planner_name}, as_dict=True)
+
+    return topics

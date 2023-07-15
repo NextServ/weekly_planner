@@ -2,16 +2,33 @@ frappe.ready(function() {
     // $('#items_table').DataTable();
     new DataTable('#items_table');
 
+    $('#modal_add_topics').on('shown.bs.modal', function (e) {
+        // alert("modal shown");
+        show_topics(e);
+    })
 })
+
+function getQueryVariable(variable) {
+    var query = window.location.search.substring(1);
+    var vars = query.split("&");
+    
+    for (var i=0;i<vars.length;i++) {
+      var pair = vars[i].split("=");
+      if (pair[0] == variable) {
+        return pair[1];
+      }
+    } 
+    alert('Query Variable ' + variable + ' not found');
+}
 
 function go_to_main() {
     // Go back to the main page
     window.open("/weekly-planner", "_self");
 }
 
-function delete_planner(e = event) {
-    // alert("Planner name:" + e.currentTarget.getAttribute('planner-name'));
-    planner_name = e.currentTarget.getAttribute('planner-name');
+function delete_planner(e) {
+    planner_name = getQueryVariable("planner-name");
+    // alert(planner_name)
 
     // Delete the planner
     frappe.call({
@@ -31,7 +48,7 @@ function delete_planner(e = event) {
     });
 }
 
-function show_students(e = event) {
+function show_students(e) {
     clear_students_table();
 
     // Retrieve students from Frappe
@@ -130,4 +147,46 @@ function reload_items_table() {
     var container = document.getElementById("items_table");
     var content = container.innerHTML;
     container.innerHTML= content; 
+}
+
+function show_topics(e) {
+    // Retrieve topics from Frappe
+    planner_name = getQueryVariable("planner-name");
+    planner_name = planner.name.replace("%20", " ");  // remove %20s
+    alert(planner_name)
+
+    frappe.call({
+        method: "weekly_planner.www.planner-detail.planner_actions.get_topics_for_selection",
+        args: {
+            "planner_name": planner_name
+        },
+
+        callback: function(topics) {
+            if (topics.message) {
+                var topics_table = document.getElementById("topics_table");
+
+                // Show the topics table
+                topics_table.innerHTML = "";
+
+                // Build the topics_table with columns topic, campus and group using the dataset returned from get_topics method
+                var topics_table_html = '<thead><tr><th>Topic</th></tr></thead><tbody>';
+                
+                topics.message.forEach((topic) => {
+                    topics_table_html += '<tr><td>' + topic.topic_name + '</td></tr>';
+                });
+                topics_table_html += '</tbody>';
+
+                // Add the table to the page
+                topics_table.innerHTML = topics_table_html;
+                const table = new DataTable('#topics_table');                
+
+                table.on('click', 'tbody tr', function (e) {
+                    e.currentTarget.classList.toggle('selected');
+                });
+                
+                document.querySelector('#clear_button').addEventListener('click', function () {
+                })
+            }
+        }
+    });
 }
