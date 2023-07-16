@@ -173,7 +173,7 @@ function reload_items_table() {
 function show_topics(e) {
     // Retrieve topics from Frappe
     planner_name = getQueryVariable("planner-name");
-    planner_name = planner_name.replace("%20", " ");  // remove %20s
+    planner_name = planner_name.replace(/%20/g, " ");  // remove %20s
 
     frappe.call({
         method: "weekly_planner.www.planner-detail.planner_actions.get_topics_for_selection",
@@ -234,15 +234,15 @@ function show_lesson_modal(row, cell) {
     }
 
     // Values to be saved later
-    var planner_name = getQueryVariable("planner-name").replace("%20", " ");  // remove %20s
+    var planner_name = getQueryVariable("planner-name").replace(/%20/g, " ");  // remove %20s
     var lesson_name = cell.substring(lesson_pos, lesson_len);
     var student = cell.substring(student_pos, student_len);
     var topic = row[1]    
     var lesson_date = cell.substring(status_len + 1, status_len + 11); // Length of date based on this format: 2021-01-01
-
+    
     var org_lesson_value = lesson_name
     
-    console.log("lesson name: " + lesson_name + "\nstudent: " + student + " \ntopic: " + topic + " \nlesson_date: " + lesson_date + " \nstatus_abbr: " + status_abbr + "\norg_lesson_val: " + org_lesson_value);
+    console.log("lesson name: " + lesson_name + "\nplanner_name: " + planner_name + "\nstudent: " + student + " \ntopic: " + topic + " \nlesson_date: " + lesson_date + " \nstatus_abbr: " + status_abbr + "\norg_lesson_val: " + org_lesson_value);
 
     // Retrieve Lesson Status options from Frappe
     frappe.call({

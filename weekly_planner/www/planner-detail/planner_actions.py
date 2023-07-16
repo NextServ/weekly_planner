@@ -86,7 +86,7 @@ def build_lesson_entry_modal(status_abbr, lesson_date, org_lesson_value):
     modal_html +=    '            value="' + status_value + '" required></label>'
 
     modal_html +=    '        <datalist id="options">'
-    modal_html +=    status_options
+    modal_html +=                 status_options
     modal_html +=    '        </datalist>'
     modal_html +=    '    </div>'
     modal_html +=    '    <div class="row">'
@@ -107,12 +107,12 @@ def save_lesson_entry(lesson_name, planner_name, student, topic, status, lesson_
     if org_lesson_value == "none":
         # lesson_name = frappe.generate_hash("", 10)      # Generate unique name for the lesson entry
         lesson_name = uuid.uuid4()
-        frappe.db.sql('''INSERT INTO `tabPlanner Lesson` (name, parent, student, topic, lesson_status, date) 
+        result = frappe.db.sql('''INSERT INTO `tabPlanner Lesson` (name, parent, student, topic, lesson_status, date) 
                         VALUES (%(name)s, %(p_name)s, %(student)s, %(topic)s, %(status)s, %(lesson_date)s)''', 
                         {"name": lesson_name, "p_name": planner_name, "student": student, "topic": topic, "status": status_id, 
                         "lesson_date": lesson_date})
     else:    
-        frappe.db.sql('''UPDATE `tabPlanner Lesson` SET lesson_status = %(status)s, date = %(date)s 
+        result = frappe.db.sql('''UPDATE `tabPlanner Lesson` SET lesson_status = %(status)s, date = %(date)s 
                         WHERE name = %(name)s''', {"status": status_id, "date": lesson_date, "name": lesson_name})
     
-    return "success"
+    return result
