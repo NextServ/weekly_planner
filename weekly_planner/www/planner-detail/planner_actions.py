@@ -1,4 +1,5 @@
 import frappe
+from frappe import _
 
 @frappe.whitelist(methods=["POST"])
 def delete_planner(planner_name):
@@ -13,11 +14,6 @@ def delete_planner(planner_name):
     return "success"
 
 
-@frappe.whitelist()
-def new_planner():
-    pass
-
-
 @frappe.whitelist()    
 def add_students(selected_student, planner_name):
     # Add students in the Planner Student table for each student selected
@@ -29,18 +25,8 @@ def add_students(selected_student, planner_name):
 
 
 @frappe.whitelist()
-def add_topics():
-    pass
-
-
-@frappe.whitelist()
-def save_lesson():
-    pass
-
-
-@frappe.whitelist()
-def delete_lesson():
-    pass
+def get_lesson_status_options():
+    return frappe.db.sql('''SELECT status, abbreviation FROM `tabLesson Status` ORDER BY status''', as_dict=True)
 
 
 @frappe.whitelist()
@@ -74,3 +60,58 @@ def get_topics_for_selection(planner_name):
     topics = frappe.db.sql(sql, {"planner_nam": planner_name}, as_dict=True)
 
     return topics
+
+
+@frappe.whitelist()
+def build_lesson_entry_modal(status_abbr, lesson_date, is_new):
+    # Get lesson status value based on abbreviation
+    if is_new:
+        status_value = ""
+        lesson_date = ""
+    else:
+        status_value = frappe.db.sql('''SELECT status FROM `tabLesson Status` WHERE abbreviation = %(status)s''', {"status": status_abbr}, as_dict=True)[0].status
+
+    # Get all lesson status options
+    status_options = ""
+    for option in frappe.db.sql('''SELECT status FROM `tabLesson Status` ORDER BY status''', as_dict=True):
+        status_options += '<option>' + option.status + '</option>'
+    
+    # Build the modal for the lesson entry
+    modal_html =     '<div class="container px-2 py-2 border bg-light">'
+    modal_html +=    '    <div class="row">'
+
+    modal_html +=    '        <label>' + _("Lesson Status")
+    modal_html +=    '            <input class="input-group-text text-align-left" list="options" name="status_options" id="selected_option" '
+    modal_html +=    '            value="' + status_value + '" required></label>'
+
+    modal_html +=    '        <datalist id="options">'
+    modal_html +=    status_options
+    modal_html +=    '        </datalist>'
+    modal_html +=    '    </div>'
+    modal_html +=    '    <div class="row">'
+    modal_html +=    '        <label>' + _("Date") + '<input class="input-group-text text-align-left" list="options" name="status_options" '
+    modal_html +=    '            id="lesson_date" type="date" value="' + lesson_date + '" required></label>'
+    modal_html +=    '    </div>'
+    modal_html +=    '</div>'
+
+    return modal_html
+
+
+@frappe.whitelist()
+def save_lesson_entry(planner_name, student, topic, status, lesson_date, is_new):
+    # Get status id
+    status_id = frappe.db.sql('''SELECT name FROM `tabLesson Status` WHERE status = %(status)s''', {"status": status}, as_dict=True)[0].name
+
+    # Save the lesson entry
+    if is_new:
+        lesson_name = frappe.generate_hash("", 10)      # Generate unique name for the lesson entry
+        frappe.db.sql('''INSERT INTO `tabPlanner Lesson` (name, parent, student, topic, lesson_status, date) 
+                        VALUES (%(name)s, %(p_name)s, %(student)s, %(topic)s, %(status)s, %(lesson_date)s)''', 
+                        {"name": lesson_name, "p_name": planner_name, "student": student, "topic": topic, "status": status_id, "lesson_date": lesson_date})
+    else:    
+        lesson_name = frappe.db.sql('''SELECT name FROM `tabPlanner Lesson` WHERE parent = %(p_name)s AND student = %(student)s AND topic = %(topic)s AND date = %(date)s''', 
+                        {"p_name": planner_name, "student": student, "topic": topic, "date": lesson_date}, as_dict=True)[0].name
+        frappe.db.sql('''UPDATE `tabPlanner Lesson` SET lesson_status = %(status)s, date = %(date)s 
+                        WHERE name = %(name)s''', {"status": status_id, "date": lesson_date, "name": lesson_name})
+    
+    return "success"

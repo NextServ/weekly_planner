@@ -1,12 +1,22 @@
 frappe.ready(function() {
     // $('#items_table').DataTable();
-    new DataTable('#items_table');
+    const table = new DataTable('#items_table');
 
-    $('#modal_add_topics').on('shown.bs.modal', function (e) {
+    $('#modal_add_topics').on('show.bs.modal', function (e) {
         // alert("modal shown");
         show_topics(e);
     })
+
+    // Listen for the click on the body of the table
+    table.on('click', 'td', function (e) {
+        // Get the cell data clicked on
+        row = table.row(this).data()
+        cell = table.cell(this).data()
+
+        show_lesson_modal(row, cell);
+    })
 })
+
 
 function getQueryVariable(variable) {
     var query = window.location.search.substring(1);
@@ -21,10 +31,12 @@ function getQueryVariable(variable) {
     alert('Query Variable ' + variable + ' not found');
 }
 
+
 function go_to_main() {
     // Go back to the main page
     window.open("/weekly-planner", "_self");
 }
+
 
 function delete_planner(e) {
     planner_name = getQueryVariable("planner-name");
@@ -48,6 +60,7 @@ function delete_planner(e) {
     });
 }
 
+
 function show_students(e) {
     clear_students_table();
 
@@ -61,22 +74,27 @@ function show_students(e) {
 
         callback: function(students) {
             if (students.message) {
-                var student_table = document.getElementById("students_table");
+                var lesson_body = document.getElementById("students_table");
 
                 // Show the students tableClass 1
-                student_table.innerHTML = "";
+                lesson_body.innerHTML = "";
 
-                // Build the student_table with columns student, campus and group using the dataset returned from get_students_for_selection method
-                var student_table_html = '<thead><tr><th>First Name</th><th>Last Name</th><th>DOB</th></tr></thead><tbody>';
+                // Build the lesson_body with columns student, campus and group using the dataset returned from get_students_for_selection method
+                var lesson_body_html = '<thead><tr><th>First Name</th><th>Last Name</th><th>DOB</th></tr></thead><tbody>';
                 
                 students.message.forEach((student) => {
-                    student_table_html += '<tr><td>' + student.first_name + '</td><td>' + student.last_name + '</td><td>' + 
+                    lesson_body_html += '<tr><td>' + student.first_name + '</td><td>' + student.last_name + '</td><td>' + 
                         student.date_of_birth + '</td></tr>';
                 });
-                student_table_html += '</tbody>';
+                lesson_body_html += '</tbody>';
 
                 // Add the table to the page
-                student_table.innerHTML = student_table_html;
+                lesson_body.innerHTML = lesson_body_html;
+
+                // todo: Adjust modal in case the table is too big
+                // myModal.handleUpdate()
+                
+                
                 const table = new DataTable('#students_table');                
 
                 table.on('click', 'tbody tr', function (e) {
@@ -127,14 +145,15 @@ function show_students(e) {
     });
 }
 
+
 function clear_students_table() {
     // Check to see if students_table already has rows; if it does, delete all rows
-    var student_table = document.getElementById("students_table");
+    var lesson_body = document.getElementById("students_table");
     
     // Clear the sudent_table if there are rows in it
-    if (student_table.rows.length > 0) {
+    if (lesson_body.rows.length > 0) {
         // Clear the table
-        student_table.innerHTML = "";
+        lesson_body.innerHTML = "";
 
         var table = DataTable('#students_table')
         table.empty();
@@ -142,12 +161,14 @@ function clear_students_table() {
     
 }
 
+
 function reload_items_table() {
     // Refresh the items table
     var container = document.getElementById("items_table");
     var content = container.innerHTML;
     container.innerHTML= content; 
 }
+
 
 function show_topics(e) {
     // Retrieve topics from Frappe
@@ -188,4 +209,101 @@ function show_topics(e) {
             }
         }
     });
+}
+
+
+function show_lesson_modal(row, cell) {
+    // Parse row and cell to get field values
+    var center_pos = cell.indexOf("center") + 8;
+    var status_len = 0;
+    var hidden_pos = cell.indexOf("hidden") + 10;
+    var student_len = cell.indexOf("</p", hidden_pos);
+
+    // Go through each char of cell to find the a character that is not a space 
+    // and use that as the start of the status_abbr
+    var status_abbr = "";
+    var valid_letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+    for (var i = center_pos; i < hidden_pos; i++) {
+        if (valid_letters.search(cell[i]) > 0) {
+            status_len = cell.indexOf(" ", i)
+            status_abbr = cell.substring(i, status_len);
+            break;
+        }
+    }
+
+    // Values to be saved later
+    var planner_name = getQueryVariable("planner-name").replace("%20", " ");  // remove %20s
+    var student = cell.substring(hidden_pos, student_len);
+    var topic = row[1]    
+    var lesson_date = cell.substring(status_len + 1, status_len + 11); // Length of date based on this format: 2021-01-01
+
+    var is_new = !isValidDateFormat(lesson_date);
+    
+    console.log("student: " + student + " \ntopic: " + topic + " \nlesson_date: " + lesson_date + " \nstatus_abbr: " + status_abbr + "\nis_new: " + is_new);
+
+    // Retrieve Lesson Status options from Frappe
+    frappe.call({
+        method: "weekly_planner.www.planner-detail.planner_actions.build_lesson_entry_modal",
+
+        args: {
+            "status_abbr": status_abbr,
+            "lesson_date": lesson_date,
+            "is_new": is_new
+        },
+
+        callback: function(r) {
+            if (r.exc) {
+                frappe.msgprint(__("Missing Status Options data!"));
+                return;
+            } else {
+                var lesson_modal_body = document.getElementById("lesson_modal_body");
+                lesson_modal_body.innerHTML = r.message;
+                console.log(r.message);
+
+                $('#modal_add_lesson').modal('show');
+
+                document.querySelector('#save_lesson_button').addEventListener('click', function () {
+                    // Save the lesson entry
+                    if (document.getElementById("selected_option").value == "") {
+                        frappe.msgprint(__("Lesson Status is required!"));
+                        return;
+                    } else if (document.getElementById("lesson_date").value == "") {
+                        frappe.msgprint(__("Lesson Date is required!"));
+                        return;
+                    }
+
+                    frappe.call({
+                        method: "weekly_planner.www.planner-detail.planner_actions.save_lesson_entry",
+                        type: "POST",
+                        args: {
+                            "planner_name": planner_name,
+                            "student": student,
+                            "topic": topic,
+                            "status": document.getElementById("selected_option").value,
+                            "lesson_date": document.getElementById("lesson_date").value,
+                            "is_new": is_new
+                        },
+                        callback: function(response) {
+                            if (response.exc) {
+                                frappe.msgprint(__("Error saving Lesson Entry!"));
+                                return;
+                            } else {
+                                // Reload the page
+                                location.reload();                                
+                            }
+                        }   
+                    });
+                });
+            }
+        }
+    });
+}
+
+
+function isValidDateFormat(dateString) {
+    // Create a new Date object from the input string
+    var date = new Date(dateString);
+  
+    // Check if the date is a valid date and the input string is not NaN
+    return !isNaN(date) && !isNaN(date.getTime());
 }

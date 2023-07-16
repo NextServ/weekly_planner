@@ -75,16 +75,20 @@
             <td>{{ planner.student_group }}</td>
             <td>{{ planner.start_date }}</td>
             
-            <!-- todo: put conditions inside the span tag -->
-            {% if planner.docstatus == 0 %}
-              <td class="text-center"><span class="badge bg-secondary">{{_("Draft") }}</span></td>
-            {% elif planner.docstatus == 1 %}
-              <td class="text-center"><span class="badge bg-secondary">{{_("Submitted") }}</span></td>
-            {% elif planner.docstatus == 2 %}
-              <td class="text-center"><span class="badge bg-secondary">{{_("Cancelled") }}</span></td>
-            {% endif %}
+            <td class="text-center">
+              {% if planner.docstatus == 0 %}
+                <span class="badge rounded-pill bg-secondary">{{_("Draft") }}</span>
+                
+              {% elif planner.docstatus == 1 %}
+                <span class="badge rounded-pill bg-secondary">{{_("Submitted") }}</span>
+
+              {% elif planner.docstatus == 2 %}
+                <span class="badge rounded-pill bg-secondary">{{_("Cancelled") }}</span>
+              {% endif %}
+            </td>
             <td class="text-center" planner-name="{{ planner.name }}" onclick="open_planner_detail()">
-              <span class="badge badge-primary translate-middle-x">Edit</span></td>
+              <span class="badge badge-primary translate-middle-x">{{_("Edit") }}</span>
+            </td>
           </tr>
         {% endfor %}
       </tbody>
