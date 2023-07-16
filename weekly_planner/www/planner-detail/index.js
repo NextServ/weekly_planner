@@ -216,14 +216,16 @@ function show_lesson_modal(row, cell) {
     // Parse row and cell to get field values
     var center_pos = cell.indexOf("center") + 8;
     var status_len = 0;
-    var hidden_pos = cell.indexOf("hidden") + 10;
-    var student_len = cell.indexOf("</p", hidden_pos);
+    var student_pos = cell.indexOf("student:") + 9;
+    var student_len = cell.indexOf(" |", student_pos);
+    var lesson_pos = cell.indexOf("name:") + 6;
+    var lesson_len = cell.indexOf(" |", lesson_pos);
 
     // Go through each char of cell to find the a character that is not a space 
     // and use that as the start of the status_abbr
     var status_abbr = "";
     var valid_letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
-    for (var i = center_pos; i < hidden_pos; i++) {
+    for (var i = center_pos; i < student_pos; i++) {
         if (valid_letters.search(cell[i]) > 0) {
             status_len = cell.indexOf(" ", i)
             status_abbr = cell.substring(i, status_len);
@@ -233,13 +235,14 @@ function show_lesson_modal(row, cell) {
 
     // Values to be saved later
     var planner_name = getQueryVariable("planner-name").replace("%20", " ");  // remove %20s
-    var student = cell.substring(hidden_pos, student_len);
+    var lesson_name = cell.substring(lesson_pos, lesson_len);
+    var student = cell.substring(student_pos, student_len);
     var topic = row[1]    
     var lesson_date = cell.substring(status_len + 1, status_len + 11); // Length of date based on this format: 2021-01-01
 
-    var is_new = !isValidDateFormat(lesson_date);
+    var org_lesson_value = lesson_name
     
-    console.log("student: " + student + " \ntopic: " + topic + " \nlesson_date: " + lesson_date + " \nstatus_abbr: " + status_abbr + "\nis_new: " + is_new);
+    console.log("lesson name: " + lesson_name + "\nstudent: " + student + " \ntopic: " + topic + " \nlesson_date: " + lesson_date + " \nstatus_abbr: " + status_abbr + "\norg_lesson_val: " + org_lesson_value);
 
     // Retrieve Lesson Status options from Frappe
     frappe.call({
@@ -248,7 +251,7 @@ function show_lesson_modal(row, cell) {
         args: {
             "status_abbr": status_abbr,
             "lesson_date": lesson_date,
-            "is_new": is_new
+            "org_lesson_value": org_lesson_value,
         },
 
         callback: function(r) {
@@ -258,30 +261,30 @@ function show_lesson_modal(row, cell) {
             } else {
                 var lesson_modal_body = document.getElementById("lesson_modal_body");
                 lesson_modal_body.innerHTML = r.message;
-                console.log(r.message);
+                // console.log(r.message);
 
                 $('#modal_add_lesson').modal('show');
 
                 document.querySelector('#save_lesson_button').addEventListener('click', function () {
                     // Save the lesson entry
                     if (document.getElementById("selected_option").value == "") {
-                        frappe.msgprint(__("Lesson Status is required!"));
+                        alert(__("Lesson Status is required!"));
                         return;
                     } else if (document.getElementById("lesson_date").value == "") {
-                        frappe.msgprint(__("Lesson Date is required!"));
+                        alert(__("Lesson Date is required!"));
                         return;
                     }
 
                     frappe.call({
                         method: "weekly_planner.www.planner-detail.planner_actions.save_lesson_entry",
-                        type: "POST",
                         args: {
+                            "lesson_name": lesson_name,
                             "planner_name": planner_name,
                             "student": student,
                             "topic": topic,
                             "status": document.getElementById("selected_option").value,
                             "lesson_date": document.getElementById("lesson_date").value,
-                            "is_new": is_new
+                            "org_lesson_value": org_lesson_value
                         },
                         callback: function(response) {
                             if (response.exc) {
@@ -297,13 +300,4 @@ function show_lesson_modal(row, cell) {
             }
         }
     });
-}
-
-
-function isValidDateFormat(dateString) {
-    // Create a new Date object from the input string
-    var date = new Date(dateString);
-  
-    // Check if the date is a valid date and the input string is not NaN
-    return !isNaN(date) && !isNaN(date.getTime());
 }

@@ -45,37 +45,36 @@
     <!-- Planner Header -->
     <br />
     <section id="header">
+      <!-- Grid -->
       <form>
-        <!-- Grid -->
-        <form>
-          <div class="row">
-            <div class="col">
-              Instructor
-              <input type="text" class="form-control" placeholder="First name" value="{{ planner.instructor }}" readonly>
-            </div>
-            <div class="col">
-              Student Group
-              <input type="text" class="form-control" placeholder="Last name" value="{{ planner.student_group }}" readonly>
-            </div>
+        <div class="row">
+          <div class="col">
+            Instructor
+            <input type="text" class="form-control" placeholder="First name" value="{{ planner.instructor }}" readonly>
           </div>
-          <br />
-          <div class="row">
-            <div class="col">
-              Date
-              <input type="text" class="form-control" placeholder="Date" value="{{ planner.start_date }}" readonly>
-            </div>
-            <div class="col">
-              <br />
-              {% if planner.docstatus == 0 %}
-                <h5><span class="badge bg-secondary">Draft</span></h5>
-              {% elif planner.docstatus == 1 %}
-                <h5><span class="badge bg-success">Submitted</span></h5>
-              {% else %}
-                <h5><span class="badge bg-warning">Cancelled</span></h5>
-              {% endif %}
-            </div>
+          <div class="col">
+            Student Group
+            <input type="text" class="form-control" placeholder="Last name" value="{{ planner.student_group }}" readonly>
           </div>
-        </form>
+        </div>
+        <br />
+        <div class="row">
+          <div class="col">
+            Date
+            <input type="text" class="form-control" placeholder="Date" value="{{ planner.start_date }}" readonly>
+          </div>
+          <div class="col">
+            <br />
+            {% if planner.docstatus == 0 %}
+              <h5><span class="badge bg-secondary">Draft</span></h5>
+            {% elif planner.docstatus == 1 %}
+              <h5><span class="badge bg-success">Submitted</span></h5>
+            {% else %}
+              <h5><span class="badge bg-warning">Cancelled</span></h5>
+            {% endif %}
+          </div>
+        </div>
+      </form>
     </section>
     <!-- ./ Planner Header -->
 
@@ -101,15 +100,15 @@
           <tr>
             <!-- display table header titles vertically -->
             <style>
-                .rotated-text {
-                  font-size: medium;
-                  transform: rotate(-45deg); /* Rotate the text by 45 degrees */
-                  white-space: nowrap; /* Keep the text on one line */
-                  text-align: left;
-                  vertical-align: top;
-                  padding-left: 5em;
-                  height: 200px;
-                }
+              .rotated-text {
+                font-size: medium;
+                transform: rotate(-45deg); /* Rotate the text by 45 degrees */
+                white-space: nowrap; /* Keep the text on one line */
+                text-align: left;
+                vertical-align: top;
+                padding-left: 5em;
+                height: 200px;
+              }
             </style>
             
             <br />
@@ -117,18 +116,18 @@
             <th scope="col"><div style="width: 3%"><span>Material</span></div></th>
         
             {% for student in student_headers %}
-                <th scope="col" >
-                    <div>
-                        {{ student_headers[student]["last_name"] }}, {{  student_headers[student]["first_name"] }}
-                        <div>
-                            {% if student_headers[student]["date_of_birth"] %}
-                                <i>{{ student_headers[student]["years_old"] }} Years {{ student_headers[student]["months_old"] }} Months</i>
-                            {% else %}
-                                <span></span>
-                            {% endif %}
-                        </div>                        
-                    </div>
-                </th>
+              <th scope="col" >
+                <div>
+                  {{ student_headers[student]["last_name"] }}, {{  student_headers[student]["first_name"] }}
+                  <div>
+                    {% if student_headers[student]["date_of_birth"] %}
+                      <i>{{ student_headers[student]["years_old"] }} Years {{ student_headers[student]["months_old"] }} Months</i>
+                    {% else %}
+                      <span></span>
+                    {% endif %}
+                  </div>                        
+                </div>
+              </th>
             {% endfor %}
           </tr>
         </thead>
@@ -148,12 +147,12 @@
                     {% for item in planner_details[topic][student] %}
                     <span class="badge badge-pill badge-primary" text-align="center">
                         {{ item.abbreviation[0] }} {{ item.date }}
-                        <p hidden>{{ student }}</p>
+                        <p hidden>student: {{ student }} | name: {{ item.name }} |</p>
                     </span>
                     {% endfor %}
                   {% else %}
-                      <span></span>
-                      <p hidden>{{ student }}</p>
+                    <span></span>
+                    <p hidden>student: {{ student }} | name: none |</p>
                   {% endif %}
                 </td>
               {% endfor %}
@@ -300,10 +299,10 @@
   
   <!-- Add/Edit Lesson Modal -->
   <div class="modal fade" id="modal_add_lesson" data-backdrop="static" data-keyboard="true" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-dialog modal-dialog-centered modal-md">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="staticBackdropLabel">{{ _("Add/Edit Lessonn") }}</h5>
+          <h5 class="modal-title" id="staticBackdropLabel">{{ _("Add/Edit Lesson") }}</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>

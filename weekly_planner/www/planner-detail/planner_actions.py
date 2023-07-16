@@ -1,5 +1,6 @@
 import frappe
 from frappe import _
+import uuid
 
 @frappe.whitelist(methods=["POST"])
 def delete_planner(planner_name):
@@ -63,9 +64,9 @@ def get_topics_for_selection(planner_name):
 
 
 @frappe.whitelist()
-def build_lesson_entry_modal(status_abbr, lesson_date, is_new):
+def build_lesson_entry_modal(status_abbr, lesson_date, org_lesson_value):
     # Get lesson status value based on abbreviation
-    if is_new:
+    if org_lesson_value == "none":
         status_value = ""
         lesson_date = ""
     else:
@@ -98,19 +99,19 @@ def build_lesson_entry_modal(status_abbr, lesson_date, is_new):
 
 
 @frappe.whitelist()
-def save_lesson_entry(planner_name, student, topic, status, lesson_date, is_new):
+def save_lesson_entry(lesson_name, planner_name, student, topic, status, lesson_date, org_lesson_value):
     # Get status id
     status_id = frappe.db.sql('''SELECT name FROM `tabLesson Status` WHERE status = %(status)s''', {"status": status}, as_dict=True)[0].name
 
     # Save the lesson entry
-    if is_new:
-        lesson_name = frappe.generate_hash("", 10)      # Generate unique name for the lesson entry
+    if org_lesson_value == "none":
+        # lesson_name = frappe.generate_hash("", 10)      # Generate unique name for the lesson entry
+        lesson_name = uuid.uuid4()
         frappe.db.sql('''INSERT INTO `tabPlanner Lesson` (name, parent, student, topic, lesson_status, date) 
                         VALUES (%(name)s, %(p_name)s, %(student)s, %(topic)s, %(status)s, %(lesson_date)s)''', 
-                        {"name": lesson_name, "p_name": planner_name, "student": student, "topic": topic, "status": status_id, "lesson_date": lesson_date})
+                        {"name": lesson_name, "p_name": planner_name, "student": student, "topic": topic, "status": status_id, 
+                        "lesson_date": lesson_date})
     else:    
-        lesson_name = frappe.db.sql('''SELECT name FROM `tabPlanner Lesson` WHERE parent = %(p_name)s AND student = %(student)s AND topic = %(topic)s AND date = %(date)s''', 
-                        {"p_name": planner_name, "student": student, "topic": topic, "date": lesson_date}, as_dict=True)[0].name
         frappe.db.sql('''UPDATE `tabPlanner Lesson` SET lesson_status = %(status)s, date = %(date)s 
                         WHERE name = %(name)s''', {"status": status_id, "date": lesson_date, "name": lesson_name})
     

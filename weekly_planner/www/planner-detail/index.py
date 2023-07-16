@@ -62,11 +62,11 @@ def load_planner_details(planner_name):
     students = frappe.db.sql('''SELECT p.student, s.first_name, s.last_name, s.date_of_birth
                              FROM `tabPlanner Student` p INNER JOIN `tabStudent` s
                              ON p.student = s.name
-                             WHERE p.parent = %(p_name)s''', {"format": "%Y%m", "p_name": planner_name}, as_dict=True)
+                             WHERE p.parent = %(p_name)s''', {"p_name": planner_name}, as_dict=True)
 
     # lessons = frappe.get_all("Planner Lesson", filters={"parent": planner_name}, fields=["*"])
     topics = frappe.get_all("Planner Topic", filters={"parent": planner_name}, fields=["*"])
-    lessons = frappe.db.sql('''SELECT p.date, p.student, p.topic, l.abbreviation from `tabPlanner Lesson` p
+    lessons = frappe.db.sql('''SELECT p.name, p.date, p.student, p.topic, l.abbreviation from `tabPlanner Lesson` p
                             INNER JOIN `tabLesson Status` l ON p.lesson_status = l.name
                             WHERE parent = %(p_name)s''', {"p_name": planner_name}, as_dict=True)
 
