@@ -83,13 +83,13 @@
     <button type="button" class="btn btn-outline-primary" onclick="go_to_main()">Back</button>
     <button type="button" class="btn btn-primary">{{ _("New Planner") }}</button> 
     <button type="button" class="btn btn-primary" data-toggle="modal" 
-      data-target="#modal_del_planner">Del Planner</button>&nbsp; | &nbsp;
+      data-target="#modal_del_planner">Del Planner</button>
+    <button type="button" class="btn btn-primary">{{ _("Submit Planner") }}</button> &nbsp; | &nbsp;
     <div class="btn-group" role="group" aria-label="Add...">
       <button type="button" class="btn btn-primary" data-toggle="modal" 
         data-target="#modal_add_students">{{ _("Add Students") }}</button> &nbsp;
       <button type="button" class="btn btn-primary" data-toggle="modal" 
         data-target="#modal_add_topics">{{ _("Add Topics") }}</button> &nbsp;
-      <button type="button" class="btn btn-primary">{{ _("Add Lessons") }}</button>
     </div> <br />
     <!-- ./ Buttons --> 
 
@@ -121,7 +121,7 @@
                   {{ student_headers[student]["last_name"] }}, {{  student_headers[student]["first_name"] }}
                   <div>
                     {% if student_headers[student]["date_of_birth"] %}
-                      <i>{{ student_headers[student]["years_old"] }} Years {{ student_headers[student]["months_old"] }} Months</i>
+                      <p class="fs-6"><i>{{ student_headers[student]["years_old"] }} Years {{ student_headers[student]["months_old"] }} Months</i></p>
                     {% else %}
                       <span></span>
                     {% endif %}
@@ -230,8 +230,8 @@
                 </datalist>
               </div>
               <div class="col">
-                <label>{{_("Filter by Student Group (blank for All)") }}
-                  <input class="input-group-text" list="student_groups" name="selected_group" id="selected_group"/></label>
+                <label>{{_("Filter by Student Group (disabled for now)") }}
+                  <input class="input-group-text" list="student_groups" name="selected_group" id="selected_group" readonly/></label>
                 <datalist id="student_groups">
                   {% for group in student_groups %}
                     <option value="{{ group.student_group_name }}">
@@ -287,8 +287,8 @@
 
         <div class="modal-footer">
           <div class="btn-group" role="group" aria-label="List Actions">
-            <button type="button" class="btn btn-primary" id="add_button">{{ _("Add Selected") }}</button>
-            <button type="button" class="btn btn-secondary" id="clear_button">{{ _("Clear Selection") }}</button>
+            <button type="button" class="btn btn-primary" id="add_topics_button">{{ _("Add Selected") }}</button>
+            <button type="button" class="btn btn-secondary" id="clear_topics_button">{{ _("Clear Selection") }}</button>
           </div>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ _("Cancel") }}</button>
         </div>
@@ -314,8 +314,9 @@
 
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" id="save_lesson_button">{{ _("Save") }}</button>
+          <button type="button" class="btn btn-secondary" id="delete_lesson_button">{{ _("Delete") }}</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ _("Cancel") }}</button>
-        </div>
+      </div>
       </div>
     </div>
   </div>

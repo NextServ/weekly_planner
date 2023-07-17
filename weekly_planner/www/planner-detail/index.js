@@ -1,11 +1,9 @@
 frappe.ready(function() {
     // $('#items_table').DataTable();
-    const table = new DataTable('#items_table');
-
-    $('#modal_add_topics').on('show.bs.modal', function (e) {
-        // alert("modal shown");
-        show_topics(e);
-    })
+    const table = new DataTable('#items_table', {
+        scrollX: true,
+        scrollY: true
+    });
 
     // Listen for the click on the body of the table
     table.on('click', 'td', function (e) {
@@ -14,6 +12,11 @@ frappe.ready(function() {
         cell = table.cell(this).data()
 
         show_lesson_modal(row, cell);
+    })
+
+    $('#modal_add_topics').on('show.bs.modal', function (e) {
+        // alert("modal shown");
+        show_topics(e);
     })
 })
 
@@ -62,7 +65,8 @@ function delete_planner(e) {
 
 
 function show_students(e) {
-    clear_students_table();
+    planner_name = getQueryVariable("planner-name");
+    planner_name = planner_name.replace(/%20/g, " ");  // remove %20s
 
     // Retrieve students from Frappe
     frappe.call({
@@ -77,14 +81,19 @@ function show_students(e) {
                 var lesson_body = document.getElementById("students_table");
 
                 // Clear the table
-                lesson_body.innerHTML = "";
+                if (lesson_body.innerHTML != "") {
+                    lesson_body.innerHTML = "";
+                    const old_table = DataTable('#students_table');
+                    old_table.empty();
+                    old_table.destroy();
+                }
 
                 // Build the lesson_body with columns student, campus and group using the dataset returned from get_students_for_selection method
-                var lesson_body_html = '<thead><tr><th>First Name</th><th>Last Name</th><th>DOB</th></tr></thead><tbody>';
+                var lesson_body_html = '<thead><tr><th>ID</th><th>First Name</th><th>Last Name</th><th>DOB</th><th>Student Group</th></tr></thead><tbody>';
                 
                 students.message.forEach((student) => {
-                    lesson_body_html += '<tr><td>' + student.first_name + '</td><td>' + student.last_name + '</td><td>' + 
-                        student.date_of_birth + '</td></tr>';
+                    lesson_body_html += '<tr><td>' + student.name + '</td><td>' + student.first_name + '</td><td>' + 
+                        student.last_name + '</td><td>' + student.date_of_birth + '</td><td>' + student.parent +'</td></tr>';
                 });
                 lesson_body_html += '</tbody>';
 
@@ -93,8 +102,16 @@ function show_students(e) {
 
                 // todo: Adjust modal in case the table is too big
                 // myModal.handleUpdate()                
-                
-                const table = new DataTable('#students_table');                
+
+                const table = new DataTable('#students_table', {
+                    columnDefs: [
+                        {
+                            target: 0,
+                            visible: false,
+                            searchable: false
+                        }
+                    ]
+                });                
 
                 table.on('click', 'tbody tr', function (e) {
                     e.currentTarget.classList.toggle('selected');
@@ -107,37 +124,18 @@ function show_students(e) {
 
                 // Add selected students to the planner
                 document.querySelector('#add_button').addEventListener('click', function () {
-                    // Get the selected students
-                    var selected_students = table.rows('.selected').data();
-
                     // Output to console.log details of each student in selected_students
-                    selected_students.forEach((student) => {
-                        console.log(student);
+
+                    const insert_list = [];
+                    table.rows(".selected").every(function ( rowIdx, tableLoop, rowLoop ) {
+                        // Build an array containing both student and planner_name
+                        item = this.data()[0];
+                        insert_list.push(item);
                     });
-
-                    // Add the selected students to the planner
-                    // frappe.call({
-                    //     method: "weekly_planner.www.planner-detail.planner_actions.add_students",
-                    //     args: {
-                    //         "selected_students": selected_students,
-                    //         "planner_name": planner_name
-                    //     },
-
-                    //     return: function(r) {
-                    //         if (!r.exc) {
-                    //             // Go back to the main page
-                    //             reload_items_table();
-                    //         } else {
-                    //             frappe.show_alert(
-                    //                 {
-                    //                     message: __("Error loading students!"),
-                    //                     indicator: "red",
-                    //                 },
-                    //                 3
-                    //             );
-                    //         }
-                    //     }
-                    // });
+                    
+                    // Output to console log each element in the insert_list array
+                    console.log(insert_list);
+                    save_students(planner_name, insert_list);
                 });
             }
         }
@@ -145,16 +143,29 @@ function show_students(e) {
 }
 
 
-function clear_students_table() {
-    // Check to see if students_table already has rows; if it does, delete all rows
-    var lesson_body = document.getElementById("students_table");
-    
-    // Clear the sudent_table if there are rows in it
-    if (lesson_body.rows.length > 0) {
-        // Clear the table
-        alert("clearing table");
-        $( "#students_table" ).load(window.location.href + " #students_table" );
-    }    
+function save_students(planner_name, insert_list) {
+    frappe.call({
+        method: "weekly_planner.www.planner-detail.planner_actions.save_students",
+        args: {
+            "planner_name": planner_name,
+            "insert_list": insert_list
+        },
+
+        callback: function(r) {
+            if (!r.exc) {
+                // Go back to the main page
+                location.reload();
+            } else {
+                frappe.show_alert(
+                    {
+                        message: __("Error loading students!"),
+                        indicator: "red",
+                    },
+                    3
+                );
+            }
+        }
+    });
 }
 
 
@@ -200,8 +211,49 @@ function show_topics(e) {
                     e.currentTarget.classList.toggle('selected');
                 });
                 
-                document.querySelector('#clear_button').addEventListener('click', function () {
+                document.querySelector('#clear_topics_button').addEventListener('click', function () {
+                    table.rows('.selected').nodes().each((row) => row.classList.toggle('selected'));
                 })
+
+                document.querySelector('#add_topics_button').addEventListener('click', function () {
+                    // Output to console.log details of each student in selected_students
+
+                    const insert_list = [];
+                    table.rows(".selected").every(function ( rowIdx, tableLoop, rowLoop ) {
+                        // Build an array containing both student and planner_name
+                        item = this.data()[0];
+                        insert_list.push(item);
+                    });
+                    
+                    // Output to console log each element in the insert_list array
+                    save_topics(planner_name, insert_list);
+                });
+            }
+        }
+    });
+}
+
+
+function save_topics(planner_name, insert_list) {
+    frappe.call({
+        method: "weekly_planner.www.planner-detail.planner_actions.save_topics",
+        args: {
+            "planner_name": planner_name,
+            "insert_list": insert_list
+        },
+
+        callback: function(r) {
+            if (!r.exc) {
+                // Go back to the main page
+                location.reload();
+            } else {
+                frappe.show_alert(
+                    {
+                        message: __("Error loading students!"),
+                        indicator: "red",
+                    },
+                    3
+                );
             }
         }
     });
@@ -293,6 +345,29 @@ function show_lesson_modal(row, cell) {
                         }   
                     });
                 });
+                
+                document.querySelector('#delete_lesson_button').addEventListener('click', function () {
+                    if (org_lesson_value == "") {
+                        document.getElementById("modal_add_lesson").hide();
+                        return;
+                    }
+
+                    frappe.call({
+                        method: "weekly_planner.www.planner-detail.planner_actions.delete_lesson_entry",
+                        args: {
+                            "lesson_name": lesson_name,
+                        },
+                        callback: function(response) {
+                            if (response.exc) {
+                                frappe.msgprint(__("Error deleting Lesson Entry!"));
+                                return;
+                            } else {
+                                // Reload the page
+                                location.reload();                                
+                            }
+                        }
+                    });
+                })
             }
         }
     });

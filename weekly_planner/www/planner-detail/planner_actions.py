@@ -1,6 +1,6 @@
 import frappe
 from frappe import _
-import uuid
+import json
 
 @frappe.whitelist(methods=["POST"])
 def delete_planner(planner_name):
@@ -12,16 +12,6 @@ def delete_planner(planner_name):
     # frappe.db.sql('''DELETE FROM `tabPlanner Lesson` WHERE parent = %(p_name)s''', {"p_name": planner_name})
     # # Delete Planner
     # frappe.db.sql('''DELETE FROM `tabPlanner` WHERE name = %(p_name)s''', {"p_name": planner_name})
-    return "success"
-
-
-@frappe.whitelist()    
-def add_students(selected_student, planner_name):
-    # Add students in the Planner Student table for each student selected
-    for student in selected_student:
-        frappe.db.sql('''INSERT INTO `tabPlanner Student` (parent, student) 
-                      VALUES (%(p_name)s, %(student)s)''', {"p_name": planner_name, "student": student})
-
     return "success"
 
 
@@ -48,9 +38,26 @@ def get_students_for_selection(selected_campus, selected_group):
                 WHERE g.parent = %(group)s'''
         students = frappe.db.sql(sql, {"group": selected_group}, as_dict=True)
     else:
-        students = frappe.db.sql('''SELECT first_name, last_name, date_of_birth FROM `tabStudent`''', as_dict=True)
+        students = frappe.db.sql('''SELECT s.name, s.first_name, s.last_name, s.date_of_birth, g.parent FROM `tabStudent` s
+                                    LEFT JOIN `tabStudent Group Student` g ON s.name = g.student ''', as_dict=True)
 
     return students
+
+
+@frappe.whitelist()    
+def save_students(planner_name, insert_list):
+    # Add students in the Planner Student table for each student selected
+    students = json.loads(insert_list)
+
+    planner_doc = frappe.get_doc("Weekly Planner", planner_name)
+    for s in students:
+        planner_doc.append("students", {
+            "student": s
+        })
+
+    planner_doc.save()
+   
+    return 
 
 
 @frappe.whitelist()
@@ -58,9 +65,24 @@ def get_topics_for_selection(planner_name):
     # Retrieve topics that are not already in Planner Topic
     sql = '''SELECT name, topic_name FROM `tabTopic` WHERE name NOT IN
             (SELECT topic FROM `tabPlanner Topic` WHERE parent = %(planner_name)s)'''
-    topics = frappe.db.sql(sql, {"planner_nam": planner_name}, as_dict=True)
+    topics = frappe.db.sql(sql, {"planner_name": planner_name}, as_dict=True)
 
     return topics
+
+
+@frappe.whitelist()
+def save_topics(planner_name, insert_list):
+    topics = json.loads(insert_list)
+    
+    planner_doc = frappe.get_doc("Weekly Planner", planner_name)
+    for t in topics:
+        planner_doc.append("topics", {
+            "topic": t
+        })
+
+    planner_doc.save()
+   
+    return
 
 
 @frappe.whitelist()
@@ -106,13 +128,37 @@ def save_lesson_entry(lesson_name, planner_name, student, topic, status, lesson_
     # Save the lesson entry
     if org_lesson_value == "none":
         # lesson_name = frappe.generate_hash("", 10)      # Generate unique name for the lesson entry
-        lesson_name = uuid.uuid4()
-        result = frappe.db.sql('''INSERT INTO `tabPlanner Lesson` (name, parent, student, topic, lesson_status, date) 
-                        VALUES (%(name)s, %(p_name)s, %(student)s, %(topic)s, %(status)s, %(lesson_date)s)''', 
-                        {"name": lesson_name, "p_name": planner_name, "student": student, "topic": topic, "status": status_id, 
-                        "lesson_date": lesson_date})
+        # lesson_name = uuid.uuid4()
+        # result = frappe.db.sql('''INSERT INTO `tabPlanner Lesson` (name, parent, student, topic, lesson_status, date) 
+        #                 VALUES (%(name)s, %(p_name)s, %(student)s, %(topic)s, %(status)s, %(lesson_date)s)''', 
+        #                 {"name": lesson_name, "p_name": planner_name, "student": student, "topic": topic, "status": status_id, 
+        #                 "lesson_date": lesson_date})
+        lesson_doc = frappe.get_doc("Weekly Planner", planner_name)
+        lesson_doc.append("lessons", {
+            "student": student,
+            "topic": topic,
+            "lesson_status": status_id,
+            "date": lesson_date
+        })
+
+        lesson_doc.save()
+
+
     else:    
-        result = frappe.db.sql('''UPDATE `tabPlanner Lesson` SET lesson_status = %(status)s, date = %(date)s 
-                        WHERE name = %(name)s''', {"status": status_id, "date": lesson_date, "name": lesson_name})
+        # result = frappe.db.sql('''UPDATE `tabPlanner Lesson` SET lesson_status = %(status)s, date = %(date)s 
+        #                 WHERE name = %(name)s''', {"status": status_id, "date": lesson_date, "name": lesson_name})
+        
+        frappe.db.set_value("Planner Lesson", lesson_name, {
+            "lesson_status": status_id,
+            "date": lesson_date
+        })
     
-    return result
+    return "success"
+
+
+@frappe.whitelist()
+def delete_lesson_entry(lesson_name):
+    # Delete the lesson entry
+    frappe.db.delete("Planner Lesson", lesson_name)
+
+    return "success"
