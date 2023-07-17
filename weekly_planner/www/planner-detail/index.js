@@ -76,7 +76,7 @@ function show_students(e) {
             if (students.message) {
                 var lesson_body = document.getElementById("students_table");
 
-                // Show the students tableClass 1
+                // Clear the table
                 lesson_body.innerHTML = "";
 
                 // Build the lesson_body with columns student, campus and group using the dataset returned from get_students_for_selection method
@@ -92,8 +92,7 @@ function show_students(e) {
                 lesson_body.innerHTML = lesson_body_html;
 
                 // todo: Adjust modal in case the table is too big
-                // myModal.handleUpdate()
-                
+                // myModal.handleUpdate()                
                 
                 const table = new DataTable('#students_table');                
 
@@ -153,12 +152,9 @@ function clear_students_table() {
     // Clear the sudent_table if there are rows in it
     if (lesson_body.rows.length > 0) {
         // Clear the table
-        lesson_body.innerHTML = "";
-
-        var table = DataTable('#students_table')
-        table.empty();
-    }
-    
+        alert("clearing table");
+        $( "#students_table" ).load(window.location.href + " #students_table" );
+    }    
 }
 
 
