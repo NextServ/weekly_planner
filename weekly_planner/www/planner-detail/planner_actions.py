@@ -2,6 +2,21 @@ import frappe
 from frappe import _
 import json
 
+
+
+
+@frappe.whitelist()
+def create_planner(instructor, selected_group, start_date, description):
+    planner = frappe.new_doc("Weekly Planner")
+    planner.instructor = instructor
+    planner.student_group = selected_group
+    planner.start_date = start_date
+    planner.description = description
+    planner.insert()
+
+    return planner.name
+
+
 @frappe.whitelist(methods=["POST"])
 def delete_planner(planner_name):
     # # Delete Planner Student

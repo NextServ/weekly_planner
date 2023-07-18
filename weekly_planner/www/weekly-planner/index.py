@@ -20,13 +20,14 @@ def get_context(context):
             context.invalid_role = False
             break
 
+    # Retrieve Instructor from User
+    instructor = frappe.get_all("Instructor", fields=["name", "instructor_name", "user"], filters={"user": frappe.session.user})
+    print(instructor)
+
     # Load weekly planners (all for Head Instructor and System Manager, only for current instructor otherwise)
     if is_head_instructor:
         planners = frappe.get_all("Weekly Planner", fields=["name", "instructor", "student_group", "start_date", "docstatus"])
     elif is_instructor:
-        # Retrieve Instructor from User
-        instructor = frappe.get_all("Instructor", fields=["name", "instructor_name", "user"], filters={"user": frappe.session.user})
-
         # Test to see if instructor exists and throw an error if not
         if len(instructor) == 0:        
             frappe.throw("No instructor record found for user {0}".format(frappe.session.user))
@@ -43,5 +44,8 @@ def get_context(context):
             planner.counter = counter
         
         context.weekly_planners = planners
+        context.student_groups = frappe.get_all("Student Group", fields=["student_group_name"])
+        context.instructor = instructor[0].instructor_name if frappe.session.user != "Administrator" else "Administrator"
+        context.is_head_instructor = is_head_instructor
 
     return context

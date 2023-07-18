@@ -87,7 +87,11 @@
               {% endif %}
             </td>
             <td class="text-center" planner-name="{{ planner.name }}" onclick="open_planner_detail()">
-              <span class="badge badge-primary translate-middle-x">{{_("Edit") }}</span>
+              <span class="badge badge-primary translate-middle-x">{{_("Edit") }}</span> 
+              {%if is_head_instructor %}
+                <span class="badge badge-primary translate-middle-x"> / </span>
+                <span class="badge badge-primary translate-middle-x">{{_("Approve") }}</span>
+              {% endif %}
             </td>
           </tr>
         {% endfor %}
@@ -95,7 +99,55 @@
     </table>
 
     <br />
-    <button type="button" class="btn btn-primary">{{ _("New Planner") }}</button>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal_new_planner">{{ _("New Planner") }}</button>
   {% endif %} 
+
+  <!-- New Planner Modal -->
+  <div class="modal fade" id="modal_new_planner" data-backdrop="static" data-keyboard="true" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">{{ _("New Planner") }}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="container-fluid px-2 py-2 border bg-light">
+            <div class="row">
+              <div class="col">
+                <label>{{_("Instructor") }}
+                  <input class="input-group-text text-align-left" name="instructor" id="instructor" value="{{ instructor }}" readonly></label>
+              </div>
+              <div class="col">
+                <label>{{ _("Date") }}<input class="input-group-text text-align-left" id="lesson_date" type="date" required></label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <label>{{_("Student Group") }}
+                  <input class="input-group-text" list="student_groups" name="selected_group" id="selected_group"/></label>
+                <datalist id="student_groups">
+                  {% for group in student_groups %}
+                    <option value="{{ group.student_group_name }}">
+                  {% endfor %}
+                </datalist>
+              </div>
+            </div>
+            <div class="row">
+              <div class="input-group">
+                <span class="input-group-text">{{_("Description") }}</span>
+                <textarea class="form-control" aria-label="With textarea" id="description"></textarea>
+              </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" onclick="save_planner()">{{ _("Save") }}</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ _("Cancel") }}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- ./ New Planner Modal -->
 </main>
 {% endblock %}

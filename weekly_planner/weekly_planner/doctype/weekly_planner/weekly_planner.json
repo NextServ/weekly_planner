@@ -93,7 +93,7 @@
  "is_published_field": "is_published",
  "is_submittable": 1,
  "links": [],
- "modified": "2023-07-12 22:38:32.725666",
+ "modified": "2023-07-18 11:57:54.811017",
  "modified_by": "Administrator",
  "module": "Weekly Planner",
  "name": "Weekly Planner",
@@ -109,6 +109,30 @@
    "read": 1,
    "report": 1,
    "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Instructor",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Head Instructor",
    "share": 1,
    "write": 1
   }
