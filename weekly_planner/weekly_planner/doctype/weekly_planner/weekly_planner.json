@@ -17,7 +17,9 @@
   "amended_from",
   "topics",
   "students",
-  "lessons"
+  "lessons",
+  "is_approved",
+  "approved_by"
  ],
  "fields": [
   {
@@ -86,14 +88,25 @@
    "fieldtype": "Table",
    "label": "Lessons",
    "options": "Planner Lesson"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_approved",
+   "fieldtype": "Check",
+   "label": "Is Approved"
+  },
+  {
+   "fieldname": "approved_by",
+   "fieldtype": "Link",
+   "label": "Approved By",
+   "options": "Instructor"
   }
  ],
  "has_web_view": 1,
  "index_web_pages_for_search": 1,
  "is_published_field": "is_published",
- "is_submittable": 1,
  "links": [],
- "modified": "2023-07-18 11:57:54.811017",
+ "modified": "2023-07-18 14:30:20.319733",
  "modified_by": "Administrator",
  "module": "Weekly Planner",
  "name": "Weekly Planner",

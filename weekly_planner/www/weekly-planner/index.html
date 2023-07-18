@@ -64,7 +64,7 @@
             <th scope="col">{{ _("Student Group") }}</th>
             <th scope="col">{{ _("Start Date") }}</th>
             <th class="text-center" scope="col">{{ _("Status") }}</th>
-            <th class="text-center" scope="col" text-align="left">{{ _("Action") }}</th>
+            <th class="text-center" scope="col" text-align="left">{{ _("Actions") }}</th>
         </tr>
       </thead>
       <tbody>
@@ -89,8 +89,10 @@
             <td class="text-center" planner-name="{{ planner.name }}" onclick="open_planner_detail()">
               <span class="badge badge-primary translate-middle-x">{{_("Edit") }}</span> 
               {%if is_head_instructor %}
-                <span class="badge badge-primary translate-middle-x"> / </span>
+                <span class="badge badge-primary translate-middle-x"> </span>
                 <span class="badge badge-primary translate-middle-x">{{_("Approve") }}</span>
+                <span class="badge badge-primary translate-middle-x"></span>
+                <span class="badge badge-secondary translate-middle-x">{{_("Reject") }}</span>
               {% endif %}
             </td>
           </tr>

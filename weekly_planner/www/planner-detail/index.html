@@ -121,7 +121,7 @@
                   {{ student_headers[student]["last_name"] }}, {{  student_headers[student]["first_name"] }}
                   <div>
                     {% if student_headers[student]["date_of_birth"] %}
-                      <p class="fs-6"><i>{{ student_headers[student]["years_old"] }} Years {{ student_headers[student]["months_old"] }} Months</i></p>
+                      <span class="fs-6"><i>{{ student_headers[student]["years_old"] }} Years {{ student_headers[student]["months_old"] }} Months</i></span>
                     {% else %}
                       <span></span>
                     {% endif %}
