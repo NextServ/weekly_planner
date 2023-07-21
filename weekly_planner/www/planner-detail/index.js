@@ -1,23 +1,57 @@
 frappe.ready(function() {
-    // $('#items_table').DataTable();
-    const table = new DataTable('#items_table', {
-        scrollX: true,
-        scrollY: true
+    // Build items table
+    frappe.call({
+        method: "weekly_planner.www.planner-detail.planner_actions.build_planner_items",
+        args: {
+            "planner_name": getQueryVariable("planner-name").replace(/%20/g, " ")  // remove %20s
+        },
+
+        callback: function(r) {
+            if (r.message) {
+                var items_table = document.getElementById("items_table");
+                items_table.innerHTML = r.message;
+
+                const table = new DataTable('#items_table', {
+                    scrollX: true,
+                    scrollY: true
+                });
+
+                // Listen for the click on the body of the table
+                table.on('click', 'td', function (e) {
+                    // Get the cell data clicked on
+                    row = table.row(this).data()
+                    cell = table.cell(this).data()
+
+                    show_lesson_modal(row, cell);
+                })
+            }
+        }
     });
-
-    // Listen for the click on the body of the table
-    table.on('click', 'td', function (e) {
-        // Get the cell data clicked on
-        row = table.row(this).data()
-        cell = table.cell(this).data()
-
-        show_lesson_modal(row, cell);
-    })
 
     $('#modal_add_topics').on('show.bs.modal', function (e) {
         // alert("modal shown");
         show_topics(e);
     })
+
+    $("#modal_action_secondary").on("click", function(e) {
+        if (document.getElementById("modal_action_title").innerHTML == "Delete Planner") {
+            frappe.call({
+                method: "weekly_planner.www.planner-detail.planner_actions.delete_planner",
+                args: {
+                    "planner_name": planner_name
+                },
+
+                callback: function(r) {
+                    if (r.message == "success") {
+                        // Go back to the main page
+                        window.open("/weekly-planner", "_self");
+                    } else {
+                        alert("Error deleting planner");
+                    }
+                }
+            });
+        }
+    });
 })
 
 
@@ -41,26 +75,27 @@ function go_to_main() {
 }
 
 
+function submit_planner(e) {
+    planner_name = getQueryVariable("planner-name").replace(/%20/g, " ");  // remove %20s
+    planner = frappe.get_doc("Weekly Planner", planner_name);
+
+}
+
+
 function delete_planner(e) {
     planner_name = getQueryVariable("planner-name");
-    // alert(planner_name)
+    
+    // Open and build the modal
+    var action_modal_title = document.getElementById("modal_action_title");
+    var action_modal_body = document.getElementById("modal_action_body");
+    var action_modal_primary = document.getElementById("modal_action_primary");
+    var action_modal_secondary = document.getElementById("modal_action_secondary");
 
-    // Delete the planner
-    frappe.call({
-        method: "weekly_planner.www.planner-detail.planner_actions.delete_planner",
-        args: {
-            "planner_name": planner_name
-        },
-
-        callback: function(r) {
-            if (r.message == "success") {
-                // Go back to the main page
-                window.open("/weekly-planner", "_self");
-            } else {
-                alert("Error deleting planner");
-            }
-        }
-    });
+    action_modal_title.innerHTML = __("Delete Planner");
+    action_modal_body.innerHTML = __("Are you sure you want to delete this planner? This cannot be undone");
+    action_modal_primary.innerHTML = __("Cancel");
+    action_modal_secondary.innerHTML = __("Delete");
+    $("#modal_action").modal("show");
 }
 
 
@@ -80,14 +115,6 @@ function show_students(e) {
             if (students.message) {
                 var lesson_body = document.getElementById("students_table");
 
-                // Clear the table
-                if (lesson_body.innerHTML != "") {
-                    lesson_body.innerHTML = "";
-                    const old_table = DataTable('#students_table');
-                    old_table.empty();
-                    old_table.destroy();
-                }
-
                 // Build the lesson_body with columns student, campus and group using the dataset returned from get_students_for_selection method
                 var lesson_body_html = '<thead><tr><th>ID</th><th>First Name</th><th>Last Name</th><th>DOB</th><th>Student Group</th></tr></thead><tbody>';
                 
@@ -104,6 +131,7 @@ function show_students(e) {
                 // myModal.handleUpdate()                
 
                 const table = new DataTable('#students_table', {
+                    destroy: true,
                     columnDefs: [
                         {
                             target: 0,
@@ -113,12 +141,12 @@ function show_students(e) {
                     ]
                 });                
 
+                // todo: fix the selection of rows
                 table.on('click', 'tbody tr', function (e) {
                     e.currentTarget.classList.toggle('selected');
                 });
                 
                 document.querySelector('#clear_button').addEventListener('click', function () {
-                    // todo: fix this
                     table.rows('.selected').nodes().each((row) => row.classList.toggle('selected'));
                 });
 
@@ -196,16 +224,24 @@ function show_topics(e) {
                 topics_table.innerHTML = "";
 
                 // Build the topics_table with columns topic, campus and group using the dataset returned from get_topics method
-                var topics_table_html = '<thead><tr><th>Topic</th></tr></thead><tbody>';
+                var topics_table_html = '<thead><tr><th>Topic</th><th>Course</th></tr></thead><tbody>';
                 
                 topics.message.forEach((topic) => {
-                    topics_table_html += '<tr><td>' + topic.topic_name + '</td></tr>';
+                    topics_table_html += '<tr><td>' + topic.topic + '</td>';
+                    topics_table_html += '<td>' + topic.course_name + '</td></tr>';
                 });
                 topics_table_html += '</tbody>';
+                console.log(topics_table_html);
 
                 // Add the table to the page
                 topics_table.innerHTML = topics_table_html;
-                const table = new DataTable('#topics_table');                
+                const table = new DataTable('#topics_table', {
+                    destroy: true,
+                    rowGroup: {
+                        dataSrc: 1
+                    },
+                    order: [[1, 'asc']]
+                });
 
                 table.on('click', 'tbody tr', function (e) {
                     e.currentTarget.classList.toggle('selected');
@@ -286,7 +322,7 @@ function show_lesson_modal(row, cell) {
     var lesson_name = cell.substring(lesson_pos, lesson_len);
     var student = cell.substring(student_pos, student_len);
     var topic = row[1]    
-    var lesson_date = cell.substring(status_len + 1, status_len + 11); // Length of date based on this format: 2021-01-01
+    var lesson_date = cell.substring(status_len + 1, status_len + 9); // Length of date based on this format: 07/19/23
     
     var org_lesson_value = lesson_name
     
