@@ -24,6 +24,45 @@ def delete_planner(planner_name):
 
 
 @frappe.whitelist()
+def submit_planner(planner_name):
+    total_items = len(frappe.get_all("Planner Lesson", filters={"parent": planner_name}, fields=["name"]))
+    if total_items == 0:
+        return _("Planner must have at least one lesson entry.")
+
+    # First check to see if the Reports To field of the Instructor's HR record has value
+    reports_to = frappe.db.sql('''SELECT COUNT(reports_to) FROM `tabEmployee` WHERE user_id = %(user_id)s''', \
+        {"user_id": frappe.session.user})
+    
+    # Also check if current user has Head Instructor role
+    is_head = frappe.db.sql('''SELECT COUNT(name) FROM `tabHas Role` WHERE parent = %(user_id)s AND role = "Head Instructor"''', \
+        {"user_id": frappe.session.user})
+    
+    print("reports to: " + str(reports_to) + " | is_head: " + str(is_head))
+    
+    if not reports_to and not is_head:
+        return _("Instructor's HR record does not have a Reports To value. Please update the record and try again.")
+    
+    planner = frappe.get_doc("Weekly Planner", planner_name)
+    planner.status = 1
+    planner.save()
+
+    return "success"
+
+
+@frappe.whitelist()
+def approve_planner(planner_name):
+    reports_to = frappe.db.sql('''SELECT name FROM `tabInstructor` WHERE user = %(user_id)s''', \
+        {"user_id": frappe.session.user}, as_dict=True)
+
+    planner = frappe.get_doc("Weekly Planner", planner_name)
+    planner.is_approved = True
+    planner.approved_by = reports_to[0].name
+    planner.save()
+
+    return "success"
+
+
+@frappe.whitelist()
 def build_planner_items(planner_name):
     # First load all students from Planner Detail
     students = frappe.db.sql('''SELECT p.student, s.first_name, s.last_name, s.date_of_birth
@@ -78,12 +117,12 @@ def build_planner_items(planner_name):
             # loop through keys
             for col_header in student_headers.keys():
                 item = [entry for entry in lessons if entry["topic"] == topic.topic and entry["student"] == col_header]
-                table_html += "<td>"
+                table_html += "<td class='text-center'>"
 
                 if item != []:
                     print(item)
                     lesson_item = item[0].abbreviation + " " + item[0].date.strftime('%m-%d-%y')
-                    table_html += "<span class='badge badge-pill badge-primary text-center'>" + lesson_item + \
+                    table_html += "<span class='badge badge-pill badge-primary'>" + lesson_item + \
                         "<p hidden>student: " + col_header + " | name: " + item[0].name + " | </span>"
                 else:
                     table_html += "<span><p hidden>student: " + col_header + " | name: none | </span>"

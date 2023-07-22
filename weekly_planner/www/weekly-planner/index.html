@@ -44,8 +44,9 @@
   {% else %}
     <!-- Load list of Weekly Planners -->   
     <div class="mt-4">
-      {{ _("The tool will allow your Montessori Guides prepare their weekly lesson plans and submit them for approval.") }}
-        <br /><br /><br />
+      {{ _("The tool will allow your Montessori Guides prepare their weekly lesson plans and submit them for approval. If you have Instructors under you,") }}
+      {{ _("the table below will show you their weekly planners as well as your own.") }}
+      <br /><br /><br />
     </div>
 
     <table class="table table-md table-striped" style="width: 100%" id="main_table">
@@ -77,23 +78,26 @@
             <td>{{ planner.start_date }}</td>
             
             <td class="text-center">
-              {% if planner.docstatus == 0 %}
-                <span class="badge rounded-pill bg-secondary">{{_("Draft") }}</span>
+              {% if planner.is_approved %}
+                <span class="badge rounded-pill bg-success">{{ _("Approved") }}</span>
+                
+              {% elif planner.status == 0 %}
+                <span class="badge rounded-pill bg-secondary">{{ _("Draft") }}</span>
                 
               {% elif planner.docstatus == 1 %}
-                <span class="badge rounded-pill bg-secondary">{{_("Submitted") }}</span>
+                <span class="badge rounded-pill bg-secondary">{{ _("Submitted") }}</span>
 
               {% elif planner.docstatus == 2 %}
-                <span class="badge rounded-pill bg-secondary">{{_("Cancelled") }}</span>
+                <span class="badge rounded-pill bg-secondary">{{ _("Cancelled") }}</span>
               {% endif %}
             </td>
-            <td class="text-center" planner-name="{{ planner.name }}" onclick="open_planner_detail()">
-              <span class="badge badge-primary translate-middle-x">{{_("Edit") }}</span> 
+            <td class="text-center">
+              <div class="badge badge-primary translate-middle-x" planner-name="{{ planner.name }}" onclick="open_planner_detail()">{{ _("Edit") }}</div>
               {%if is_head_instructor %}
                 <span class="badge badge-primary translate-middle-x"> </span>
-                <span class="badge badge-primary translate-middle-x">{{_("Approve") }}</span>
+                <div class="badge badge-primary translate-middle-x" planner-name="{{ planner.name }}" onclick="approve_planner()">{{ _("Approve") }}</div>
                 <span class="badge badge-primary translate-middle-x"></span>
-                <span class="badge badge-secondary translate-middle-x">{{_("Reject") }}</span>
+                <span class="badge badge-secondary translate-middle-x">{{ _("Reject") }}</span>
               {% endif %}
             </td>
           </tr>
@@ -152,5 +156,26 @@
     </div>
   </div>
   <!-- ./ New Planner Modal -->
+
+  <!-- Action Confirmation Modal -->
+  <div class="modal fade" id="modal_action" data-backdrop="static" data-keyboard="true" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modal_action_title"></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" id="modal_action_body" >
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal" id="modal_action_primary"></button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" id="modal_action_secondary"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- ./ Action Confirmation Modal -->
 </main>
 {% endblock %}

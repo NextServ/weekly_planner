@@ -1,9 +1,11 @@
 frappe.ready(function() {
+    planner_name = getQueryVariable("planner-name").replace(/%20/g, " ");  // remove %20s
+
     // Build items table
     frappe.call({
         method: "weekly_planner.www.planner-detail.planner_actions.build_planner_items",
         args: {
-            "planner_name": getQueryVariable("planner-name").replace(/%20/g, " ")  // remove %20s
+            "planner_name": planner_name
         },
 
         callback: function(r) {
@@ -28,11 +30,13 @@ frappe.ready(function() {
         }
     });
 
+    // Check for Add Topics button clicked
     $('#modal_add_topics').on('show.bs.modal', function (e) {
         // alert("modal shown");
         show_topics(e);
     })
 
+    // Check for Delete Planner button click
     $("#modal_action_secondary").on("click", function(e) {
         if (document.getElementById("modal_action_title").innerHTML == "Delete Planner") {
             frappe.call({
@@ -46,7 +50,49 @@ frappe.ready(function() {
                         // Go back to the main page
                         window.open("/weekly-planner", "_self");
                     } else {
-                        alert("Error deleting planner");
+                        alert(r.message);
+                    }
+                }
+            });
+        }
+    });
+ 
+    // Check for Submit Planner button click
+    $("#modal_action_primary").on("click", function(e) {
+        if (document.getElementById("modal_action_title").innerHTML == "Submit Planner") {
+            frappe.call({
+                method: "weekly_planner.www.planner-detail.planner_actions.submit_planner",
+                args: {
+                    "planner_name": planner_name
+                },
+
+                callback: function(r) {
+                    if (r.message == "success") {
+                        // Go back to the main page
+                        window.open("/weekly-planner", "_self");
+                    } else {
+                        alert(r.message);
+                    }
+                }
+            });
+        }
+    });
+
+    // Check for Approve Planner button click
+    $("#modal_action_primary").on("click", function(e) {
+        if (document.getElementById("modal_action_title").innerHTML == "Approve Planner") {
+            frappe.call({
+                method: "weekly_planner.www.planner-detail.planner_actions.approve_planner",
+                args: {
+                    "planner_name": planner_name
+                },
+
+                callback: function(r) {
+                    if (r.message == "success") {
+                        // Go back to the main page
+                        window.open("/weekly-planner", "_self");
+                    } else {
+                        alert(r.message);
                     }
                 }
             });
@@ -75,15 +121,9 @@ function go_to_main() {
 }
 
 
-function submit_planner(e) {
+function delete_planner(e) {
     planner_name = getQueryVariable("planner-name").replace(/%20/g, " ");  // remove %20s
     planner = frappe.get_doc("Weekly Planner", planner_name);
-
-}
-
-
-function delete_planner(e) {
-    planner_name = getQueryVariable("planner-name");
     
     // Open and build the modal
     var action_modal_title = document.getElementById("modal_action_title");
@@ -92,16 +132,49 @@ function delete_planner(e) {
     var action_modal_secondary = document.getElementById("modal_action_secondary");
 
     action_modal_title.innerHTML = __("Delete Planner");
-    action_modal_body.innerHTML = __("Are you sure you want to delete this planner? This cannot be undone");
+    action_modal_body.innerHTML = __("Are you sure you want to delete this planner? This cannot be undone.");
     action_modal_primary.innerHTML = __("Cancel");
     action_modal_secondary.innerHTML = __("Delete");
     $("#modal_action").modal("show");
 }
 
 
+function submit_planner(e) {
+    planner_name = getQueryVariable("planner-name").replace(/%20/g, " ");  // remove %20s
+    planner = frappe.get_doc("Weekly Planner", planner_name);
+
+    var action_modal_title = document.getElementById("modal_action_title");
+    var action_modal_body = document.getElementById("modal_action_body");
+    var action_modal_primary = document.getElementById("modal_action_primary");
+    var action_modal_secondary = document.getElementById("modal_action_secondary");
+
+    action_modal_title.innerHTML = __("Submit Planner");
+    action_modal_body.innerHTML = __("Are you sure you want to submit this planner?");
+    action_modal_primary.innerHTML = __("Submit");
+    action_modal_secondary.innerHTML = __("Cancel");
+    $("#modal_action").modal("show");
+}
+
+
+function approve_planner(e) {
+    planner_name = getQueryVariable("planner-name").replace(/%20/g, " ");  // remove %20s
+    planner = frappe.get_doc("Weekly Planner", planner_name);
+
+    var action_modal_title = document.getElementById("modal_action_title");
+    var action_modal_body = document.getElementById("modal_action_body");
+    var action_modal_primary = document.getElementById("modal_action_primary");
+    var action_modal_secondary = document.getElementById("modal_action_secondary");
+
+    action_modal_title.innerHTML = __("Approve Planner");
+    action_modal_body.innerHTML = __("Are you sure you want to approve this planner?");
+    action_modal_primary.innerHTML = __("Submit");
+    action_modal_secondary.innerHTML = __("Cancel");
+    $("#modal_action").modal("show");
+}
+
+
 function show_students(e) {
-    planner_name = getQueryVariable("planner-name");
-    planner_name = planner_name.replace(/%20/g, " ");  // remove %20s
+    planner_name = getQueryVariable("planner-name").replace(/%20/g, " ");  // remove %20s
 
     // Retrieve students from Frappe
     frappe.call({
@@ -207,8 +280,7 @@ function reload_items_table() {
 
 function show_topics(e) {
     // Retrieve topics from Frappe
-    planner_name = getQueryVariable("planner-name");
-    planner_name = planner_name.replace(/%20/g, " ");  // remove %20s
+    planner_name = getQueryVariable("planner-name").replace(/%20/g, " ");  // remove %20s
 
     frappe.call({
         method: "weekly_planner.www.planner-detail.planner_actions.get_topics_for_selection",

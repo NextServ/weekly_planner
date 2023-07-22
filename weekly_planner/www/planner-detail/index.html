@@ -67,10 +67,12 @@
           </div>
           <div class="col">
             <br />
-            {% if planner.docstatus == 0 %}
+            {% if planner.is_approved %}
+            <h5><span class="badge bg-success">Approved</span></h5>
+            {% elif planner.status == 0 %}
               <h5><span class="badge bg-secondary">Draft</span></h5>
-            {% elif planner.docstatus == 1 %}
-              <h5><span class="badge bg-success">Submitted</span></h5>
+            {% elif planner.status == 1 %}
+              <h5><span class="badge bg-primary">Submitted</span></h5>
             {% else %}
               <h5><span class="badge bg-warning">Cancelled</span></h5>
             {% endif %}
@@ -85,7 +87,14 @@
     <button type="button" class="btn btn-outline-primary" onclick="go_to_main()">Back</button>
     <button type="button" class="btn btn-primary">{{ _("New Planner") }}</button> 
     <button type="button" class="btn btn-primary" onclick="delete_planner()">Del Planner</button>
-    <button type="button" class="btn btn-primary" id="submit_button" onclick="submit_planner()" >{{ _("Submit Planner") }}</button> &nbsp; | &nbsp;
+
+    {% if planner.status == 0 %}
+      <button type="button" class="btn btn-primary" id="submit_button" onclick="submit_planner()" >{{ _("Submit Planner") }}</button> 
+    {% elif planner.status == 1  and is_head %}
+      <button type="button" class="btn btn-primary" id="submit_button" onclick="approve_planner()" >{{ _("Approve Planner") }}</button> 
+    {% endif %}    
+    &nbsp; | &nbsp;
+    
     <div class="btn-group" role="group" aria-label="Add...">
       <button type="button" class="btn btn-primary" data-toggle="modal" 
         data-target="#modal_add_students">{{ _("Add Students") }}</button> &nbsp;

@@ -1,5 +1,26 @@
 frappe.ready(function() {
     new DataTable('#main_table');
+
+    // Check for Approve Planner button click
+    $("#modal_action_primary").on("click", function(e) {
+        if (document.getElementById("modal_action_title").innerHTML == "Approve Planner") {
+            frappe.call({
+                method: "weekly_planner.www.planner-detail.planner_actions.approve_planner",
+                args: {
+                    "planner_name": document.getElementById("modal_action_primary").getAttribute("planner-name")
+                },
+
+                callback: function(r) {
+                    if (r.message == "success") {
+                        // Go back to the main page
+                        window.open("/weekly-planner", "_self");
+                    } else {
+                        alert(r.message);
+                    }
+                }
+            });
+        }
+    });
 })
 
 // Write a function to receive data from index.html and use it to open another page
@@ -35,4 +56,25 @@ function save_planner(e) {
             location.reload();
         }
     })
+}
+
+
+function approve_planner(e) {
+    planner_name = e.currentTarget.getAttribute('planner-name');
+    planner = frappe.get_doc("Weekly Planner", planner_name);
+
+    var action_modal_title = document.getElementById("modal_action_title");
+    var action_modal_body = document.getElementById("modal_action_body");
+    var action_modal_primary = document.getElementById("modal_action_primary");
+    var action_modal_secondary = document.getElementById("modal_action_secondary");
+
+    action_modal_title.innerHTML = __("Approve Planner");
+    action_modal_body.innerHTML = __("Are you sure you want to approve this planner?");
+    action_modal_primary.innerHTML = __("Submit");
+    action_modal_secondary.innerHTML = __("Cancel");
+
+    // Pass the planner name via the Submit button
+    action_modal_primary.setAttribute("planner-name", planner_name);
+
+    $("#modal_action").modal("show");
 }
