@@ -125,7 +125,7 @@ def build_planner_items(planner_name):
                 if item != []:
                     print(item)
                     lesson_item = item[0].abbreviation + " " + item[0].date.strftime('%m-%d-%y')
-                    table_html += "<span class='badge badge-pill badge-primary'>" + lesson_item + \
+                    table_html += "<span class='badge badge-pill badge-primary text-center'>" + lesson_item + \
                         "<p hidden>student: " + col_header + " | name: " + item[0].name + " | </span>"
                 else:
                     table_html += "<span><p hidden>student: " + col_header + " | name: none | </span>"
@@ -295,3 +295,29 @@ def delete_lesson_entry(lesson_name):
     frappe.db.delete("Planner Lesson", lesson_name)
 
     return "success"
+
+
+def hex_to_rgb(hex_color):
+    # Convert hex color to RGB tuple
+    hex_color = hex_color.lstrip('#')
+    return tuple(int(hex_color[i:i + 2], 16) for i in (0, 2, 4))
+
+
+def get_brightness(rgb_color):
+    # Calculate the brightness of the color (RGB)
+    r, g, b = rgb_color
+    return (r * 299 + g * 587 + b * 114) / 1000
+
+
+def adjust_text_color(hex_background_color):
+    # Get the RGB values of the background color
+    rgb_color = hex_to_rgb(hex_background_color)
+
+    # Calculate the brightness of the background color
+    brightness = get_brightness(rgb_color)
+
+    # Choose text color based on the brightness
+    if brightness >= 128:
+        return '#000000'  # Black for light background
+    else:
+        return '#FFFFFF'  # White for dark background
