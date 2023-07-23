@@ -3,11 +3,14 @@ frappe.ready(function() {
 
     // Check for Approve Planner button click
     $("#modal_action_primary").on("click", function(e) {
+        planner_name = e.currentTarget.getAttribute("planner-name");
+        console.log(planner_name)
+
         if (document.getElementById("modal_action_title").innerHTML == "Approve Planner") {
             frappe.call({
                 method: "weekly_planner.www.planner-detail.planner_actions.approve_planner",
                 args: {
-                    "planner_name": document.getElementById("modal_action_primary").getAttribute("planner-name")
+                    "planner_name": planner_name
                 },
 
                 callback: function(r) {
@@ -22,15 +25,6 @@ frappe.ready(function() {
         }
     });
 })
-
-// Write a function to receive data from index.html and use it to open another page
-function open_planner_detail(e = event) {
-    // alert("Planner name:" + e.currentTarget.getAttribute('planner-name'));
-    planner_name = e.currentTarget.getAttribute('planner-name');
-
-    // open a new page and pass the planner name to the new page
-    window.open("planner-detail/index.html?planner-name=" + planner_name, "_self");
-}
 
 
 function save_planner(e) {
@@ -59,10 +53,16 @@ function save_planner(e) {
 }
 
 
-function approve_planner(e) {
-    planner_name = e.currentTarget.getAttribute('planner-name');
-    planner = frappe.get_doc("Weekly Planner", planner_name);
+// Write a function to receive data from index.html and use it to open another page
+function open_planner_detail(e = event) {
+    // open a new page and pass the planner name to the new page
+    window.open("planner-detail/index.html?planner-name=" + e.currentTarget.getAttribute('planner-name'), "_self");
+}
 
+
+function approve_planner(e = event) {
+    planner_name = e.currentTarget.getAttribute("planner-name");
+    
     var action_modal_title = document.getElementById("modal_action_title");
     var action_modal_body = document.getElementById("modal_action_body");
     var action_modal_primary = document.getElementById("modal_action_primary");
@@ -71,10 +71,8 @@ function approve_planner(e) {
     action_modal_title.innerHTML = __("Approve Planner");
     action_modal_body.innerHTML = __("Are you sure you want to approve this planner?");
     action_modal_primary.innerHTML = __("Submit");
-    action_modal_secondary.innerHTML = __("Cancel");
-
-    // Pass the planner name via the Submit button
     action_modal_primary.setAttribute("planner-name", planner_name);
+    action_modal_secondary.innerHTML = __("Cancel");
 
     $("#modal_action").modal("show");
 }

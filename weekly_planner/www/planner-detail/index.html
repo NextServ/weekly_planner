@@ -68,7 +68,7 @@
           <div class="col">
             <br />
             {% if planner.is_approved %}
-            <h5><span class="badge bg-success">Approved</span></h5>
+              <h5><span class="badge bg-success">Approved</span></h5>
             {% elif planner.status == 0 %}
               <h5><span class="badge bg-secondary">Draft</span></h5>
             {% elif planner.status == 1 %}
@@ -90,7 +90,7 @@
 
     {% if planner.status == 0 %}
       <button type="button" class="btn btn-primary" id="submit_button" onclick="submit_planner()" >{{ _("Submit Planner") }}</button> 
-    {% elif planner.status == 1  and is_head %}
+    {% elif planner.status == 1  and is_head and not is_approved %}
       <button type="button" class="btn btn-primary" id="submit_button" onclick="approve_planner()" >{{ _("Approve Planner") }}</button> 
     {% endif %}    
     &nbsp; | &nbsp;
@@ -138,8 +138,7 @@
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <div class="modal-body" id="modal_action_body" >
-        </div>
+        <div class="modal-body" id="modal_action_body" ></div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" data-dismiss="modal" id="modal_action_primary"></button>
           <button type="button" class="btn btn-secondary" planner-name="{{ planner.name }}"

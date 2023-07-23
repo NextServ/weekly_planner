@@ -270,14 +270,6 @@ function save_students(planner_name, insert_list) {
 }
 
 
-function reload_items_table() {
-    // Refresh the items table
-    var container = document.getElementById("items_table");
-    var content = container.innerHTML;
-    container.innerHTML= content; 
-}
-
-
 function show_topics(e) {
     // Retrieve topics from Frappe
     planner_name = getQueryVariable("planner-name").replace(/%20/g, " ");  // remove %20s

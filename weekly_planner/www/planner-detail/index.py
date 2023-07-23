@@ -5,7 +5,6 @@ def get_context(context):
     context.banner_image = frappe.db.get_single_value("Website Settings", "banner_image")
 
     # Make sure user has the correct role
-    acceptable_roles = ["Instructor", "Head Instructor", "System Manager"]
     context.invalid_role = True
     context.is_head = False
     cur_user = frappe.get_user()
@@ -17,6 +16,7 @@ def get_context(context):
     # Get planner_name from url parameter
     planner_name = frappe.form_dict.get("planner-name")
     context.planner = frappe.get_doc("Weekly Planner", planner_name)
+    context.is_approved = context.planner.is_approved
     
     # Remove %20 from planner_name
     if planner_name:    

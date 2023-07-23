@@ -55,6 +55,9 @@ def approve_planner(planner_name):
         {"user_id": frappe.session.user}, as_dict=True)
 
     planner = frappe.get_doc("Weekly Planner", planner_name)
+    if planner.is_approved:
+        return _("Planner is already approved.")
+
     planner.is_approved = True
     planner.approved_by = reports_to[0].name
     planner.save()
