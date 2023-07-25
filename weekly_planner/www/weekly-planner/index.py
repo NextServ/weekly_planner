@@ -16,7 +16,11 @@ def get_context(context):
     planners = []
 
     # Retrieve Instructor from User
-    instructor = frappe.get_all("Instructor", fields=["name", "instructor_name", "user", "employee"], filters={"user": frappe.session.user})
+    # instructor = frappe.get_all("Instructor", fields=["name", "instructor_name", "user", "employee"], filters={"user": frappe.session.user})
+    sql = '''SELECT i.name, instructor_name, e.user_id AS user, i.employee FROM `tabInstructor` i
+        INNER JOIN tabEmployee e on i.employee = e.name
+        WHERE e.user_id = %(user)s'''
+    instructor = frappe.db.sql(sql, {"user": frappe.session.user}, as_dict=True)
 
     context.invalid_role = not (is_head_instructor or is_instructor) or len(instructor) == 0
 
@@ -24,7 +28,7 @@ def get_context(context):
     if is_head_instructor:
         # Load all instructors reporting to current user
         if instructor[0].employee:
-            sql = '''SELECT p.name, p.instructor, student_group, start_date, p.status, p.is_approved from `tabWeekly Planner` p
+            sql = '''SELECT p.name, p.instructor, student_group, start_date, p.status, p.is_approved FROM `tabWeekly Planner` p
                 INNER JOIN `tabInstructor` i ON p.instructor = i.name INNER JOIN `tabEmployee` e ON i.employee = e.name
                 WHERE e.reports_to = %(head)s'''
             planners = frappe.db.sql(sql, {"head": instructor[0].employee}, as_dict=True)
