@@ -23,9 +23,11 @@ def get_context(context):
     instructor = frappe.db.sql(sql, {"user": frappe.session.user}, as_dict=True)
 
     context.invalid_role = not (is_head_instructor or is_instructor) or len(instructor) == 0
+    if context.invalid_role:
+        return context
 
     # Load weekly planners (all for Head Instructor and System Manager, only for current instructor otherwise)
-    if is_head_instructor:
+    elif is_head_instructor:
         # Load all instructors reporting to current user
         if instructor[0].employee:
             sql = '''SELECT p.name, p.instructor, student_group, start_date, p.status, p.is_approved FROM `tabWeekly Planner` p
@@ -47,15 +49,14 @@ def get_context(context):
                 fields=["name", "instructor", "student_group", "start_date", "status", "is_approved"])
     
     # Add record counters to each planner
-    if not context.invalid_role:
-        counter = 0
-        for planner in planners:
-            counter += 1
-            planner.counter = counter
-        
-        context.weekly_planners = planners
-        context.student_groups = frappe.get_all("Student Group", fields=["student_group_name"])
-        context.instructor = instructor[0].instructor_name 
-        context.is_head_instructor = is_head_instructor
+    counter = 0
+    for planner in planners:
+        counter += 1
+        planner.counter = counter
+    
+    context.weekly_planners = planners
+    context.student_groups = frappe.get_all("Student Group", fields=["student_group_name"])
+    context.instructor = instructor[0].instructor_name 
+    context.is_head_instructor = is_head_instructor
 
     return context
