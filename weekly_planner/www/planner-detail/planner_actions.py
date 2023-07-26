@@ -192,7 +192,7 @@ def get_topics_for_selection(planner_name):
     # Retrieve topics that are not already in Planner Topic
     # select topic, course_name from `tabCourse Topic` t inner join `tabCourse` c on parent = c.name order by course_name, topic;
     sql = '''SELECT topic, course_name FROM `tabCourse Topic` t
-            INNER JOIN `tabCourse` c ON t.parent = c.name    
+            LEFT JOIN `tabCourse` c ON t.parent = c.name    
             WHERE topic NOT IN (SELECT topic FROM `tabPlanner Topic` WHERE parent = %(planner_name)s)'''
     topics = frappe.db.sql(sql, {"planner_name": planner_name}, as_dict=True)
 

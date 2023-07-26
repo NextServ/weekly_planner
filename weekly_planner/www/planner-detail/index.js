@@ -14,8 +14,10 @@ frappe.ready(function() {
                 items_table.innerHTML = r.message;
 
                 const table = new DataTable('#items_table', {
+                    order: [[0, 'asc']],
                     scrollX: true,
-                    scrollY: true
+                    scrollY: true,
+                    searching: false
                 });
 
                 // Listen for the click on the body of the table
@@ -23,8 +25,16 @@ frappe.ready(function() {
                     // Get the cell data clicked on
                     row = table.row(this).data()
                     cell = table.cell(this).data()
+                    console.log("row: " + row + "\ncell: " + cell);
 
-                    show_lesson_modal(row, cell);
+                    // Check if the cell contains "<span>"
+                    if (cell.includes("<span")) {
+                        show_lesson_modal(row, cell);
+                    } else {
+                        // User clicked a topic; prompt if user wants to delete the topic
+                        
+                    }
+
                 })
             }
         }
@@ -96,6 +106,25 @@ frappe.ready(function() {
                     }
                 }
             });
+        } else if (document.getElementById("modal_action_title").innerHTML == "Duplicate Planner") {
+            frappe.call({
+                method: "weekly_planner.www.planner-detail.planner_actions.duplicate_planner",
+                args: {
+                    "planner_name": planner_name,
+                    "selected_group": document.getElementById("selected_group").value,
+                    "plan_date": document.getElementById("plan_date").value,
+                    "include_lessons": document.getElementById("check_include_lessons").value
+                },
+
+                callback: function(r) {
+                    if (!r.exc) {
+                        // Go back to the main page
+                        window.open("/weekly-planner", "_self");
+                    } else {
+                        alert(r.message);
+                    }
+                }
+            });
         }
     });
 })
@@ -118,6 +147,46 @@ function getQueryVariable(variable) {
 function go_to_main() {
     // Go back to the main page
     window.open("/weekly-planner", "_self");
+}
+
+
+function duplicate_planner(e) {
+    planner_name = getQueryVariable("planner-name").replace(/%20/g, " ");  // remove %20s
+    planner = frappe.get_doc("Weekly Planner", planner_name);
+    
+    // Open and build the modal
+    var action_modal_title = document.getElementById("modal_action_title");
+    var action_modal_body = document.getElementById("modal_action_body");
+    var action_modal_primary = document.getElementById("modal_action_primary");
+    var action_modal_secondary = document.getElementById("modal_action_secondary");
+
+    var body_html = __("Are you sure you want to duplicate this planner?");
+    body_html +=    '<br /><br />'
+    body_html +=    '<div class="container">';
+    body_html +=    '   <div class="row">';
+    body_html +=    '       <label>' + __("Student Group") + '<input class="input-group-text" list="student_groups" name="selected_group" id="selected_group"/></label>';
+    body_html +=    '       <br />';
+    body_html +=    '   </div>';
+    body_html +=    '   <div class="row">';
+    body_html +=    '       <div class="col align-self-start">';
+    body_html +=    '           <label>' + __("Date") + '<input class="input-group-text text-align-left" id="plan_date" type="date" required></label>';
+    body_html +=    '       </div>';
+    body_html +=    '       <div class="col align-self-center">';
+    body_html +=    '           <div class="form-check">';
+    body_html +=    '               <input class="form-check-input" type="checkbox" value="" id="check_include_lessons">';
+    body_html +=    '               <label class="form-check-label" for="check_include_lessons">';
+    body_html +=                        __('Include lesson entries');
+    body_html +=    '               </label>';
+    body_html +=    '           </div>'
+    body_html +=    '       </div>';
+    body_html +=    '   </div>';
+    body_html +=    '</div>';
+
+    action_modal_title.innerHTML = __("Duplicate Planner");
+    action_modal_body.innerHTML = body_html;
+    action_modal_primary.innerHTML = __("Duplicate");
+    action_modal_secondary.innerHTML = __("Cancel");
+    $("#modal_action").modal("show");
 }
 
 

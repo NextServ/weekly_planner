@@ -41,12 +41,8 @@ def get_context(context):
 
     elif is_instructor:
         # Test to see if instructor exists and throw an error if not
-        if len(instructor) == 0:        
-            frappe.throw("No instructor record found for user {0}".format(cur_user))
-            context.invalid_role = True
-        else:
-            planners = frappe.get_all("Weekly Planner", filters={"instructor": instructor[0].instructor_name}, \
-                fields=["name", "instructor", "student_group", "start_date", "status", "is_approved"])
+        planners = frappe.get_all("Weekly Planner", filters={"instructor": instructor[0].instructor_name}, \
+            fields=["name", "instructor", "student_group", "start_date", "status", "is_approved"])
     
     # Add record counters to each planner
     counter = 0
