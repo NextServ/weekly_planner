@@ -32,8 +32,8 @@ def get_context(context):
         if instructor[0].employee:
             sql = '''SELECT p.name, p.instructor, student_group, start_date, p.status, p.is_approved FROM `tabWeekly Planner` p
                 INNER JOIN `tabInstructor` i ON p.instructor = i.name INNER JOIN `tabEmployee` e ON i.employee = e.name
-                WHERE e.reports_to = %(head)s'''
-            planners = frappe.db.sql(sql, {"head": instructor[0].employee}, as_dict=True)
+                WHERE e.reports_to = %(head)s OR p.instructor = %(instructor)s'''
+            planners = frappe.db.sql(sql, {"head": instructor[0].employee, "instructor": instructor[0].name}, as_dict=True)
             print(planners)
         else:
             frappe.throw("There is no linked Employee record for this Instructor. Please contact your System Administrator.")
