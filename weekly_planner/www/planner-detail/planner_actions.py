@@ -16,6 +16,47 @@ def create_planner(instructor, selected_group, start_date, description):
     return planner.name
 
 
+@frappe.whitelist()
+def duplicate_planner(planner_name, selected_group, plan_date, include_lessons):
+    # Get the planner record
+    planner = frappe.get_doc("Weekly Planner", planner_name)
+
+    print(planner_name, selected_group, plan_date, include_lessons)
+
+    # Create a new planner record
+    new_planner = frappe.new_doc("Weekly Planner")
+    new_planner.instructor = planner.instructor
+    new_planner.student_group = selected_group
+    new_planner.start_date = plan_date
+    new_planner.description = planner.description
+    new_planner.insert()
+
+    # Create the students
+    students = frappe.get_all("Planner Student", filters={"parent": planner}, fields=["*"])
+    for s in students:
+        new_planner.append("students", {"student": s})
+
+    # Create the topics
+    topics = frappe.get_all("Planner Topic", filters={"parent": planner}, fields=["*"])
+    for t in topics:
+        new_planner.append("topics", {"topic": t})
+
+    # Create the lessons
+    if include_lessons:
+        lessons = frappe.get_all("Planner Lesson", filters={"parent": planner}, fields=["*"])
+        for l in lessons:
+            new_planner.append("lessons", {
+                "lesson_status": l.lesson_status,
+                "date": plan_date,
+                "topic": l.topic,
+                "student": l.student
+            })
+
+    new_planner.save()
+
+    return new_planner.name
+
+
 @frappe.whitelist(methods=["POST"])
 def delete_planner(planner_name):
     planner_name = planner_name.replace("%20", " ")

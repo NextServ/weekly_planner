@@ -107,19 +107,27 @@ frappe.ready(function() {
                 }
             });
         } else if (document.getElementById("modal_action_title").innerHTML == "Duplicate Planner") {
+            var selected_group = document.getElementById("selected_group").value
+            var plan_date = document.getElementById("plan_date").value
+
+            if (!selected_group || !plan_date) {
+                alert(__("Student Group and Start Date are mandatory entries."))
+                return
+            }
+
             frappe.call({
                 method: "weekly_planner.www.planner-detail.planner_actions.duplicate_planner",
                 args: {
                     "planner_name": planner_name,
-                    "selected_group": document.getElementById("selected_group").value,
-                    "plan_date": document.getElementById("plan_date").value,
+                    "selected_group": selected_group,
+                    "plan_date": plan_date,
                     "include_lessons": document.getElementById("check_include_lessons").value
                 },
 
                 callback: function(r) {
                     if (!r.exc) {
                         // Go back to the main page
-                        window.open("/weekly-planner", "_self");
+                        window.open("planner-detail/index.html?planner-name=" + r.message);
                     } else {
                         alert(r.message);
                     }
@@ -160,7 +168,7 @@ function duplicate_planner(e) {
     var action_modal_primary = document.getElementById("modal_action_primary");
     var action_modal_secondary = document.getElementById("modal_action_secondary");
 
-    var body_html = __("Are you sure you want to duplicate this planner?");
+    var body_html = __("Please fill in the Student Group and Start Date below:");
     body_html +=    '<br /><br />'
     body_html +=    '<div class="container">';
     body_html +=    '   <div class="row">';
@@ -169,7 +177,7 @@ function duplicate_planner(e) {
     body_html +=    '   </div>';
     body_html +=    '   <div class="row">';
     body_html +=    '       <div class="col align-self-start">';
-    body_html +=    '           <label>' + __("Date") + '<input class="input-group-text text-align-left" id="plan_date" type="date" required></label>';
+    body_html +=    '           <label>' + __("Start Date") + '<input class="input-group-text text-align-left" id="plan_date" type="date" required></label>';
     body_html +=    '       </div>';
     body_html +=    '       <div class="col align-self-center">';
     body_html +=    '           <div class="form-check">';
