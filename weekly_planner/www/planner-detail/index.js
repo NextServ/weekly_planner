@@ -368,8 +368,9 @@ function show_topics(e) {
                 var topics_table_html = '<thead><tr><th>Topic</th><th>Course</th></tr></thead><tbody>';
                 
                 topics.message.forEach((topic) => {
+                    course = topic.parent ? topic.parent : "";
                     topics_table_html += '<tr><td>' + topic.name + '</td>';
-                    topics_table_html += '<td>' + topic.parent + '</td></tr>';
+                    topics_table_html += '<td>' + course + '</td></tr>';
                 });
                 topics_table_html += '</tbody>';
                 console.log(topics_table_html);
