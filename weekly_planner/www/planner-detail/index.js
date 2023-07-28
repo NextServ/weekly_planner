@@ -126,7 +126,7 @@ frappe.ready(function() {
 
                 callback: function(r) {
                     if (!r.exc) {
-                        // Go back to the main page
+                        // Load the new planner
                         window.open("planner-detail/index.html?planner-name=" + r.message);
                     } else {
                         alert(r.message);

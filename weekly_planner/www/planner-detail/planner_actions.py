@@ -21,8 +21,6 @@ def duplicate_planner(planner_name, selected_group, plan_date, include_lessons):
     # Get the planner record
     planner = frappe.get_doc("Weekly Planner", planner_name)
 
-    print(planner_name, selected_group, plan_date, include_lessons)
-
     # Create a new planner record
     new_planner = frappe.new_doc("Weekly Planner")
     new_planner.instructor = planner.instructor
@@ -32,18 +30,18 @@ def duplicate_planner(planner_name, selected_group, plan_date, include_lessons):
     new_planner.insert()
 
     # Create the students
-    students = frappe.get_all("Planner Student", filters={"parent": planner}, fields=["*"])
+    students = frappe.get_all("Planner Student", filters={"parent": planner.name}, fields=["*"])
     for s in students:
         new_planner.append("students", {"student": s})
 
     # Create the topics
-    topics = frappe.get_all("Planner Topic", filters={"parent": planner}, fields=["*"])
+    topics = frappe.get_all("Planner Topic", filters={"parent": planner.name}, fields=["*"])
     for t in topics:
         new_planner.append("topics", {"topic": t})
 
     # Create the lessons
     if include_lessons:
-        lessons = frappe.get_all("Planner Lesson", filters={"parent": planner}, fields=["*"])
+        lessons = frappe.get_all("Planner Lesson", filters={"parent": planner.name}, fields=["*"])
         for l in lessons:
             new_planner.append("lessons", {
                 "lesson_status": l.lesson_status,
@@ -232,9 +230,9 @@ def save_students(planner_name, insert_list):
 def get_topics_for_selection(planner_name):
     # Retrieve topics that are not already in Planner Topic
     # select topic, course_name from `tabCourse Topic` t inner join `tabCourse` c on parent = c.name order by course_name, topic;
-    sql = '''SELECT topic, course_name FROM `tabCourse Topic` t
-            LEFT JOIN `tabCourse` c ON t.parent = c.name    
-            WHERE topic NOT IN (SELECT topic FROM `tabPlanner Topic` WHERE parent = %(planner_name)s)'''
+    sql = '''SELECT t.name, parent FROM `tabTopic` t
+            LEFT JOIN `tabCourse Topic` c ON t.name = c.topic    
+            WHERE t.name NOT IN (SELECT topic FROM `tabPlanner Topic` WHERE parent = %(planner_name)s)'''
     topics = frappe.db.sql(sql, {"planner_name": planner_name}, as_dict=True)
 
     return topics
