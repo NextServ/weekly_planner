@@ -32,12 +32,12 @@ def duplicate_planner(planner_name, selected_group, plan_date, include_lessons):
     # Create the students
     students = frappe.get_all("Planner Student", filters={"parent": planner.name}, fields=["*"])
     for s in students:
-        new_planner.append("students", {"student": s})
+        new_planner.append("students", {"student": s.student})
 
     # Create the topics
     topics = frappe.get_all("Planner Topic", filters={"parent": planner.name}, fields=["*"])
     for t in topics:
-        new_planner.append("topics", {"topic": t})
+        new_planner.append("topics", {"topic": t.topic})
 
     # Create the lessons
     if include_lessons:

@@ -25,7 +25,7 @@ frappe.ready(function() {
                     // Get the cell data clicked on
                     row = table.row(this).data()
                     cell = table.cell(this).data()
-                    console.log("row: " + row + "\ncell: " + cell);
+                    // console.log("row: " + row + "\ncell: " + cell);
 
                     // Check if the cell contains "<span>"
                     if (cell.includes("<span")) {
@@ -312,7 +312,7 @@ function show_students(e) {
                     });
                     
                     // Output to console log each element in the insert_list array
-                    console.log(insert_list);
+                    // console.log(insert_list);
                     save_students(planner_name, insert_list);
                 });
             }
@@ -373,7 +373,7 @@ function show_topics(e) {
                     topics_table_html += '<td>' + course + '</td></tr>';
                 });
                 topics_table_html += '</tbody>';
-                console.log(topics_table_html);
+                // console.log(topics_table_html);
 
                 // Add the table to the page
                 topics_table.innerHTML = topics_table_html;
@@ -405,6 +405,14 @@ function show_topics(e) {
                     
                     // Output to console log each element in the insert_list array
                     save_topics(planner_name, insert_list);
+                });
+
+                document.querySelector('#cancel_topics_button').addEventListener('click', function () {
+                    // Destroy the table
+                    topics_table.DataTable().clear()
+                    topics_table.DataTable().destroy();
+                    topics_table.empty();
+                    topics_table.innerHTML = "";
                 });
             }
         }
@@ -468,7 +476,7 @@ function show_lesson_modal(row, cell) {
     
     var org_lesson_value = lesson_name
     
-    console.log("lesson name: " + lesson_name + "\nplanner_name: " + planner_name + "\nstudent: " + student + " \ntopic: " + topic + " \nlesson_date: " + lesson_date + " \nstatus_abbr: " + status_abbr + "\norg_lesson_val: " + org_lesson_value);
+    // console.log("lesson name: " + lesson_name + "\nplanner_name: " + planner_name + "\nstudent: " + student + " \ntopic: " + topic + " \nlesson_date: " + lesson_date + " \nstatus_abbr: " + status_abbr + "\norg_lesson_val: " + org_lesson_value);
 
     // Retrieve Lesson Status options from Frappe
     frappe.call({
