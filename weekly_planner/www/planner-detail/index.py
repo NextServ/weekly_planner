@@ -1,5 +1,6 @@
 # weekly_planner details
 import frappe
+import datetime
 
 def get_context(context):
     context.banner_image = frappe.db.get_single_value("Website Settings", "banner_image")
@@ -17,6 +18,10 @@ def get_context(context):
     planner_name = frappe.form_dict.get("planner-name")
     context.planner = frappe.get_doc("Weekly Planner", planner_name)
     context.is_approved = context.planner.is_approved
+
+    # Concatenate planner.start_date with start_date + 7 days
+    context.start_date = context.planner.start_date.strftime("%m/%d/%Y")
+    context.end_date = (context.planner.start_date + datetime.timedelta(days=7)).strftime("%m/%d/%Y")
     
     # Remove %20 from planner_name
     if planner_name:    

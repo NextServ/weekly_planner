@@ -164,7 +164,7 @@ def build_planner_items(planner_name):
                 if item != []:
                     print(item)
                     lesson_item = item[0].abbreviation + " " + item[0].date.strftime('%m-%d-%y')
-                    table_html += "<span class='badge badge-pill badge-primary text-center'>" + lesson_item + \
+                    table_html += "<span role='button' class='badge badge-pill badge-primary text-center'>" + lesson_item + \
                         "<p hidden>student: " + col_header + " | name: " + item[0].name + " | </span>"
                 else:
                     table_html += "<span><p hidden>student: " + col_header + " | name: none | </span>"

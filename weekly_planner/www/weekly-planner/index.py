@@ -1,6 +1,7 @@
 # weekly_planner
 import frappe
 import webbrowser
+import datetime
 
 def get_context(context):
     context.title = "Weekly Planner"
@@ -30,7 +31,8 @@ def get_context(context):
     elif is_head_instructor:
         # Load all instructors reporting to current user
         if instructor[0].employee:
-            sql = '''SELECT p.name, p.instructor, student_group, start_date, p.status, p.is_approved FROM `tabWeekly Planner` p
+            sql = '''SELECT p.name, p.instructor, student_group, start_date, DATE_ADD(start_date, INTERVAL 7 DAY) AS end_date, 
+                p.status, p.is_approved FROM `tabWeekly Planner` p
                 INNER JOIN `tabInstructor` i ON p.instructor = i.name INNER JOIN `tabEmployee` e ON i.employee = e.name
                 WHERE e.reports_to = %(head)s OR p.instructor = %(instructor)s'''
             planners = frappe.db.sql(sql, {"head": instructor[0].employee, "instructor": instructor[0].name}, as_dict=True)
@@ -41,8 +43,9 @@ def get_context(context):
 
     elif is_instructor:
         # Test to see if instructor exists and throw an error if not
-        planners = frappe.get_all("Weekly Planner", filters={"instructor": instructor[0].instructor_name}, \
-            fields=["name", "instructor", "student_group", "start_date", "status", "is_approved"])
+        sql = '''SELECT p.name, p.instructor, student_group, start_date, DATE_ADD(start_date, INTERVAL 7 DAY) AS end_date, 
+                p.status, p.is_approved FROM `tabWeekly Planner` p WHERE p.instructor = %(instructor)s'''
+        planners = frappe.db.sql(sql, {"instructor": instructor[0].name}, as_dict=True)
     
     # Add record counters to each planner
     counter = 0

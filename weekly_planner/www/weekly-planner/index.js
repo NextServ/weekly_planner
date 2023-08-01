@@ -27,6 +27,16 @@ frappe.ready(function() {
 })
 
 
+function calc_end_date(e) {
+    // Get the start date
+    const lessonDateInput = document.getElementById("lesson_date");
+    const sevenDaysLater = new Date(lessonDateInput.value);
+    sevenDaysLater.setDate(sevenDaysLater.getDate() + 7);
+    document.getElementById("end_date").value = sevenDaysLater.toISOString().slice(0, 10);
+    console.log(sevenDaysLater);
+}
+
+
 function save_planner(e) {
     // Get input values
     instructor = document.getElementById("instructor").value;

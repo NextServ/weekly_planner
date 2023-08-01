@@ -64,7 +64,7 @@
             <th scope="col">#</th>
             <th scope="col">{{ _("Instructor") }}</th>
             <th scope="col">{{ _("Student Group") }}</th>
-            <th scope="col">{{ _("Start Date") }}</th>
+            <th scope="col">{{ _("Dates") }}</th>
             <th class="text-center" scope="col">{{ _("Status") }}</th>
             <th class="text-center" scope="col" text-align="left">{{ _("Actions") }}</th>
         </tr>
@@ -75,7 +75,7 @@
             <th scope="row">{{ planner.counter }}</th>
             <td>{{ planner.instructor }}</td>
             <td>{{ planner.student_group }}</td>
-            <td>{{ planner.start_date }}</td>
+            <td>{{ planner.start_date }} to {{ planner.end_date }}</td>
             
             <td class="text-center">
               {% if planner.is_approved %}
@@ -92,12 +92,12 @@
               {% endif %}
             </td>
             <td class="text-center">
-              <div class="badge badge-primary translate-middle-x" planner-name="{{ planner.name }}" onclick="open_planner_detail()">{{ _("Edit") }}</div>
+              <div class="badge badge-primary translate-middle-x" planner-name="{{ planner.name }}" role="button" onclick="open_planner_detail()">{{ _("Edit") }}</div>
               {%if is_head_instructor %}
                 <div class="badge badge-primary translate-middle-x"> </div>
-                <div class="badge badge-primary translate-middle-x" planner-name="{{ planner.name }}" onclick="approve_planner()">{{ _("Approve") }}</div>
+                <div class="badge badge-primary translate-middle-x" planner-name="{{ planner.name }}" role="button" onclick="approve_planner()">{{ _("Approve") }}</div>
                 <div class="badge badge-primary translate-middle-x"></div>
-                <div class="badge badge-secondary translate-middle-x">{{ _("Reject") }}</div>
+                <div class="badge badge-secondary translate-middle-x" role="button">{{ _("Reject") }}</div>
               {% endif %}
             </td>
           </tr>
@@ -147,11 +147,6 @@
                   <input class="input-group-text text-align-left" name="instructor" id="instructor" value="{{ instructor }}" readonly></label>
               </div>
               <div class="col">
-                <label>{{ _("Date") }}<input class="input-group-text text-align-left" id="lesson_date" type="date" required></label>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col">
                 <label>{{_("Student Group") }}
                   <input class="input-group-text" list="student_groups" name="selected_group" id="selected_group"/></label>
                 <datalist id="student_groups">
@@ -159,6 +154,15 @@
                     <option value="{{ group.student_group_name }}">
                   {% endfor %}
                 </datalist>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <label>{{ _("Start Date") }}<input class="input-group-text text-align-left" id="lesson_date" type="date" onchange="calc_end_date()" required></label>
+              </div>
+              <div class="col">
+                <!-- Calculate lesson_date + 7 -->
+                <label>{{ _("End Date") }}<input class="input-group-text text-align-left" id="end_date" type="date" readonly></label> 
               </div>
             </div>
             <div class="row">
