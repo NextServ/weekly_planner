@@ -36,8 +36,7 @@
   {% if invalid_role %}
     <br /><br /><br />
     <div class="shadow alert alert-warning alert-dismissible fade show" role="alert">
-      <strong>{{ _("Invalid role! ") }}</strong>{{ _("You are not authorized to access this page. Please contact your administrator for more
-      information.") }}
+      <strong>{{ _("Invalid role! ") }}</strong>{{ _("You are not authorized to access this page. Please contact your administrator for more information.") }}
     </div>
     
 
@@ -143,20 +142,20 @@
           <div class="container-fluid px-2 py-2 border bg-light">
             <div class="row">
               <div class="col">
-                <label>{{_("Instructor") }}
-                  <input class="input-group-text text-align-left" name="instructor" id="instructor" value="{{ instructor }}" readonly></label>
+                <label>{{_("Instructor") }}</label><br />
+                <input class="text-align-left bg-light" name="instructor" id="instructor" value="{{ instructor }}" readonly>
               </div>
               <div class="col">
-                <label>{{_("Student Group") }}
-                  <input class="input-group-text" list="student_groups" name="selected_group" id="selected_group"/></label>
-                <datalist id="student_groups">
+                <label>{{_("Student Group") }}</label>
+                <select class="form-select bg-light" name="student_group" id="selected_group" required>
+                  <option value="" selected>{{ _("Select Student Group") }}</option>
                   {% for group in student_groups %}
-                    <option value="{{ group.student_group_name }}">
+                    <option value="{{ group.student_group_name }}">{{ group.student_group_name }}</option>
                   {% endfor %}
-                </datalist>
+                </select>
               </div>
             </div>
-            <div class="row">
+            <div class="row py-2">
               <div class="col">
                 <label>{{ _("Start Date") }}<input class="input-group-text text-align-left" id="lesson_date" type="date" onchange="calc_end_date()" required></label>
               </div>

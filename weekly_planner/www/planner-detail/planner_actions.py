@@ -254,7 +254,7 @@ def save_topics(planner_name, insert_list):
 
 
 @frappe.whitelist()
-def build_lesson_entry_modal(status_abbr, lesson_date, org_lesson_value):
+def build_lesson_entry_modal(lesson_name, status_abbr, lesson_date, org_lesson_value):
     # Get lesson status value based on abbreviation
     if org_lesson_value == "none":
         status_value = ""
@@ -262,33 +262,58 @@ def build_lesson_entry_modal(status_abbr, lesson_date, org_lesson_value):
     else:
         # Convert lesson_date to date object
         lesson_date = datetime.strptime(lesson_date, '%m-%d-%y').strftime('%Y-%m-%d')
-        status_value = frappe.db.sql('''SELECT status FROM `tabLesson Status` WHERE abbreviation = %(status)s''', {"status": status_abbr}, as_dict=True)[0].status
+        status_value = _(frappe.db.sql('''SELECT status FROM `tabLesson Status` WHERE abbreviation = %(status)s''', {"status": status_abbr}, as_dict=True)[0].status)
 
     # Get all lesson status options
     status_options = ""
     for option in frappe.db.sql('''SELECT status FROM `tabLesson Status` ORDER BY status''', as_dict=True):
-        status_options += '<option>' + option.status + '</option>'
+        status_options += '<option value="' + option.status + '">' + option.status + '</option>'
     
     # Build the modal for the lesson entry
-    modal_html =     '<div class="container px-2 py-2 border bg-light">'
-    modal_html +=    '    <div class="row">'
+    modal_html =   '<div class="container px-2 py-2 border bg-light">'
+    modal_html +=  '  <div class="row gx-5">'
+    modal_html +=  '    <div class="col">'
+    modal_html +=  '      <label>' + _("Status") + '</label>'
+    modal_html +=  '      <select class="form-select form-select-md bg-light" name="lesson_status" id="lesson_status" aria-label="Lesson Status" required>'
+    modal_html +=  '        <option value="' + status_value + '" selected>' + status_value + '</option>'
+    modal_html +=           status_options
+    modal_html +=  '      </select>'
+    modal_html +=  '    </div>'
+    modal_html +=  '    <div class="col">'
+    modal_html +=  '      <label>' + _("Date") + '</label><br />'
+    modal_html +=  '      <input class="text-align-left bg-light" id="lesson_date" type="date" value="' + lesson_date + '" required>'
+    modal_html +=  '    </div>'
+    modal_html +=  '  </div>'
+    modal_html +=  '</div>'
 
-    modal_html +=    '        <label>' + _("Lesson Status")
-    modal_html +=    '            <input class="input-group-text text-align-left" list="options" name="status_options" id="selected_option" '
-    modal_html +=    '            value="' + status_value + '" required></label>'
-
-    modal_html +=    '        <datalist id="options">'
-    modal_html +=                 status_options
-    modal_html +=    '        </datalist>'
-    modal_html +=    '    </div>'
-    modal_html +=    '    <div class="row">'
-    modal_html +=    '        <label>' + _("Date") + '<input class="input-group-text text-align-left" list="options" name="status_options" '
-    modal_html +=    '            id="lesson_date" type="date" value="' + lesson_date + '" required></label>'
-    modal_html +=    '    </div>'
-    modal_html +=    '</div>'
-
-    print(modal_html)
+    # Build the table only if this isn't a new lesson entry or history table is empty
+    lesson_history = frappe.get_all("Planner Lesson History", fields=["*"], filters={"planner_lesson": lesson_name})
+    if org_lesson_value == "none" or len(lesson_history) == 0:
+        return modal_html
     
+    modal_html +=  '<hr />'
+    modal_html +=  '<h6>' + _("Change History") + '</h6>'
+    modal_html +=  '<table class="table table-sm table-striped" style="width: 100%"  id="history_table">'
+    modal_html +=  '  <thead>'
+    modal_html +=  '    <tr>'
+    modal_html +=  '      <th>Status</th>'
+    modal_html +=  '      <th>Org Date</th>'
+    modal_html +=  '      <th>Changed By</th>'
+    modal_html +=  '    </tr>'
+    modal_html +=  '  </thead>'
+    modal_html +=  '  <tbody>'
+
+    for h in lesson_history:
+        modal_html +=  '  <tr>'
+        modal_html +=  '    <td>' + h.lesson_status + '</td>'
+        modal_html +=  '    <td>' + h.original_date.strftime("%m-%d-%y") + '</td>'
+        modal_html +=  '    <td>' + h.changed_by + '</td>'
+        modal_html +=  '  </tr>'
+
+    modal_html +=  '  </tbody>'
+    modal_html +=  '</table>'
+
+
     return modal_html
 
 
@@ -317,8 +342,20 @@ def save_lesson_entry(lesson_name, planner_name, student, topic, status, lesson_
 
 
     else:    
-        # result = frappe.db.sql('''UPDATE `tabPlanner Lesson` SET lesson_status = %(status)s, date = %(date)s 
-        #                 WHERE name = %(name)s''', {"status": status_id, "date": lesson_date, "name": lesson_name})
+        # Retrieve Instructor based on frappe.session.user
+        instructor = frappe.db.sql('''SELECT i.name FROM `tabInstructor` i INNER JOIN `tabEmployee` e on i.employee = e.name
+                        WHERE e.user_id = %(user_id)s''', {"user_id": frappe.session.user}, as_dict=True)[0].name
+        
+        # Save the original lesson entry to the history table
+        original = frappe.get_doc("Planner Lesson", lesson_name)
+        org_status = frappe.get_all("Lesson Status", fields=["status"], filters={"name": original.lesson_status})[0].status
+        history = frappe.new_doc("Planner Lesson History")
+        history.planner_lesson = lesson_name
+        history.lesson_status = org_status
+        history.original_date = original.date
+        history.changed_by = instructor
+        history.date_changed = datetime.today()
+        history.insert()
         
         frappe.db.set_value("Planner Lesson", lesson_name, {
             "lesson_status": status_id,

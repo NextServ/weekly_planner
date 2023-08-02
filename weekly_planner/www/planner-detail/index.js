@@ -483,6 +483,7 @@ function show_lesson_modal(row, cell) {
         method: "weekly_planner.www.planner-detail.planner_actions.build_lesson_entry_modal",
 
         args: {
+            "lesson_name": lesson_name,
             "status_abbr": status_abbr,
             "lesson_date": lesson_date,
             "org_lesson_value": org_lesson_value,
@@ -495,19 +496,28 @@ function show_lesson_modal(row, cell) {
             } else {
                 var lesson_modal_body = document.getElementById("lesson_modal_body");
                 lesson_modal_body.innerHTML = r.message;
-                // console.log(r.message);
+                
+                if (lesson_name) {
+                    const history_table = new DataTable('#history_table', {
+                        destroy: true,
+                        searching: false,
+                        lengthChange: false
+                    });
+                }
 
                 $('#modal_add_lesson').modal('show');
 
                 document.querySelector('#save_lesson_button').addEventListener('click', function () {
                     // Save the lesson entry
-                    if (document.getElementById("selected_option").value == "") {
+                    if (document.getElementById("lesson_status").value == "") {
                         alert(__("Lesson Status is required!"));
                         return;
                     } else if (document.getElementById("lesson_date").value == "") {
                         alert(__("Lesson Date is required!"));
                         return;
                     }
+
+                    console.log("Lesson Status: " + document.getElementById("lesson_status").value)
 
                     frappe.call({
                         method: "weekly_planner.www.planner-detail.planner_actions.save_lesson_entry",
@@ -516,7 +526,7 @@ function show_lesson_modal(row, cell) {
                             "planner_name": planner_name,
                             "student": student,
                             "topic": topic,
-                            "status": document.getElementById("selected_option").value,
+                            "status": document.getElementById("lesson_status").value,
                             "lesson_date": document.getElementById("lesson_date").value,
                             "org_lesson_value": org_lesson_value
                         },

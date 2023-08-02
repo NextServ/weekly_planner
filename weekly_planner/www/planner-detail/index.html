@@ -170,22 +170,22 @@
             <div class="row">
               <div class="col">
                 <!-- write code below that will accept text input then build a dropdown below containing items that matches the text input-->
-                <label>{{_("Filter by Campus (disabled for now)") }}
-                  <input class="input-group-text text-align-left" list="campuses" name="selected_campus" id="selected_campus" readonly></label>
-                <datalist id="campuses">
-                  {% for campus in campuses %}
-                    <option value="{{ campus.campus_name }}">
-                  {% endfor %}
-                </datalist>
+                <label>{{ _("Filter by Campus (disabled for now)") }}</label>
+                  <select class="form-select" aria-label="Campus Select" id="selected_campus" disabled>
+                    <option selected value="">All Campuses</option>
+                    {% for campus in campuses %}
+                      <option value="{{ campus.campus_name }}">{{ campus.campus_name }}</option>
+                    {% endfor %}
+                  </select>
               </div>
               <div class="col">
-                <label>{{_("Filter by Student Group (blank for All)") }}
-                  <input class="input-group-text" list="student_groups" name="selected_group" id="selected_group"/></label>
-                <datalist id="student_groups">
+                <label>{{ _("Filter by Student Group") }}</label>
+                <select class="form-select" aria-label="Student Group Select" id="selected_group">
+                  <option selected value="">All Groups</option>
                   {% for group in student_groups %}
-                    <option value="{{ group.student_group_name }}">
+                    <option value="{{ group.student_group_name }}">{{ group.student_group_name }}</option>
                   {% endfor %}
-                </datalist>
+                </select>
               </div>
             </div>
             <div class="row">

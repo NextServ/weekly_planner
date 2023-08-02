@@ -17,3 +17,6 @@ MIT
 
 **0.5.5**
 1. Displays Planner dates as a range of 7 days
+
+**0.6.0**
+1. Stores history of changes made to Planner Lessons
