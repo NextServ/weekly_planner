@@ -367,7 +367,8 @@ def save_lesson_entry(lesson_name, planner_name, student, topic, status, lesson_
 
 @frappe.whitelist()
 def delete_lesson_entry(lesson_name):
-    # Delete the lesson entry
+    # Delete the lesson entry and change history
+    frappe.db.delete("Planner Lesson History", {"planner_lesson": lesson_name})
     frappe.db.delete("Planner Lesson", lesson_name)
 
     return "success"

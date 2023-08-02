@@ -20,3 +20,6 @@ MIT
 
 **0.6.0**
 1. Stores history of changes made to Planner Lessons
+
+**0.6.5**
+1. Deletes related history of changes if a lesson entry is deleted
