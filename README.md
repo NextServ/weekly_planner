@@ -23,3 +23,6 @@ MIT
 
 **0.6.5**
 1. Deletes related history of changes if a lesson entry is deleted
+
+**0.6.6**
+1. Added the Head of School role that will show all planners regardless of the Reports To value

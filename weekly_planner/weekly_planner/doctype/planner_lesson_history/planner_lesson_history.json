@@ -17,22 +17,26 @@
   {
    "fieldname": "planner_lesson",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Planner Lesson",
    "options": "Planner Lesson"
   },
   {
    "fieldname": "date_changed",
    "fieldtype": "Date",
+   "in_list_view": 1,
    "label": "Date Changed"
   },
   {
    "fieldname": "lesson_status",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Lesson Status"
   },
   {
    "fieldname": "original_date",
    "fieldtype": "Date",
+   "in_list_view": 1,
    "label": "Original Date"
   },
   {
@@ -44,7 +48,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-08-02 22:21:59.071171",
+ "modified": "2023-08-03 14:34:24.477927",
  "modified_by": "Administrator",
  "module": "Weekly Planner",
  "name": "Planner Lesson History",
