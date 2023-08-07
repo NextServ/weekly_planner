@@ -36,11 +36,11 @@ def get_context(context):
                 p.status, p.is_approved FROM `tabWeekly Planner` p
                 INNER JOIN `tabInstructor` i ON p.instructor = i.name INNER JOIN `tabEmployee` e ON i.employee = e.name '''
             
-            if not is_hos:
+            if is_hos:
+                planners = frappe.db.sql(sql, as_dict=True)
+            else:
                 sql += '''WHERE e.reports_to = %(head)s OR p.instructor = %(instructor)s'''                
                 planners = frappe.db.sql(sql, {"head": instructor[0].employee, "instructor": instructor[0].name}, as_dict=True)
-            else:
-                planners = frappe.db.sql(sql, as_dict=True)
 
             print(planners)
         else:
