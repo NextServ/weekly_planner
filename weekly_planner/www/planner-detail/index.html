@@ -19,7 +19,7 @@
 {% endblock %}
 
 {% block header %}
-    <!-- override -->
+<!-- override -->
 {% endblock %} 
 
 {% block page_content %}
@@ -209,7 +209,7 @@
             <button type="button" class="btn btn-primary" id="add_button">{{ _("Add Selected") }}</button>
             <button type="button" class="btn btn-secondary" id="clear_button">{{ _("Clear Selection") }}</button>
           </div>
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ _("Cancel") }}</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _("Cancel") }}</button>
         </div>
       </div>
     </div>
@@ -239,7 +239,7 @@
             <button type="button" class="btn btn-primary" id="add_topics_button">{{ _("Add Selected") }}</button>
             <button type="button" class="btn btn-secondary" id="clear_topics_button">{{ _("Clear Selection") }}</button>
           </div>
-          <button type="button" class="btn btn-secondary" data-dismiss="modal" id="cancel_topics_button">{{ _("Cancel") }}</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="cancel_topics_button">{{ _("Cancel") }}</button>
         </div>
       </div>
     </div>
@@ -279,7 +279,7 @@
     </div>
     <div class="offcanvas-body">
       <div>
-        This section will contain the help information for the page.
+        {{ frappe.render_template('weekly_planner/www/planner-detail/help.html', {}) }}
       </div>
     </div>
   </div>

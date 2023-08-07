@@ -170,7 +170,7 @@ function duplicate_planner(e) {
 
     var body_html = __("Please fill in the Student Group and Start Date below:");
     body_html +=    '<br /><br />'
-    body_html +=    '<div class="container">';
+    body_html +=    '<div class="container border bg-light">';
     body_html +=    '   <div class="row">';
     body_html +=    '       <label>' + __("Student Group") + '<input class="input-group-text" list="student_groups" name="selected_group" id="selected_group"/></label>';
     body_html +=    '       <br />';

@@ -26,3 +26,5 @@ MIT
 
 **0.6.6**
 1. Added the Head of School role that will show all planners regardless of the Reports To value
+2. Added Help button to the Weekly Planner page
+3. Added help content on both main and detail pages
