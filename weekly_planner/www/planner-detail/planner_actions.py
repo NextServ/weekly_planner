@@ -257,17 +257,19 @@ def save_topics(planner_name, insert_list):
 def build_lesson_entry_modal(lesson_name, status_abbr, lesson_date, org_lesson_value):
     # Get lesson status value based on abbreviation
     if org_lesson_value == "none":
-        status_value = ""
         lesson_date = ""
     else:
         # Convert lesson_date to date object
         lesson_date = datetime.strptime(lesson_date, '%m-%d-%y').strftime('%Y-%m-%d')
-        status_value = _(frappe.db.sql('''SELECT status FROM `tabLesson Status` WHERE abbreviation = %(status)s''', {"status": status_abbr}, as_dict=True)[0].status)
 
     # Get all lesson status options
+    status_value = ""
     status_options = ""
-    for option in frappe.db.sql('''SELECT status FROM `tabLesson Status` ORDER BY status''', as_dict=True):
-        status_options += '<option value="' + option.status + '">' + option.status + '</option>'
+    for option in frappe.db.sql('''SELECT status, is_default, abbreviation FROM `tabLesson Status` ORDER BY status''', as_dict=True):
+        if (org_lesson_value == "none" and option.is_default) or (option.abbreviation == status_abbr):
+            status_value = option.status
+        else:
+            status_options += '<option value="' + option.status + '">' + option.status + '</option>'
     
     # Build the modal for the lesson entry
     modal_html =   '<div class="container px-2 py-2 border bg-light">'
