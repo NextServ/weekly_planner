@@ -7,12 +7,12 @@ def get_context(context):
 
     # Make sure user has the correct role
     context.invalid_role = True
-    context.is_head = False
     cur_user = frappe.get_user()
     cur_roles = cur_user.get_roles()
+    context.is_hos = "Head of School" in cur_roles
     context.is_head = "Head Instructor" in cur_roles
     context.is_instructor = "Instructor" in cur_roles
-    context.invalid_role = not (context.is_head or context.is_instructor)
+    context.invalid_role = not (context.is_head or context.is_instructor or context.is_hos)
 
     # Get planner_name from url parameter
     planner_name = frappe.form_dict.get("planner-name")
