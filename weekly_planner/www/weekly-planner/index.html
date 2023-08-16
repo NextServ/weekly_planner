@@ -94,11 +94,11 @@
             </td>
             <td class="text-center">
               <div class="badge badge-primary translate-middle-x" planner-name="{{ planner.name }}" role="button" onclick="open_planner_detail()">{{ _("Edit") }}</div>
-              {%if is_head_instructor %}
+              {%if is_head_instructor or is_hos %}
                 <div class="badge badge-primary translate-middle-x"> </div>
                 <div class="badge badge-primary translate-middle-x" planner-name="{{ planner.name }}" role="button" onclick="approve_planner()">{{ _("Approve") }}</div>
                 <div class="badge badge-primary translate-middle-x"></div>
-                <div class="badge badge-secondary translate-middle-x" role="button">{{ _("Reject") }}</div>
+                <div class="badge badge-secondary translate-middle-x" role="button" planner-name="{{ planner.name }}" onclick="print_planner_modal()">{{ _("Print") }}</div>
               {% endif %}
             </td>
           </tr>
@@ -147,6 +147,76 @@
   </div>
   <!-- ./ Action Confirmation Modal -->
 
+  <!-- Print Report Modal -->
+  <div class="modal fade" id="modal_print_planner" data-backdrop="static" data-keyboard="true" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ _("Print Reports") }}</h5>
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="container-fluid px-2 py-2 border bg-light">
+            <div class="row">
+              <div class="col">
+                <label>{{_("Select Report") }}</label>
+                <select class="form-select bg-light" name="student_group" id="selected_report" onchange="enable_report_options()" required>
+                  <option value="Planner" selected>{{ _("Planner") }}</option>
+                  <option value="Student">Student</option>
+                </select>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <hr />
+                <label>{{_("Student") }}</label><br />
+                <input class="text-align-left bg-light" name="student" id="selected_student" disabled>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal_select_student" id="button_select" disabled>{{ _("Select") }}</button>
+              </div>
+            </div>
+            <br />
+            <div class="row">
+              <div class="col">
+                <label>{{ _("Start Date") }}
+                  <input class="input-group-text text-align-left" id="report_start_date" type="date" disabled></label>
+              </div>
+              <div class="col">
+                <label>{{ _("End Date") }}<input class="input-group-text text-align-left" id="report_end_date" type="date" disabled></label> 
+              </div>
+            </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="modal_action_print">{{ _("Print") }}</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="modal_action_cancel">{{ _("Cancel") }}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- ./ Print Report Modal -->  
+
+  <!-- Select Student Modal -->
+  <div class="modal fade" id="modal_select_student" data-backdrop="static" data-keyboard="true" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modal_action_title"></h5>
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" id="modal_action_body" ></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="modal_action_select">{{ _("Select") }}</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="modal_action_cancel">{{ _("Cancel") }}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- ./ Select Student Modal -->  
+    
   <!-- New Planner Modal -->
   <div class="modal fade" id="modal_new_planner" data-backdrop="static" data-keyboard="true" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -176,11 +246,12 @@
             </div>
             <div class="row py-2">
               <div class="col">
-                <label>{{ _("Start Date") }}<input class="input-group-text text-align-left" id="lesson_date" type="date" onchange="calc_end_date()" required></label>
+                <label>{{ _("Start Date") }}
+                  <input class="input-group-text text-align-left" id="lesson_start_date" type="date" onchange="calc_end_date('lesson_start_date','lesson_end_date')" required></label>
               </div>
               <div class="col">
                 <!-- Calculate lesson_date + 7 -->
-                <label>{{ _("End Date") }}<input class="input-group-text text-align-left" id="end_date" type="date" readonly></label> 
+                <label>{{ _("End Date") }}<input class="input-group-text text-align-left" id="lesson_end_date" type="date" readonly></label> 
               </div>
             </div>
             <div class="row">
@@ -191,7 +262,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" onclick="save_planner()">{{ _("Save") }}</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="save_planner()">{{ _("Save") }}</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ _("Cancel") }}</button>
         </div>
       </div>

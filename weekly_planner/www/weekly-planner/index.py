@@ -3,6 +3,8 @@ import frappe
 import webbrowser
 import datetime
 
+no_cache = 1
+
 def get_context(context):
     context.title = "Weekly Planner"
     context.banner_image = frappe.db.get_single_value("Website Settings", "banner_image")
@@ -42,7 +44,7 @@ def get_context(context):
                 sql += '''WHERE e.reports_to = %(head)s OR p.instructor = %(instructor)s'''                
                 planners = frappe.db.sql(sql, {"head": instructor[0].employee, "instructor": instructor[0].name}, as_dict=True)
 
-            print(planners)
+            # print(planners)
         else:
             frappe.throw("There is no linked Employee record for this Instructor. Please contact your System Administrator.")
             context.invalid_role = True

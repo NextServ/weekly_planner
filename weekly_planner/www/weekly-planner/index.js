@@ -4,7 +4,7 @@ frappe.ready(function() {
     // Check for Approve Planner button click
     $("#modal_action_primary").on("click", function(e) {
         planner_name = e.currentTarget.getAttribute("planner-name");
-        console.log(planner_name)
+        // console.log(planner_name)
 
         if (document.getElementById("modal_action_title").innerHTML == "Approve Planner") {
             frappe.call({
@@ -24,23 +24,33 @@ frappe.ready(function() {
             });
         }
     });
+
+    $("#modal_action_print").on("click", function(e) {
+        // First validate that the end date is not before the start date
+        start_date = document.getElementById("report_start_date").value;
+        end_date = document.getElementById("report_end_date").value;
+        if ((start_date > end_date) || (!start_date) || (!end_date)) {
+            alert(__("Invalid date values! Please re-enter."));
+            return;
+        }
+    });
 })
 
 
-function calc_end_date(e) {
+function calc_end_date(label_start_date, label_end_date) {
     // Get the start date
-    const lessonDateInput = document.getElementById("lesson_date");
+    const lessonDateInput = document.getElementById(label_start_date);
     const sevenDaysLater = new Date(lessonDateInput.value);
     sevenDaysLater.setDate(sevenDaysLater.getDate() + 7);
-    document.getElementById("end_date").value = sevenDaysLater.toISOString().slice(0, 10);
-    console.log(sevenDaysLater);
+    document.getElementById(label_end_date).value = sevenDaysLater.toISOString().slice(0, 10);
+    // console.log(sevenDaysLater);
 }
 
 
 function save_planner(e) {
     // Get input values
     instructor = document.getElementById("instructor").value;
-    lesson_date = document.getElementById("lesson_date").value;
+    lesson_date = document.getElementById("lesson_start_date").value;
     student_group = document.getElementById("selected_group").value;
     description = document.getElementById("description").value; 
 
@@ -85,4 +95,22 @@ function approve_planner(e = event) {
     action_modal_secondary.innerHTML = __("Cancel");
 
     $("#modal_action").modal("show");
+}
+
+
+function print_planner_modal() {
+    $("#modal_print_planner").modal("show");
+}
+
+
+function enable_report_options() {
+    // Enable/disable the report options based on the report selection
+    options_disabled = document.getElementById("selected_report").value != "Student";
+    document.getElementById("selected_student").disabled = options_disabled;
+    document.getElementById("selected_student").required = !options_disabled;
+    document.getElementById("button_select").disabled = options_disabled;
+    document.getElementById("report_start_date").disabled = options_disabled;
+    document.getElementById("report_start_date").required = !options_disabled;
+    document.getElementById("report_end_date").disabled = options_disabled;
+    document.getElementById("report_end_date").required = !options_disabled;
 }
