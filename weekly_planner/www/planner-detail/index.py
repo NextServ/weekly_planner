@@ -2,6 +2,8 @@
 import frappe
 import datetime
 
+no_cache = 1
+
 def get_context(context):
     context.banner_image = frappe.db.get_single_value("Website Settings", "banner_image")
 
