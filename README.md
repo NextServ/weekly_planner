@@ -36,5 +36,8 @@ MIT
 **0.7.1**
 1. Disabled cache for the first page of the Weekly Planner
 
+**0.7.2**
+1. Disabled cache also for the planner detail page
+
 **0.8.0**
 1. Added the ability to print planner reports
