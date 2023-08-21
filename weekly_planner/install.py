@@ -61,3 +61,15 @@ def add_settings():
     settings.field = "welcome_text"
     settings.value = "This tool will allow your Instructors prepare their weekly lesson plans and submit them for approval. If you have Instructors under you, the table below will show you their weekly planners as well as your own."
     settings.insert()
+
+    settings = frappe.new_doc("tabSingle")
+    settings.doctype = "Weekly Planner Settings"
+    settings.field = "show_student_age_in_view"
+    settings.value = 1
+    settings.insert()
+
+    settings = frappe.new_doc("tabSingle")
+    settings.doctype = "Weekly Planner Settings"
+    settings.field = "show_student_age_in_print"
+    settings.value = 1
+    settings.insert()

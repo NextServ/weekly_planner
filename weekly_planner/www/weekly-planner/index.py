@@ -17,6 +17,7 @@ def get_context(context):
     is_head_instructor = "Head Instructor" in cur_roles
     is_instructor = "Instructor" in cur_roles
 
+
     planners = []
 
     # Retrieve Instructor from User
@@ -65,5 +66,6 @@ def get_context(context):
     context.student_groups = frappe.get_all("Student Group", fields=["student_group_name"])
     context.instructor = instructor[0].instructor_name 
     context.is_head_instructor = is_head_instructor
+    context.is_hos = is_hos
 
     return context

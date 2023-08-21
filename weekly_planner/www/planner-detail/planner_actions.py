@@ -17,6 +17,11 @@ def create_planner(instructor, selected_group, start_date, description):
 
 
 @frappe.whitelist()
+def get_settings():
+    pass
+
+
+@frappe.whitelist()
 def duplicate_planner(planner_name, selected_group, plan_date, include_lessons):
     # Get the planner record
     planner = frappe.get_doc("Weekly Planner", planner_name)
@@ -342,11 +347,12 @@ def save_lesson_entry(lesson_name, planner_name, student, topic, status, lesson_
 
         lesson_doc.save()
 
-
     else:    
         # Retrieve Instructor based on frappe.session.user
         instructor = frappe.db.sql('''SELECT i.name FROM `tabInstructor` i INNER JOIN `tabEmployee` e on i.employee = e.name
                         WHERE e.user_id = %(user_id)s''', {"user_id": frappe.session.user}, as_dict=True)[0].name
+        
+        print("lesson_name: " + lesson_name)
         
         # Save the original lesson entry to the history table
         original = frappe.get_doc("Planner Lesson", lesson_name)
@@ -359,10 +365,13 @@ def save_lesson_entry(lesson_name, planner_name, student, topic, status, lesson_
         history.date_changed = datetime.today()
         history.insert()
         
-        frappe.db.set_value("Planner Lesson", lesson_name, {
-            "lesson_status": status_id,
-            "date": lesson_date
-        })
+        # frappe.db.set_value("Planner Lesson", lesson_name, {
+        #     "lesson_status": status_id,
+        #     "date": lesson_date
+        # })
+        original.lesson_status = status_id
+        original.date = lesson_date
+        original.save()
     
     return "success"
 

@@ -41,3 +41,10 @@ MIT
 
 **0.8.0**
 1. Added the ability to print planner reports
+
+**0.8.5**
+2. Fixed bug where Head of School capabilities not showing up on main page
+3. Fixed bug where the lesson entries are affecting other lesson entries
+
+**0.9.0**
+1. Added Settings page
