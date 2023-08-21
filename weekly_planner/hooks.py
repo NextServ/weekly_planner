@@ -68,7 +68,8 @@ app_license = "MIT"
 # ------------
 
 # before_install = "weekly_planner.install.before_install"
-# after_install = "weekly_planner.install.after_install"
+after_install = "weekly_planner.install.after_install"
+after_sync = "weekly_planner.install.after_sync"
 
 # Uninstallation
 # ------------

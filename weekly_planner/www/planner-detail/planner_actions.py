@@ -25,7 +25,7 @@ def duplicate_planner(planner_name, selected_group, plan_date, include_lessons):
     new_planner = frappe.new_doc("Weekly Planner")
     new_planner.instructor = planner.instructor
     new_planner.student_group = selected_group
-    new_planner.start_date = plan_date
+    new_planner.start_date = plan_date 
     new_planner.description = planner.description
     new_planner.insert()
 

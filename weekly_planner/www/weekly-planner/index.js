@@ -26,12 +26,19 @@ frappe.ready(function() {
     });
 
     $("#modal_action_print").on("click", function(e) {
+        planner_name = e.currentTarget.getAttribute("planner-name");
+
         // First validate that the end date is not before the start date
+        selected_report = document.getElementById("selected_report").value;
         start_date = document.getElementById("report_start_date").value;
         end_date = document.getElementById("report_end_date").value;
-        if ((start_date > end_date) || (!start_date) || (!end_date)) {
+        if (((start_date > end_date) || (!start_date) || (!end_date)) && (selected_report == "Student")) {
             alert(__("Invalid date values! Please re-enter."));
             return;
+        }
+
+        if (selected_report == "Planner") {
+            window.open("print-planner/index.html?planner-name=" + e.currentTarget.getAttribute('planner-name'), "_blank");
         }
     });
 })
@@ -98,7 +105,10 @@ function approve_planner(e = event) {
 }
 
 
-function print_planner_modal() {
+function print_planner_modal(e = event) {
+    planner_name = e.currentTarget.getAttribute("planner-name");
+    document.getElementById("modal_action_print").setAttribute("planner-name", planner_name);
+
     $("#modal_print_planner").modal("show");
 }
 
