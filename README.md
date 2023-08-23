@@ -43,8 +43,13 @@ MIT
 1. Added the ability to print planner reports
 
 **0.8.5**
-2. Fixed bug where Head of School capabilities not showing up on main page
+1. Fixed bug where Head of School capabilities not showing up on main page
 3. Fixed bug where the lesson entries are affecting other lesson entries
+
+**0.8.7**
+1. Fixed bug where New Planner button opened the wrong modal
+2. Fixed the Approve Planner functionality when clicked from the Planner Detail page
+
 
 **0.9.0**
 1. Added Settings page

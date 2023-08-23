@@ -32,19 +32,6 @@ frappe.ready(function() {
                         // Throw error message
                         return;
                     }
-
-                    // Open action modal
-                    var action_modal_title = document.getElementById("modal_action_title");
-                    var action_modal_body = document.getElementById("modal_action_body");
-                    var action_modal_primary = document.getElementById("modal_action_primary");
-                    var action_modal_secondary = document.getElementById("modal_action_secondary");
-
-                    action_modal_title.innerHTML = __("Settings");
-                    action_modal_body.innerHTML = r.message;
-                    action_modal_primary.innerHTML = __("Submit");
-                    action_modal_secondary.innerHTML = __("Cancel");
-
-                    $("#modal_action").modal("show");
                 }
             });
         }

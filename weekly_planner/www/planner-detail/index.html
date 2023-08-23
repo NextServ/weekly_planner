@@ -93,9 +93,9 @@
     <button type="button" class="btn btn-primary" onclick="delete_planner()">Del Planner</button>
 
     {% if planner.status == 0 %}
-      <button type="button" class="btn btn-primary" id="submit_button" onclick="submit_planner()" >{{ _("Submit Planner") }}</button> 
+      <button type="button" class="btn btn-primary" id="submit_button" onclick="submit_planner('{{ planner.name }}')">{{ _("Submit Planner") }}</button> 
     {% elif planner.status == 1  and is_head and not is_approved %}
-      <button type="button" class="btn btn-primary" id="submit_button" onclick="approve_planner()" >{{ _("Approve Planner") }}</button> 
+      <button type="button" class="btn btn-primary" id="submit_button" onclick="approve_planner('{{ planner.name }}')">{{ _("Approve Planner") }}</button> 
     {% endif %}    
     &nbsp; | &nbsp;
     
