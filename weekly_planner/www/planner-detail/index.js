@@ -82,7 +82,31 @@ frappe.ready(function() {
         });
     });
     
-// Check for Delete Planner button click
+    $('#delete_lesson_button').on('click', function (e) {
+        // Confirm that the user wants to delete this lesson entry
+        if (!confirm("Are you sure you want to delete this lesson entry?")) {
+            // User clicked "Cancel"
+            return;
+        }
+
+        frappe.call({
+            method: "weekly_planner.www.planner-detail.planner_actions.delete_lesson_entry",
+            args: {
+                "lesson_name": document.getElementById("delete_lesson_button").getAttribute("lesson_name"),
+            },
+            callback: function(response) {
+                if (response.exc) {
+                    frappe.msgprint(__("Error deleting Lesson Entry!"));
+                    return;
+                } else {
+                    // Reload the page
+                    location.reload();                                
+                }
+            }
+        });
+    })
+
+    // Check for Delete Planner button click
     $("#modal_action_secondary").on("click", function(e) {
         if (document.getElementById("modal_action_title").innerHTML == __("Delete Planner")) {
             frappe.call({
@@ -549,36 +573,9 @@ function show_lesson_modal(row, cell) {
             save_button.setAttribute("student", student);
             save_button.setAttribute("org_lesson_value", org_lesson_value);
 
+            document.getElementById("delete_lesson_button").setAttribute("lesson_name", lesson_name);
+
             $('#modal_add_lesson').modal('show');
-
-            document.querySelector('#delete_lesson_button').addEventListener('click', function () {
-                if (org_lesson_value == "") {
-                    document.getElementById("modal_add_lesson").hide();
-                    return;
-                }
-
-                // Confirm that the user wants to delete this lesson entry
-                if (!confirm("Are you sure you want to delete this lesson entry?")) {
-                    // User clicked "Cancel"
-                    return;
-                }
-
-                frappe.call({
-                    method: "weekly_planner.www.planner-detail.planner_actions.delete_lesson_entry",
-                    args: {
-                        "lesson_name": lesson_name,
-                    },
-                    callback: function(response) {
-                        if (response.exc) {
-                            frappe.msgprint(__("Error deleting Lesson Entry!"));
-                            return;
-                        } else {
-                            // Reload the page
-                            location.reload();                                
-                        }
-                    }
-                });
-            })
         }
     });
 }

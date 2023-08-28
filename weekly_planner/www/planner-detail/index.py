@@ -6,6 +6,8 @@ no_cache = 1
 
 def get_context(context):
     context.banner_image = frappe.db.get_single_value("Website Settings", "banner_image")
+    context.title = frappe.db.get_single_value("Weekly Planner Settings", "title")
+    context.show_age = frappe.db.get_single_value("Weekly Planner Settings", "show_student_age_in_view")
 
     # Make sure user has the correct role
     context.invalid_role = True

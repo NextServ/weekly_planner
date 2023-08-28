@@ -24,14 +24,23 @@ frappe.ready(function() {
             });
 
         } else if (document.getElementById("modal_action_title").innerHTML == __("Settings")) {
+            console.log("Show Student Age in View: " + document.getElementById("show_student_age_in_view").value);
             frappe.call({
                 method: "weekly_planner.www.planner-detail.planner_actions.save_settings",
 
+                args: {
+                    "title": document.getElementById("title").value,
+                    "welcome_text": document.getElementById("welcome_text").value,
+                    "show_student_age_in_view": document.getElementById("show_student_age_in_view").checked,
+                    "show_student_age_in_print": document.getElementById("show_student_age_in_print").checked,
+                },
+
                 callback: function(r) {
-                    if (!r.exc) {
+                    if (r.exc) {
                         // Throw error message
                         return;
                     }
+                    window.open("/weekly-planner", "_self");
                 }
             });
         }
@@ -96,17 +105,19 @@ function open_settings() {
     frappe.call({
         method: "weekly_planner.www.planner-detail.planner_actions.get_settings",
         callback: function(r) {
-            if (!r.exc) {
+            if (r.exc) {
                 // Throw error message
                 return;
             }
 
             // Open action modal
+            var modal_box = document.getElementById("modal_action_box");
             var action_modal_title = document.getElementById("modal_action_title");
             var action_modal_body = document.getElementById("modal_action_body");
             var action_modal_primary = document.getElementById("modal_action_primary");
             var action_modal_secondary = document.getElementById("modal_action_secondary");
 
+            modal_box.classList.add("modal-md");
             action_modal_title.innerHTML = __("Settings");
             action_modal_body.innerHTML = r.message;
             action_modal_primary.innerHTML = __("Submit");

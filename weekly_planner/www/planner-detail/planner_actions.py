@@ -1,7 +1,8 @@
 import frappe
-from frappe import _
 import json
+from frappe import _
 from datetime import date, datetime
+from weekly_planner.install import add_settings
 
 
 @frappe.whitelist()
@@ -18,7 +19,57 @@ def create_planner(instructor, selected_group, start_date, description):
 
 @frappe.whitelist()
 def get_settings():
-    pass
+    # Check if settings exist and create if not
+    if not frappe.db.get_single_value("Weekly Planner Settings", "title"):
+        add_settings()
+
+    title = frappe.db.get_single_value("Weekly Planner Settings", "title")
+    welcome_text = frappe.db.get_single_value("Weekly Planner Settings", "welcome_text")
+    show_student_age_in_view = frappe.db.get_single_value("Weekly Planner Settings", "show_student_age_in_view")
+    show_student_age_in_print = frappe.db.get_single_value("Weekly Planner Settings", "show_student_age_in_print")
+    
+    # Build the body of the modal dialog
+    modal_html =   '<div class="container px-2 py-2 border bg-light">'
+    modal_html +=  '  <div class="row gx-5">'
+    modal_html +=  '    <div class="col">'
+    modal_html +=  '      <label>' + _("Title") + '</label>'
+    modal_html +=  '      <input class="text-align-left bg-light" id="title" type="text" value="' + title + '" required>'
+    modal_html +=  '    </div>'
+    modal_html +=  '  </div>'
+    modal_html +=  '  <br />'
+    modal_html +=  '  <div class="row gx-5">'
+    modal_html +=  '    <div class="col">'
+    modal_html +=  '      <label>' + _("Welcome Text") + '</label><br />'
+    modal_html +=  '      <textarea class="text-align-left bg-light" id="welcome_text" rows="5" cols="40" required>' + welcome_text + '</textarea>'
+    modal_html +=  '    </div>'
+    modal_html +=  '  </div>'
+    modal_html +=  '  <br />'
+    modal_html +=  '  <div class="form-check">'
+    modal_html +=  '    <input class="form-check-input" type="checkbox" value="" id="show_student_age_in_view"' + (' checked' if show_student_age_in_view == 1 else '') + '>'
+    modal_html +=  '    <label class="form-check-label" for="show_student_age_in_view">' + _("Show Student Age in View") + '</label>'
+    modal_html +=  '  </div>'
+    modal_html +=  '  <div class="form-check">'
+    modal_html +=  '    <input class="form-check-input" type="checkbox" value="" id="show_student_age_in_print"' + (' checked' if show_student_age_in_print == 1 else '') + '>'
+    modal_html +=  '    <label class="form-check-label" for="show_student_age_in_print">' + _("Show Student Age in Print") + '</label>'
+    modal_html +=  '  </div>'
+    modal_html +=  '</div>'
+
+    return modal_html
+
+
+@frappe.whitelist()
+def save_settings(title, welcome_text, show_student_age_in_view, show_student_age_in_print):
+    frappe.db.set_single_value(
+        "Weekly Planner Settings",
+        {
+            "modified": datetime.now(),
+            "modified_by": frappe.session.user,
+            "title": title,
+            "welcome_text": welcome_text,
+            "show_student_age_in_view": show_student_age_in_view,
+            "show_student_age_in_print": show_student_age_in_print
+        }
+    )
 
 
 @frappe.whitelist()
@@ -122,6 +173,9 @@ def build_planner_items(planner_name):
     lessons = frappe.db.sql('''SELECT p.name, p.date, p.student, p.topic, l.abbreviation from `tabPlanner Lesson` p
                             INNER JOIN `tabLesson Status` l ON p.lesson_status = l.name
                             WHERE parent = %(p_name)s''', {"p_name": planner_name}, as_dict=True)
+    
+    # Show age in view?
+    show_age = frappe.db.get_single_value("Weekly Planner Settings", "show_student_age_in_view")
 
     # planner_details = [["" for row in range(num_students)] for col in range(num_topics)]
     student_headers = {}
@@ -145,8 +199,10 @@ def build_planner_items(planner_name):
 
             # working_dict = "{'student': '" + student.student + "', 'first_name': '" + student.first_name + "', 'last_name': '" + student.last_name + "', "
             # working_dict = working_dict + "'years_old': '" + str(years) + "', 'months_old': '" + str(months) + "'}"
-            table_html += "<th class='text-center'>" + student.last_name + " " + student.first_name + "<br>"
-            table_html += "<span class='fs-6 text-center'><i>" + str(years) + " Years " + str(months) + " Months</i></span>"
+            table_html += "<th class='text-center'>" + student.last_name + " " + student.first_name
+            if show_age:
+                table_html += "<br>"
+                table_html += "<span class='fs-6 text-center'><i>" + str(years) + " Years " + str(months) + " Months</i></span>"
             table_html += "</th>"
 
         student_headers[student.student] = student.student

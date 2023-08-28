@@ -1,0 +1,73 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-08-27 19:12:27.202285",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "title",
+  "welcome_text",
+  "show_student_age_in_view",
+  "show_student_age_in_print"
+ ],
+ "fields": [
+  {
+   "default": "Weekly Planner Settings",
+   "fieldname": "title",
+   "fieldtype": "Data",
+   "label": "Title"
+  },
+  {
+   "default": "This tool will allow your Instructors prepare their weekly lesson plans and submit them for approval. If you have Instructors under you, the table below will show you their weekly planners as well as your own.",
+   "fieldname": "welcome_text",
+   "fieldtype": "Small Text",
+   "label": "Welcome Text"
+  },
+  {
+   "default": "1",
+   "fieldname": "show_student_age_in_view",
+   "fieldtype": "Check",
+   "label": "Show Student Age in View"
+  },
+  {
+   "default": "1",
+   "fieldname": "show_student_age_in_print",
+   "fieldtype": "Check",
+   "label": "Show Student Age in Print"
+  }
+ ],
+ "issingle": 1,
+ "links": [],
+ "modified": "2023-08-27 19:16:28.385098",
+ "modified_by": "Administrator",
+ "module": "Weekly Planner",
+ "name": "Weekly Planner Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "Head of School",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

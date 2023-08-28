@@ -53,3 +53,6 @@ MIT
 
 **0.9.0**
 1. Added Settings page
+2. Change the format of the table in the Print Planner page so that now has borders
+3. Added version number at the bottom left of the main page
+4. Generate Student Lesson Report

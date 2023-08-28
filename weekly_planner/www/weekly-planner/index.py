@@ -2,11 +2,14 @@
 import frappe
 import webbrowser
 import datetime
+from frappe import _
+from weekly_planner.__init__ import get_version
 
 no_cache = 1
 
 def get_context(context):
-    context.title = "Weekly Planner"
+    context.title = _(frappe.db.get_single_value("Weekly Planner Settings", "title"))
+    context.welcome_text = _(frappe.db.get_single_value("Weekly Planner Settings", "welcome_text"))
     context.banner_image = frappe.db.get_single_value("Website Settings", "banner_image")
 
     # Make sure user has the correct role
@@ -62,6 +65,7 @@ def get_context(context):
         counter += 1
         planner.counter = counter
     
+    context.version = get_version()
     context.weekly_planners = planners
     context.student_groups = frappe.get_all("Student Group", fields=["student_group_name"])
     context.instructor = instructor[0].instructor_name 

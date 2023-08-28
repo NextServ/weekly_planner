@@ -20,56 +20,17 @@ def add_roles():
 
 
 def add_settings():
-    settings = frappe.new_doc("tabSingle")
-    settings.doctype = "Weekly Planner Settings"
-    settings.field = "name"
-    settings.value = "Weekly Planner Settings"
-    settings.insert()
-
-    settings = frappe.new_doc("tabSingle")
-    settings.doctype = "Weekly Planner Settings"
-    settings.field = "owner"
-    settings.value = "Administrator"
-    settings.insert()
-
-    settings = frappe.new_doc("tabSingle")
-    settings.doctype = "Weekly Planner Settings"
-    settings.field = "creation"
-    settings.value = datetime.now()
-    settings.insert()
-
-    settings = frappe.new_doc("tabSingle")
-    settings.doctype = "Weekly Planner Settings"
-    settings.field = "modified"
-    settings.value = datetime.now()
-    settings.insert()
-
-    settings = frappe.new_doc("tabSingle")
-    settings.doctype = "Weekly Planner Settings"
-    settings.field = "modified_by"
-    settings.value = "Administrator"
-    settings.insert()
-
-    settings = frappe.new_doc("tabSingle")
-    settings.doctype = "Weekly Planner Settings"
-    settings.field = "title"
-    settings.value = "Weekly Planner"
-    settings.insert()
-
-    settings = frappe.new_doc("tabSingle")
-    settings.doctype = "Weekly Planner Settings"
-    settings.field = "welcome_text"
-    settings.value = "This tool will allow your Instructors prepare their weekly lesson plans and submit them for approval. If you have Instructors under you, the table below will show you their weekly planners as well as your own."
-    settings.insert()
-
-    settings = frappe.new_doc("tabSingle")
-    settings.doctype = "Weekly Planner Settings"
-    settings.field = "show_student_age_in_view"
-    settings.value = 1
-    settings.insert()
-
-    settings = frappe.new_doc("tabSingle")
-    settings.doctype = "Weekly Planner Settings"
-    settings.field = "show_student_age_in_print"
-    settings.value = 1
-    settings.insert()
+    frappe.db.set_single_value(
+        "Weekly Planner Settings",
+        {
+            "name": "Weekly Planner Settings",
+            "owner": "Administrator",
+            "creation": datetime.now(),
+            "modified": datetime.now(),
+            "modified_by": "Administrator",
+            "title": "Weekly Planner",
+            "welcome_text": "This tool will allow your Instructors prepare their weekly lesson plans and submit them for approval. If you have Instructors under you, the table below will show you their weekly planners as well as your own.",
+            "show_student_age_in_view": 1,
+            "show_student_age_in_print": 1,
+        },
+    )
