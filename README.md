@@ -50,9 +50,10 @@ MIT
 1. Fixed bug where New Planner button opened the wrong modal
 2. Fixed the Approve Planner functionality when clicked from the Planner Detail page
 
-
 **0.9.0**
 1. Added Settings page
 2. Change the format of the table in the Print Planner page so that now has borders
 3. Added version number at the bottom left of the main page
-4. Generate Student Lesson Report
+
+**0.9.5 WIP**
+1. Generate Student Lesson Report

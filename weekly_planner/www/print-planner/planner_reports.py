@@ -20,6 +20,9 @@ def build_planner_report(planner_name):
     lessons = frappe.db.sql('''SELECT p.name, p.date, p.student, p.topic, l.abbreviation from `tabPlanner Lesson` p
                             INNER JOIN `tabLesson Status` l ON p.lesson_status = l.name
                             WHERE parent = %(p_name)s''', {"p_name": planner_name}, as_dict=True)
+    
+    # Check if show age is enabled
+    show_age = frappe.db.get_single_value("Weekly Planner Settings", "show_student_age_in_print")
 
     # planner_details = [["" for row in range(num_students)] for col in range(num_topics)]
     student_headers = {}
@@ -42,9 +45,11 @@ def build_planner_report(planner_name):
 
             # working_dict = "{'student': '" + student.student + "', 'first_name': '" + student.first_name + "', 'last_name': '" + student.last_name + "', "
             # working_dict = working_dict + "'years_old': '" + str(years) + "', 'months_old': '" + str(months) + "'}"
-            table_html += "<th class='text-center'>" + student.last_name + " " + student.first_name + "<br>"
-            table_html += "<span class='fs-6 text-center'><i>" + str(years) + " Years " + str(months) + " Months</i></span>"
-            table_html += "</th>"
+            table_html += "<th class='text-center'>" + student.last_name + " " + student.first_name
+            if show_age:
+                table_html += "<br>"
+                table_html += "<span class='fs-6 text-center'><i>" + str(years) + " Years " + str(months) + " Months</i></span>"
+                table_html += "</th>"
 
         student_headers[student.student] = student.student
     
