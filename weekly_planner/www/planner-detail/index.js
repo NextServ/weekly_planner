@@ -319,6 +319,7 @@ function show_students(e) {
         args: {
             "selected_campus": document.getElementById("selected_campus").value,
             "selected_group": document.getElementById("selected_group").value,
+            "planner_name": planner_name,
         },
 
         callback: function(students) {

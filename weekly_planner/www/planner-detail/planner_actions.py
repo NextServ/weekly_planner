@@ -248,25 +248,26 @@ def get_lesson_status_options():
 
 
 @frappe.whitelist()
-def get_students_for_selection(selected_campus, selected_group):
+def get_students_for_selection(selected_campus, selected_group, planner_name):
     # Build the rest of the SQL statement based on whether there is value in selected_group and selected_campus
     sql = '''SELECT s.name, s.first_name, s.last_name, s.date_of_birth, g.parent FROM `tabStudent Group Student` g
                 INNER JOIN `tabStudent` s ON g.student = s.name '''
 
     if selected_campus and selected_group:
-        sql = sql + '''WHERE campus = %(campus)s AND student_group = %(group)s AND s.name NOT IN (SELECT student from `tabPlanner Student`)'''
-        students = frappe.db.sql(sql, {"campus": selected_campus, "group": selected_group}, as_dict=True)
+        sql = sql + '''WHERE campus = %(campus)s AND student_group = %(group)s AND s.name NOT IN (SELECT student from `tabPlanner Student` WHERE parent = %(planner_name)s)'''
+        students = frappe.db.sql(sql, {"campus": selected_campus, "group": selected_group, "planner_name": planner_name}, as_dict=True)
     elif selected_campus:
-        sql = sql + '''WHERE campus = %(campus)s AND s.name NOT IN (SELECT student from `tabPlanner Student`)'''
-        students = frappe.db.sql(sql, {"campus": selected_campus}, as_dict=True)
+        sql = sql + '''WHERE campus = %(campus)s AND s.name NOT IN (SELECT student from `tabPlanner Student` WHERE parent = %(planner_name)s)'''
+        students = frappe.db.sql(sql, {"campus": selected_campus, "planner_name": planner_name}, as_dict=True)
     elif selected_group:
         # frappe.msgprint(selected_group + " selected but no campus")
-        sql += '''WHERE g.parent = %(group)s AND s.name NOT IN (SELECT student from `tabPlanner Student`)'''
-        students = frappe.db.sql(sql, {"group": selected_group}, as_dict=True)
+        sql += '''WHERE g.parent = %(group)s AND s.name NOT IN (SELECT student from `tabPlanner Student` WHERE parent = %(planner_name)s)'''
+        students = frappe.db.sql(sql, {"group": selected_group, "planner_name": planner_name}, as_dict=True)
     else:
         students = frappe.db.sql('''SELECT s.name, s.first_name, s.last_name, s.date_of_birth, g.parent FROM `tabStudent` s
                                     LEFT JOIN `tabStudent Group Student` g ON s.name = g.student 
-                                    WHERE s.name NOT IN (SELECT student from `tabPlanner Student`)''', as_dict=True)
+                                    WHERE s.name NOT IN (SELECT student from `tabPlanner Student` WHERE parent = %(planner_name)s)''', 
+                                    {"planner_name": planner_name}, as_dict=True)
 
     return students
 

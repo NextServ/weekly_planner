@@ -54,6 +54,8 @@ MIT
 1. Added Settings page
 2. Change the format of the table in the Print Planner page so that now has borders
 3. Added version number at the bottom left of the main page
+4. Fixed the issue where students from DVO L1B aren't showing in the Show Students modal
 
 **0.9.5 WIP**
-1. Generate Student Lesson Report
+1. Limit the students showing in the Show Students modal to only those that in the Instructor's Student Group
+2. Generate Student Lesson Report
