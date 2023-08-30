@@ -72,6 +72,18 @@
     <!-- ./ Planner Header -->
 
     {% if empty_planner > 0 %}
+        <!-- display table header titles vertically -->
+        <style>
+            .rotated-text {
+                transform-origin: bottom center;
+                transform: rotate(-90deg) translateX(50%); /* Rotate the text by 90 degrees */
+                white-space: nowrap; /* Keep the text on one line */
+                text-align: center;
+                left: 50%;
+                height: 200px;
+            }
+        </style>
+          
         <!-- Tables -->
         <table class="table table-bordered" style="width: 100%" id="items_table"></table>
         <!-- ./ Tables -->

@@ -100,10 +100,8 @@
     &nbsp; | &nbsp;
     
     <div class="btn-group" role="group" aria-label="Add...">
-      <button type="button" class="btn btn-primary" data-toggle="modal" 
-        data-target="#modal_add_students">{{ _("Add Students") }}</button> &nbsp;
-      <button type="button" class="btn btn-primary" data-toggle="modal" 
-        data-target="#modal_add_topics">{{ _("Add Topics") }}</button> &nbsp;
+      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal_add_students">{{ _("Add Students") }}</button> &nbsp;
+      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal_add_topics">{{ _("Add Topics") }}</button> &nbsp;
     </div> <br /><br />
     <!-- ./ Buttons --> 
 
@@ -117,18 +115,6 @@
       <div class="shadow alert alert-primary alert-dismissible fade show" id="empty_planner_alert" role="alert">
         <strong>{{ _("Empty Planner!") }}</strong>{{ _(" You have not added any items to your planner. Please add items to your planner.") }}
       </div>    
-    {% endif %}
-    
-    {% if planner_details|length > 10 %}
-      <br />
-      <button type="button" class="btn btn-outline-primary" onclick="go_to_main()">Back</button>
-      <button type="button" class="btn btn-primary" >Duplicate Planner</button> 
-      <button type="button" class="btn btn-primary" >Del Planner</button> &nbsp; | &nbsp;
-      <div class="btn-group" role="group" aria-label="Add...">
-        <button type="button" class="btn btn-primary">Add Students</button> &nbsp;
-        <button type="button" class="btn btn-primary">Add Topics</button> &nbsp;
-        <button type="button" class="btn btn-primary">Add Lessons</button>
-      </div>
     {% endif %}
   {% endif %}
 

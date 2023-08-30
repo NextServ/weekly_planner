@@ -146,7 +146,8 @@ def submit_planner(planner_name):
 
 @frappe.whitelist()
 def approve_planner(planner_name):
-    reports_to = frappe.db.sql('''SELECT name FROM `tabInstructor` WHERE user = %(user_id)s''', \
+    reports_to = frappe.db.sql('''SELECT name from `tabInstructor`
+        WHERE employee = (SELECT name FROM `tabEmployee` WHERE user_id = %(user_id)s)''', \
         {"user_id": frappe.session.user}, as_dict=True)
 
     planner = frappe.get_doc("Weekly Planner", planner_name)

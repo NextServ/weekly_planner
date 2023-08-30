@@ -57,5 +57,9 @@ MIT
 4. Fixed the issue where students from DVO L1B aren't showing in the Show Students modal
 
 **0.9.5 WIP**
-1. Limit the students showing in the Show Students modal to only those that in the Instructor's Student Group
-2. Generate Student Lesson Report
+1. Fixed the bug where the Approved Plan functionality is not working
+2. Limit the students showing in the Show Students modal to only those that in the Instructor's Student Group
+3. Show student names vertically in the Planner Report header
+
+**1.0.0 PLANNED**
+1. Generate Student Lesson Report

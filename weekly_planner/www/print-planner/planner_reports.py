@@ -31,7 +31,7 @@ def build_planner_report(planner_name):
     # Build the table html
     table_html =  "<thead>"
     table_html += "  <tr>"
-    table_html += "    <th>Topic</th>"
+    table_html += "    <th style='width: 15px'>Topic</th>"
 
     # Load up the columns
     for student in students:
@@ -45,11 +45,11 @@ def build_planner_report(planner_name):
 
             # working_dict = "{'student': '" + student.student + "', 'first_name': '" + student.first_name + "', 'last_name': '" + student.last_name + "', "
             # working_dict = working_dict + "'years_old': '" + str(years) + "', 'months_old': '" + str(months) + "'}"
-            table_html += "<th class='text-center'>" + student.last_name + " " + student.first_name
+            table_html += "<th class='rotated-text' style='width: 5px'>" + student.last_name + " " + student.first_name
             if show_age:
                 table_html += "<br>"
-                table_html += "<span class='fs-6 text-center'><i>" + str(years) + " Years " + str(months) + " Months</i></span>"
-                table_html += "</th>"
+                table_html += "<span class='fs-6 rotated-text'><i>" + str(years) + " Years " + str(months) + " Months</i></span>"
+            table_html += "</th>"
 
         student_headers[student.student] = student.student
     
