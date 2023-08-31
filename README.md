@@ -60,6 +60,7 @@ MIT
 1. Fixed the bug where the Approved Plan functionality is not working
 2. Limit the students showing in the Show Students modal to only those that in the Instructor's Student Group
 3. Show student names vertically in the Planner Report header
+4. Allow Instructors to print the Planner Detail Report
 
 **1.0.0 PLANNED**
 1. Generate Student Lesson Report

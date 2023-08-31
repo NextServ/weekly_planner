@@ -6,6 +6,7 @@ no_cache = 1
 
 def get_context(context):
     context.banner_image = frappe.db.get_single_value("Website Settings", "banner_image")
+    context.title = frappe.db.get_single_value("Weekly Planner Settings", "title")
 
     # Get planner_name from url parameter
     planner_name = frappe.form_dict.get("planner-name")
