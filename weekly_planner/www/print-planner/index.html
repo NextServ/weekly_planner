@@ -75,17 +75,27 @@
         <style>
             .rotated-text {
                 transform-origin: bottom center;
-                transform: rotate(-90deg) translateX(50%); /* Rotate the text by 90 degrees */
+                transform: rotate(-90deg) translateX(50%) translateY(12%); /* Rotate the text by 90 degrees */
                 white-space: nowrap; /* Keep the text on one line */
                 text-align: center;
                 /* left: 50%; */
-                width: 15px;
                 height: 200px;
+            }
+            table#items_table > thead > tr {
+                height: auto;
+            }
+
+            table#items_table th:not(:first-child) {
+                max-width: 80px;
+            }
+
+            table#items_table {
+                width: auto;
             }
         </style>
           
         <!-- Tables -->
-        <table class="table table-bordered" style="width: 100%" id="items_table"></table>
+        <table class="table table-bordered" id="items_table"></table>
         <!-- ./ Tables -->
 
     {% else %}
