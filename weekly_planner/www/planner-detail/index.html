@@ -53,11 +53,11 @@
         <div class="row">
           <div class="col">
             Instructor
-            <input type="text" class="form-control" placeholder="First name" value="{{ planner.instructor }}" readonly>
+            <input type="text" class="form-control" value="{{ planner.instructor }}" readonly>
           </div>
           <div class="col">
             Student Group
-            <input type="text" class="form-control" placeholder="Last name" value="{{ planner.student_group }}" readonly>
+            <input type="text" class="form-control" value="{{ planner.student_group }}" readonly>
           </div>
         </div>
         <br />
@@ -100,7 +100,7 @@
     &nbsp; | &nbsp;
     
     <div class="btn-group" role="group" aria-label="Add...">
-      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal_add_students">{{ _("Add Students") }}</button> &nbsp;
+      <button type="button" class="btn btn-primary" onclick="show_add_students_modal('{{ planner.name }}')">{{ _("Add Students") }}</button> &nbsp;
       <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal_add_topics">{{ _("Add Topics") }}</button> &nbsp;
     </div> <br /><br />
     <!-- ./ Buttons --> 
@@ -150,52 +150,14 @@
           </button>
         </div>
 
-        <div class="modal-body">
-          <!-- Input group for the filters to apply to the Students table below-->
-          <div class="container-fluid px-2 py-2 border bg-light">
-            <div class="row">
-              <div class="col">
-                <!-- write code below that will accept text input then build a dropdown below containing items that matches the text input-->
-                <label>{{ _("Filter by Campus (disabled for now)") }}</label>
-                  <select class="form-select" aria-label="Campus Select" id="selected_campus" disabled>
-                    <option selected value="">All Campuses</option>
-                    {% for campus in campuses %}
-                      <option value="{{ campus.campus_name }}">{{ campus.campus_name }}</option>
-                    {% endfor %}
-                  </select>
-              </div>
-              <div class="col">
-                <label>{{ _("Filter by Student Group") }}</label>
-                <select class="form-select" aria-label="Student Group Select" id="selected_group">
-                  <option selected value="">All Groups</option>
-                  {% for group in student_groups %}
-                    <option value="{{ group.student_group_name }}">{{ group.student_group_name }}</option>
-                  {% endfor %}
-                </select>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col">
-                <hr>
-                <div class="d-grid gap-2">
-                  <button type="button" class="btn btn-primary" onclick="show_students()">{{_("Show Students") }}</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Students table -->
-          <br />
-          <table class="table table-md table-striped" style="width: 100%"  id="students_table"></table>
-          <!-- ./ Students table-->
-        </div>
+        <div class="modal-body" id="modal_add_students_body"></div>
 
         <div class="modal-footer">
           <div class="btn-group" role="group" aria-label="List Actions">
             <button type="button" class="btn btn-primary" id="add_button">{{ _("Add Selected") }}</button>
             <button type="button" class="btn btn-secondary" id="clear_button">{{ _("Clear Selection") }}</button>
           </div>
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ _("Cancel") }}</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _("Cancel") }}</button>
         </div>
       </div>
     </div>

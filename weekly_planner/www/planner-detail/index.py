@@ -33,8 +33,6 @@ def get_context(context):
 
     context.empty_planner = len(frappe.get_all("Planner Student", filters={"parent": planner_name}, fields=["name"])) + \
         len(frappe.get_all("Planner Topic", filters={"parent": planner_name}, fields=["name"]))
-    context.campuses = frappe.get_all("Campus", fields=["campus_name"])
-    context.student_groups = frappe.get_all("Student Group", fields=["student_group_name"])
 
     print(context.empty_planner)
 

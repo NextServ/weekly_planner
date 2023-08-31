@@ -507,6 +507,27 @@ function save_topics(planner_name, insert_list) {
 }
 
 
+function show_add_students_modal(planner_name) {
+    frappe.call({
+        method: "weekly_planner.www.planner-detail.planner_actions.build_add_students_modal",
+        args: {"planner_name": planner_name,},
+
+        callback: function(r) {
+            if (r.exc) {
+                frappe.msgprint(__("Error building Add Students modal!"));
+                return;
+            }
+
+            var modal_body = document.getElementById("modal_add_students_body");
+            modal_body.innerHTML = r.message;
+
+        }
+    });
+
+    $("#modal_add_students").modal("show");
+}
+
+
 function show_lesson_modal(row, cell) {
     // Parse row and cell to get field values
     var center_pos = cell.indexOf("center") + 8;

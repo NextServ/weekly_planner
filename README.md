@@ -56,7 +56,7 @@ MIT
 3. Added version number at the bottom left of the main page
 4. Fixed the issue where students from DVO L1B aren't showing in the Show Students modal
 
-**0.9.5 WIP**
+**0.9.5**
 1. Fixed the bug where the Approved Plan functionality is not working
 2. Limit the students showing in the Show Students modal to only those that in the Instructor's Student Group
 3. Show student names vertically in the Planner Report header

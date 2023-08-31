@@ -317,6 +317,64 @@ def save_topics(planner_name, insert_list):
 
 
 @frappe.whitelist()
+def build_add_students_modal(planner_name):
+    planner = frappe.get_doc("Weekly Planner", planner_name)
+    campuses = frappe.get_all("Campus", fields=["campus_name"])
+    groups = frappe.get_all("Student Group", fields=["student_group_name"])
+
+    # Get the roles for the Instructor
+    cur_user = frappe.get_user()
+    cur_roles = cur_user.get_roles()
+    is_hos = "Head of School" in cur_roles
+    is_head = "Head Instructor" in cur_roles
+    is_instructor_only = not (is_head or is_hos)
+
+    body_html =  '<div class="container-fluid px-2 py-2 border bg-light">'
+    body_html += '  <div class="row">'
+    body_html += '    <div class="col">'
+    body_html += '      <label>' + _("Filter by Campus (disabled for now)") + '</label>'
+    body_html += '        <select class="form-select" aria-label="Campus Select" id="selected_campus" disabled>'
+    body_html += '          <option selected value="">All Campuses</option>'
+
+    # Build the campus options
+    for campus in campuses:
+        body_html += '      <option value="' + campus.campus_name + '">' + campus.campus_name + '</option>'
+
+    body_html += '        </select>'
+    body_html += '    </div>'
+    body_html += '    <div class="col">'
+    body_html += '      <label>' + _("Filter by Student Group") + '</label>'
+    body_html += '      <select class="form-select" aria-label="Student Group Select" id="selected_group">'
+
+    # Build the student group options
+    if is_instructor_only:
+        body_html += '     <option selected value="' + planner.student_group + '">' + planner.student_group + '</option>'
+    else:
+        body_html += '     <option selected value="">All Groups</option>'
+        for g in groups:
+            body_html += ' <option value="' + g.student_group_name + '">' + g.student_group_name + '</option>'
+    
+    body_html += '      </select>'
+    body_html += '    </div>'
+    body_html += '  </div>'
+    body_html += '  <div class="row">'
+    body_html += '    <div class="col">'
+    body_html += '      <hr>'
+    body_html += '      <div class="d-grid gap-2">'
+    body_html += '        <button type="button" class="btn btn-primary" onclick="show_students()">' + _("Show Students") + '</button>'
+    body_html += '      </div>'
+    body_html += '    </div>'
+    body_html += '  </div>'
+    
+    # Students table
+    body_html += '  <br />'
+    body_html += '  <table class="table table-md table-striped" style="width: 100%"  id="students_table"></table>'
+    body_html += '</div>'
+    
+    return body_html
+
+
+@frappe.whitelist()
 def build_lesson_entry_modal(lesson_name, status_abbr, lesson_date, org_lesson_value):
     # Get lesson status value based on abbreviation
     if org_lesson_value == "none":
