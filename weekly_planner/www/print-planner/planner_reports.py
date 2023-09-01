@@ -65,7 +65,6 @@ def build_planner_report(planner_name):
                 table_html += "<td class='text-center'>"
 
                 if item != []:
-                    print(item)
                     lesson_item = item[0].abbreviation + " " + item[0].date.strftime('%m-%d-%y')
                     table_html += "<span class='badge badge-pill badge-primary text-center'>" + lesson_item + \
                         "<p hidden>student: " + col_header + " | name: " + item[0].name + " | </span>"
