@@ -173,3 +173,37 @@ function enable_report_options() {
     document.getElementById("report_end_date").disabled = options_disabled;
     document.getElementById("report_end_date").required = !options_disabled;
 }
+
+
+function select_student(selected_action){
+    if (selected_action == "select") {
+        frappe.call({
+            method: "weekly_planner.www.planner-detail.planner_actions.get_student_for_printing",
+            arg: {
+                "student_name": document.getElementById("selected_student").value
+            },
+            callback: function(r) {
+                if (r.exc) {
+                    // Throw error message
+                    return;
+                }
+
+                student_table = document.getElementById("student_table");
+                student_table.innerHTML = r.message;
+                new DataTable('#student_table');
+
+                // Open action modal
+                $("#modal_print_planner").modal("hide");
+
+                $("#modal_select_student").modal("show");
+            }
+        })
+    } else if (selected_action == "cancelled") {
+        $("#modal_select_student").modal("hide");
+        $("#modal_print_planner").modal("show");
+
+    } else {
+        // Print the planner for the selected student
+        window.open("print-student/index.html?planner-name=" + selected_action, "_blank");
+    }
+}

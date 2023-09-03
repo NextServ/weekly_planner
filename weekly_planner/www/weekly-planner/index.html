@@ -173,7 +173,7 @@
                 <hr />
                 <label>{{_("Student") }}</label><br />
                 <input class="text-align-left bg-light" name="student" id="selected_student" disabled>
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal_select_student" id="button_select" disabled>{{ _("Select") }}</button>
+                <button type="button" class="btn btn-primary" id="button_select" onclick="select_student('select')" disabled>{{ _("Select") }}</button>
               </div>
             </div>
             <br />
@@ -190,7 +190,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="modal_action_print">{{ _("Print") }}</button>
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="modal_action_cancel">{{ _("Cancel") }}</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _("Cancel") }}</button>
         </div>
       </div>
     </div>
@@ -199,18 +199,20 @@
 
   <!-- Select Student Modal -->
   <div class="modal fade" id="modal_select_student" data-backdrop="static" data-keyboard="true" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="modal_action_title"></h5>
+          <h5 class="modal-title">{{ _("Select Student") }}</h5>
           <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <div class="modal-body" id="modal_action_body" ></div>
+        <div class="modal-body" id="modal_print_student_body">
+          <table class="table table-lg table-striped" style="width: 100%" id="student_table"></table>
+        </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="modal_action_select">{{ _("Select") }}</button>
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="modal_action_cancel">{{ _("Cancel") }}</button>
+          <button type="button" class="btn btn-primary" onclick="select_student('selected')">{{ _("Select") }}</button>
+          <button type="button" class="btn btn-secondary" onclick="select_student('cancelled')">{{ _("Cancel") }}</button>
         </div>
       </div>
     </div>

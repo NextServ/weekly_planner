@@ -273,6 +273,40 @@ def get_students_for_selection(selected_campus, selected_group, planner_name):
     return students
 
 
+@frappe.whitelist()
+def get_student_for_printing(student_name = ""):
+    sql = '''SELECT last_name, first_name, name from `tabStudent` 
+            WHERE name IN (SELECT DISTINCT student from `tabPlanner Student`)'''
+    
+    if student_name != "":
+        sql += ''' AND name LIKE "%(student_name)s"'''
+        students = frappe.db.sql(sql, {"student_name": "%" + student_name + "%"}, as_dict=True)
+    else:
+        students = frappe.db.sql(sql, as_dict=True)
+
+    print("get_student_for_printing / sql: " + sql)
+
+    table_html =   '  <thead>'
+    table_html +=  '    <tr>'
+    table_html +=  '      <th>Last Name</th>'
+    table_html +=  '      <th>First Name</th>'
+    table_html +=  '      <th>ID</th>'
+    table_html +=  '    </tr>'
+    table_html +=  '  </thead>'
+    table_html +=  '  <tbody>'
+
+    for student in students:
+        table_html +=  '  <tr>'
+        table_html +=  '    <td>' + student.last_name + '</td>'
+        table_html +=  '    <td>' + student.first_name + '</td>'
+        table_html +=  '    <td>' + student.name + '</td>'
+        table_html +=  '  </tr>'
+
+    table_html +=  '  </tbody>'
+
+    return table_html
+
+
 @frappe.whitelist()    
 def save_students(planner_name, insert_list):
     # Add students in the Planner Student table for each student selected
