@@ -190,8 +190,27 @@ function select_student(selected_action){
 
                 student_table = document.getElementById("student_table");
                 student_table.innerHTML = r.message;
-                new DataTable('#student_table');
+                const table = new DataTable('#student_table', {
+                    destroy: true,
+                    columnDefs: [
+                        {
+                            target: 2,
+                            visible: false,
+                            searchable: false
+                        }],
+                });
 
+                table.on('click', 'tbody tr', (e) => {
+                    let classList = e.currentTarget.classList;
+                 
+                    if (classList.contains('selected')) {
+                        classList.remove('selected');
+                    } else {
+                        table.rows('.selected').nodes().each((row) => row.classList.remove('selected'));
+                        classList.add('selected');
+                    }
+                });
+                 
                 // Open action modal
                 $("#modal_print_planner").modal("hide");
 

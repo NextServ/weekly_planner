@@ -2,6 +2,7 @@ import frappe
 import json
 from frappe import _
 from datetime import date, datetime
+from weekly_planner.utils import diff_months
 from weekly_planner.install import add_settings
 
 
@@ -236,11 +237,6 @@ def build_planner_items(planner_name):
     table_html += "</tr>"
 
     return table_html
-
-
-@frappe.whitelist()
-def diff_months(d1, d2):
-    return (d1.year - d2.year) * 12 + d1.month - d2.month
 
 
 @frappe.whitelist()

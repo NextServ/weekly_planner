@@ -1,5 +1,6 @@
 import frappe
 from datetime import date, datetime
+from weekly_planner.utils import diff_months
 
 @frappe.whitelist()
 def build_planner_report(planner_name):
@@ -76,10 +77,3 @@ def build_planner_report(planner_name):
     table_html += "</tr>"
 
     return table_html
-
-
-@frappe.whitelist()
-def diff_months(d1, d2):
-    return (d1.year - d2.year) * 12 + d1.month - d2.month
-
-

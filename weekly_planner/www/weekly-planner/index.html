@@ -198,17 +198,14 @@
   <!-- ./ Print Report Modal -->  
 
   <!-- Select Student Modal -->
-  <div class="modal fade" id="modal_select_student" data-backdrop="static" data-keyboard="true" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal fade" id="modal_select_student" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">{{ _("Select Student") }}</h5>
-          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
         </div>
         <div class="modal-body" id="modal_print_student_body">
-          <table class="table table-lg table-striped" style="width: 100%" id="student_table"></table>
+          <table role="button" class="table table-lg table-striped" style="width: 100%" id="student_table"></table>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" onclick="select_student('selected')">{{ _("Select") }}</button>
