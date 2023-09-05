@@ -38,18 +38,18 @@
         <form>
             <div class="row">
                 <div class="col">
-                    Instructor
+                    {{ _("Instructor") }}
                     <input type="text" class="form-control" placeholder="First name" value="{{ planner.instructor }}" readonly>
                 </div>
                 <div class="col">
-                    Student Group
+                    {{ _("Student Group") }}
                     <input type="text" class="form-control" placeholder="Last name" value="{{ planner.student_group }}" readonly>
                 </div>
             </div>
             <br />
             <div class="row">
                 <div class="col">
-                    Date
+                    {{ _("Date") }}
                     <input type="text" class="form-control" placeholder="Date" value="{{ start_date }} - {{ end_date }}" readonly>
                 </div>
                 <div class="col">

@@ -51,15 +51,24 @@ frappe.ready(function() {
 
         // First validate that the end date is not before the start date
         selected_report = document.getElementById("selected_report").value;
+        student_id = document.getElementById("selected_student").value;
         start_date = document.getElementById("report_start_date").value;
         end_date = document.getElementById("report_end_date").value;
+        limit_to_planner = document.getElementById("check_limit_to_planner").checked;
         if (((start_date > end_date) || (!start_date) || (!end_date)) && (selected_report == "Student")) {
             alert(__("Invalid date values! Please re-enter."));
             return;
         }
 
         if (selected_report == "Planner") {
-            window.open("print-planner/index.html?planner-name=" + e.currentTarget.getAttribute('planner-name'), "_blank");
+            window.open("print-planner/index.html?planner-name=" + planner_name, "_blank");
+        } else {
+            url_text =  "print-student/index.html?planner-name=" + planner_name
+            url_text += "&student=" + student_id
+            url_text += "&start-date=" + start_date
+            url_text += "&end-date=" + end_date
+            url_text += "&limit-to-planner=" + limit_to_planner
+            window.open(url_text, "_blank");
         }
     });
 
@@ -170,14 +179,15 @@ function print_planner_modal(e = event) {
     document.getElementById("report_start_date").value = "";
     document.getElementById("report_end_date").value = "";
     document.getElementById("check_limit_to_planner").checked = false;
+    enable_report_options(true);
 
     $("#modal_print_planner").modal("show");
 }
 
 
-function enable_report_options() {
+function enable_report_options(newly_selected = false) {
     // Enable/disable the report options based on the report selection
-    options_disabled = document.getElementById("selected_report").value != "Student";
+    options_disabled = document.getElementById("selected_report").value != "Student" || newly_selected;
     document.getElementById("selected_student").disabled = options_disabled;
     document.getElementById("selected_student").required = !options_disabled;
     document.getElementById("button_select").disabled = options_disabled;

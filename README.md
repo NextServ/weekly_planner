@@ -62,7 +62,7 @@ MIT
 3. Show student names vertically in the Planner Report header
 4. Allow Instructors to print the Planner Detail Report
 
-**1.0.0 PLANNED**
+**1.0.0**
 1. Generate Student Lesson Report
 2. Refactored diff_months()
 3. Improved how the age appears on the Planner Detail page

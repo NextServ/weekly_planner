@@ -46,7 +46,7 @@ def build_planner_report(planner_name):
 
             table_html += "<th class='rotated-text'>" + student.last_name + " " + student.first_name
             if show_age:
-                table_html += "<i><h6>" + str(years) + " Years " + str(months) + " Months</h6></i>"
+                table_html += "<h6><i class='fw-light'>" + str(years) + " Years " + str(months) + " Months</i></h6>"
             table_html += "</th>"
 
         student_headers[student.student] = student.student

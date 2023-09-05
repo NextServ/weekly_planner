@@ -1,6 +1,5 @@
 # weekly_planner details
 import frappe
-import datetime
 
 no_cache = 1
 
@@ -9,21 +8,27 @@ def get_context(context):
     context.title = frappe.db.get_single_value("Weekly Planner Settings", "title")
 
     # Get planner_name from url parameter
-    planner_name = frappe.form_dict.get("planner-name")
+    planner_name = frappe.form_dict.get("planner-name").replace("%20", " ")
     context.planner = frappe.get_doc("Weekly Planner", planner_name)
-    context.is_approved = context.planner.is_approved
-
-    # Concatenate planner.start_date with start_date + 7 days
-    context.start_date = context.planner.start_date.strftime("%m/%d/%Y")
-    context.end_date = (context.planner.start_date + datetime.timedelta(days=7)).strftime("%m/%d/%Y")
+    context.start_date = frappe.form_dict.get("start-date")
+    context.end_date = frappe.form_dict.get("end-date")
+    context.limit = frappe.form_dict.get("limit-to-planner")
     
-    # Remove %20 from planner_name
-    if planner_name:    
-        planner_name = planner_name.replace("%20", " ")
+    
+    student_id = frappe.form_dict.get("student")
+    context.student = frappe.get_doc("Student", student_id)
 
-    print("get_context() / planner_name: " + planner_name)
+    sql = """SELECT topic, date FROM `tabPlanner Lesson`
+            WHERE (student = %(student)s) AND
+            (date BETWEEN %(start_date)s AND %(end_date)s)"""
+    
+    if context.limit == "true":
+        sql += " AND (parent = %(planner)s)"
 
-    context.empty_planner = len(frappe.get_all("Planner Student", filters={"parent": planner_name}, fields=["name"])) + \
-        len(frappe.get_all("Planner Topic", filters={"parent": planner_name}, fields=["name"]))
+    sql += " ORDER BY date ASC"
+    print("print-student | get_context | sql: " + sql)
+
+    context.lessons = frappe.db.sql(sql, {"student": student_id, "start_date": context.start_date, \
+        "end_date": context.end_date, "planner": planner_name}, as_dict=True)
 
     return context

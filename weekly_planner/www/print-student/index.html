@@ -23,7 +23,7 @@
 <header class="container-fluid">
   <div>
     <div>
-        <h3>{{ title }} Detail</h3>
+        <h3>{{ _("Student Report") }}</h3>
     </div>
   </div>
 </header>
@@ -31,84 +31,44 @@
 
 <!-- Main -->
 <main class="container-fluid">
-    <!-- Planner Header -->
+    <!-- Report Header -->
     <br />
     <section id="header">
         <!-- Grid -->
         <form>
             <div class="row">
                 <div class="col">
-                    Instructor
-                    <input type="text" class="form-control" placeholder="First name" value="{{ planner.instructor }}" readonly>
+                    {{ _("Student") }}
+                    <input type="text" class="form-control" value="{{ student.last_name + ', ' + student.first_name }}" readonly>
                 </div>
                 <div class="col">
-                    Student Group
-                    <input type="text" class="form-control" placeholder="Last name" value="{{ planner.student_group }}" readonly>
-                </div>
-            </div>
-            <br />
-            <div class="row">
-                <div class="col">
-                    Date
-                    <input type="text" class="form-control" placeholder="Date" value="{{ start_date }} - {{ end_date }}" readonly>
-                </div>
-                <div class="col">
-                    <br />
-                    {% if planner.is_approved %}
-                        <h5><span class="badge bg-success">Approved</span></h5>
-                    {% elif planner.status == 0 %}
-                        <h5><span class="badge bg-secondary">Draft</span></h5>
-                    {% elif planner.status == 1 %}
-                        <h5><span class="badge bg-primary">Submitted</span></h5>
-                    {% else %}
-                        <h5><span class="badge bg-warning">Cancelled</span></h5>
-                    {% endif %}
+                    {{ _("Coverage Dates") }}
+                    <input type="text" class="form-control" value="{{ start_date }} to {{ end_date }}" readonly>
                 </div>
             </div>
         </form>
     </section>
     <br />
-    <!-- ./ Planner Header -->
+    <!-- ./ Report Header -->
 
-    {% if empty_planner > 0 %}
-        <!-- display table header titles vertically -->
-        <style>
-            .rotated-text {
-                transform-origin: bottom center;
-                transform: rotate(-90deg) translateX(50%) translateY(12%); /* Rotate the text by 90 degrees */
-                white-space: nowrap; /* Keep the text on one line */
-                text-align: center;
-                /* left: 50%; */
-                height: 200px;
-            }
-            table#items_table > thead > tr {
-                height: auto;
-            }
-
-            table#items_table th:not(:first-child) {
-                max-width: 80px;
-            }
-
-            table#items_table {
-                width: auto;
-            }
-
-            main {
-                margin-left: 0px !important;
-                margin-right: 0px !important;
-            }
-        </style>
-          
-        <!-- Tables -->
-        <table class="table table-bordered" id="items_table"></table>
-        <!-- ./ Tables -->
-
-    {% else %}
-        <br />
-        <div class="shadow alert alert-primary alert-dismissible fade show" id="empty_planner_alert" role="alert">
-            <strong>{{ _("Empty Planner!") }}</strong>{{ _(" You have not added any items to your planner. Please add items to your planner.") }}
-        </div>    
-    {% endif %}
+    <!-- Tables -->
+    <table class="table table-bordered" id="lesson_table">
+        <thead>
+            <tr>
+                <th scope="col">{{ _("Topic") }}</th>
+                <th scope="col">{{ _("Date") }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for lesson in lessons %}
+            <tr>
+                <td>{{ lesson.topic }}</td>
+                <td>{{ lesson.date }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <!-- ./ Tables -->
 </main>
 <!-- ./ Main -->
 {% endblock %}
