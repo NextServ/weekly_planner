@@ -89,7 +89,8 @@
                 <div class="badge badge-primary translate-middle-x" planner-name="{{ planner.name }}" role="button" onclick="approve_planner()">{{ _("Approve") }}</div>
                 <div class="badge badge-primary translate-middle-x"></div>
               {% endif %}
-              <div class="badge badge-secondary translate-middle-x" role="button" planner-name="{{ planner.name }}" onclick="print_planner_modal()">{{ _("Print") }}</div>
+              <div class="badge badge-secondary translate-middle-x" role="button" planner-name="{{ planner.name }}" planner-start="{{ planner.start_date }}" 
+                onclick="print_planner_modal()">{{ _("Print") }}</div>
             </td>
           </tr>
         {% endfor %}
@@ -171,6 +172,15 @@
             <div class="row">
               <div class="col">
                 <hr />
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="" id="check_limit_to_planner" onchange="enable_report_options()" disabled>
+                  <label class="form-check-label" for="check_limit_to_planner">{{ _("Limit report to selected Planner") }}</label>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <hr />
                 <label>{{_("Student") }}</label><br />
                 <input class="text-align-left bg-light" name="student" id="selected_student" disabled>
                 <button type="button" class="btn btn-primary" id="button_select" onclick="select_student('select')" disabled>{{ _("Select") }}</button>
@@ -186,7 +196,7 @@
                 <label>{{ _("End Date") }}<input class="input-group-text text-align-left" id="report_end_date" type="date" disabled></label> 
               </div>
             </div>
-            </div>
+          </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="modal_action_print">{{ _("Print") }}</button>
@@ -208,7 +218,7 @@
           <table role="button" class="table table-lg table-striped" style="width: 100%" id="student_table"></table>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" onclick="select_student('selected')">{{ _("Select") }}</button>
+          <button type="button" class="btn btn-primary" id="modal_action_select" selected-student="0" onclick="select_student('selected')">{{ _("Select") }}</button>
           <button type="button" class="btn btn-secondary" onclick="select_student('cancelled')">{{ _("Cancel") }}</button>
         </div>
       </div>

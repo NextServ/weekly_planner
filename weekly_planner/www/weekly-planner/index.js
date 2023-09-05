@@ -62,7 +62,11 @@ frappe.ready(function() {
             window.open("print-planner/index.html?planner-name=" + e.currentTarget.getAttribute('planner-name'), "_blank");
         }
     });
-})
+
+    $("#modal_action_select").on("click", function(e) {
+        document.getElementById("selected_student").value = document.getElementById("modal_action_select").getAttribute("selected-student");
+    })
+});
 
 
 function calc_end_date(label_start_date, label_end_date) {
@@ -156,7 +160,16 @@ function approve_planner(e = event) {
 
 function print_planner_modal(e = event) {
     planner_name = e.currentTarget.getAttribute("planner-name");
+    planner_start = e.currentTarget.getAttribute("planner-start");
     document.getElementById("modal_action_print").setAttribute("planner-name", planner_name);
+    document.getElementById("modal_action_print").setAttribute("planner-start", planner_start);
+
+    // Reset modal fields
+    document.getElementById("selected_report").value = "Planner";
+    document.getElementById("selected_student").value = "";
+    document.getElementById("report_start_date").value = "";
+    document.getElementById("report_end_date").value = "";
+    document.getElementById("check_limit_to_planner").checked = false;
 
     $("#modal_print_planner").modal("show");
 }
@@ -172,16 +185,29 @@ function enable_report_options() {
     document.getElementById("report_start_date").required = !options_disabled;
     document.getElementById("report_end_date").disabled = options_disabled;
     document.getElementById("report_end_date").required = !options_disabled;
+    document.getElementById("check_limit_to_planner").disabled = options_disabled;
+
+    if (document.getElementById("check_limit_to_planner").checked) {
+        // Populate start and end dates
+        start_date = document.getElementById("modal_action_print").getAttribute("planner-start");
+
+        // add 7 days to start_date into end_date
+        const sevenDaysLater = new Date(start_date);
+        sevenDaysLater.setDate(sevenDaysLater.getDate() + 7);
+        end_date = sevenDaysLater.toISOString().slice(0, 10);
+
+        document.getElementById("report_start_date").value = start_date;
+        document.getElementById("report_end_date").value = end_date;
+    }
 }
 
 
 function select_student(selected_action){
+    student_name = document.getElementById("selected_student").value;
+
     if (selected_action == "select") {
         frappe.call({
             method: "weekly_planner.www.planner-detail.planner_actions.get_student_for_printing",
-            arg: {
-                "student_name": document.getElementById("selected_student").value
-            },
             callback: function(r) {
                 if (r.exc) {
                     // Throw error message
@@ -191,14 +217,12 @@ function select_student(selected_action){
                 student_table = document.getElementById("student_table");
                 student_table.innerHTML = r.message;
                 const table = new DataTable('#student_table', {
-                    destroy: true,
-                    columnDefs: [
-                        {
-                            target: 2,
-                            visible: false,
-                            searchable: false
-                        }],
+                    destroy: true
                 });
+
+                if (student_name) {
+                    table.search(student_name).draw();
+                }
 
                 table.on('click', 'tbody tr', (e) => {
                     let classList = e.currentTarget.classList;
@@ -208,21 +232,18 @@ function select_student(selected_action){
                     } else {
                         table.rows('.selected').nodes().each((row) => row.classList.remove('selected'));
                         classList.add('selected');
+                        document.getElementById("modal_action_select").setAttribute("selected-student", table.row('.selected').data()[2]);
                     }
                 });
-                 
+
                 // Open action modal
                 $("#modal_print_planner").modal("hide");
 
                 $("#modal_select_student").modal("show");
             }
         })
-    } else if (selected_action == "cancelled") {
+    } else {    // Cancel button clicked
         $("#modal_select_student").modal("hide");
         $("#modal_print_planner").modal("show");
-
-    } else {
-        // Print the planner for the selected student
-        window.open("print-student/index.html?planner-name=" + selected_action, "_blank");
     }
 }

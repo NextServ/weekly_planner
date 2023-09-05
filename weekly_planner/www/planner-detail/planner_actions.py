@@ -204,7 +204,7 @@ def build_planner_items(planner_name):
             table_html += "<th class='text-center'>" + student.last_name + " " + student.first_name
             if show_age:
                 table_html += "<br>"
-                table_html += "<span class='fs-6 text-center'><i>" + str(years) + " Years " + str(months) + " Months</i></span>"
+                table_html += "<span class='fs-6 fw-light fst-italic text-center'>" + str(years) + " Years " + str(months) + " Months</span>"
             table_html += "</th>"
 
         student_headers[student.student] = student.student
@@ -270,17 +270,10 @@ def get_students_for_selection(selected_campus, selected_group, planner_name):
 
 
 @frappe.whitelist()
-def get_student_for_printing(student_name = ""):
+def get_student_for_printing():
     sql = '''SELECT last_name, first_name, name from `tabStudent` 
             WHERE name IN (SELECT DISTINCT student from `tabPlanner Student`)'''
-    
-    if student_name != "":
-        sql += ''' AND name LIKE "%(student_name)s"'''
-        students = frappe.db.sql(sql, {"student_name": "%" + student_name + "%"}, as_dict=True)
-    else:
-        students = frappe.db.sql(sql, as_dict=True)
-
-    print("get_student_for_printing / sql: " + sql)
+    students = frappe.db.sql(sql, as_dict=True)
 
     table_html =   '  <thead>'
     table_html +=  '    <tr>'
