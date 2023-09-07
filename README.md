@@ -66,3 +66,6 @@ MIT
 1. Generate Student Lesson Report
 2. Refactored diff_months()
 3. Improved how the age appears on the Planner Detail page
+
+**1.1.0 PLANNED**
+1. Rewritten Planner Detail report that can be printed or saved as PDF properly
