@@ -174,9 +174,9 @@ def build_planner_report(planner_name, file_name):
     html_text += '</main>'
     html_text += '<!-- ./ Main -->    '
 
-    f = open(file_name + '.html', 'w')
-    f.write(html_text)
-    f.close()
+    # Check to see if file_name has a .pdf extension
+    with open(file_name + '.html', 'w') as f:
+        f.write(html_text)
 
     options = {
         'page-size': 'A4',
@@ -192,7 +192,7 @@ def build_planner_report(planner_name, file_name):
         'no-outline': None
     }
 
-    pdfkit.from_file(file_name + '.html', file_name, options=options)
-    webbrowser.open_new_tab(file_name)
+    pdfkit.from_file(file_name + '.html', file_name + '.pdf', options=options)
+    webbrowser.open_new_tab(file_name + '.pdf')
 
     return file_name
