@@ -259,11 +259,37 @@ function select_student(selected_action){
 }
 
 
+async function save_PDF(file_name = "") {
+    // (A) CREATE BLOB OBJECT
+    var myBlob = new Blob(["CONTENT"], {type: "application/pdf"});
+   
+    // (B) FILE HANDLER & FILE STREAM
+    const fileHandle = await window.showSaveFilePicker({
+      types: [{
+        suggestedName: file_name,
+        description: "PDF Files",
+        accept: {"application/pdf": [".pdf"]}
+      }]
+    });
+    const fileStream = await fileHandle.createWritable();
+   
+    // (C) WRITE FILE
+    await fileStream.write(myBlob);
+    await fileStream.close();
+}
+
+
 function generate_planner_report(planner_name) {
+    // Generate random number between 1 to 999
+    var random_number = Math.floor(Math.random() * 999) + 1;
+    var file_name = "planner_report_" + random_number + ".pdf";
+    save_PDF(file_name);
+
     frappe.call({
         method: "weekly_planner.www.print-planner.planner_reports.build_planner_report",
         args: {
-            "planner_name": planner_name
+            "planner_name": planner_name,
+            "file_name": file_name
         },
 
         callback: function(r) {

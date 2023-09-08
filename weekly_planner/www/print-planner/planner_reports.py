@@ -1,21 +1,19 @@
 import frappe
 import pdfkit
-import random
 import webbrowser
 from frappe import _
-from datetime import date, datetime
+from datetime import date, timedelta, datetime
 from weekly_planner.utils import diff_months
 
 @frappe.whitelist()
-def build_planner_report(planner_name):
+def build_planner_report(planner_name, file_name):
     # Remove %20 from planner_name
     if planner_name:    
         planner_name = planner_name.replace("%20", " ")
 
     planner = frappe.get_doc("Weekly Planner", planner_name)
     start_date = planner.start_date.strftime("%m/%d/%Y")
-    end_date = (planner.start_date + datetime.timedelta(days=7)).strftime("%m/%d/%Y")
-
+    end_date = (planner.start_date + timedelta(days=7)).strftime("%m/%d/%Y")
 
     html_text =  '<head>'
     html_text += '    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>'
@@ -164,8 +162,7 @@ def build_planner_report(planner_name):
 
                 if item != []:
                     lesson_item = item[0].abbreviation + " " + item[0].date.strftime('%m-%d-%y')
-                    html_text += "<span class='badge badge-pill badge-primary text-center'>" + lesson_item + \
-                        "<p hidden>student: " + col_header + " | name: " + item[0].name + " | </span>"
+                    html_text += "<span class='text-center'>[" + lesson_item + "]</span>"
                 else:
                     html_text += "<span><p hidden>student: " + col_header + " | name: none | </span>"
                 
@@ -177,13 +174,25 @@ def build_planner_report(planner_name):
     html_text += '</main>'
     html_text += '<!-- ./ Main -->    '
 
-    random_number = str(random.randint(1, 999))
-    file_name = 'planner-report-' + random_number
     f = open(file_name + '.html', 'w')
     f.write(html_text)
     f.close()
 
-    pdfkit.from_file(file_name + '.html', file_name + '.pdf')
-    webbrowser.open_new_tab(file_name + '.pdf')
+    options = {
+        'page-size': 'A4',
+        'orientation': 'Landscape',
+        'margin-top': '0.15in',
+        'margin-right': '0.15in',
+        'margin-bottom': '0.15in',
+        'margin-left': '0.15in',
+        'encoding': "UTF-8",
+        'custom-header': [
+            ('Accept-Encoding', 'gzip')
+        ],
+        'no-outline': None
+    }
+
+    pdfkit.from_file(file_name + '.html', file_name, options=options)
+    webbrowser.open_new_tab(file_name)
 
     return file_name
