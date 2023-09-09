@@ -69,3 +69,6 @@ MIT
 
 **1.1.0**
 1. Rewritten Planner Detail report that can be printed or saved as PDF properly
+
+**1.1.1**
+1. Fixed bug where the Planner Detail report is not opening in a new tab

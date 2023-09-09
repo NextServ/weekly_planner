@@ -195,6 +195,6 @@ def build_planner_report(planner_name, file_name):
     }
 
     pdfkit.from_file(file_name + '.html', file_name + '.pdf', options=options)
-    webbrowser.open_new_tab(file_name + '.pdf')
+    webbrowser.open_new(file_name + '.pdf')
 
     return file_name

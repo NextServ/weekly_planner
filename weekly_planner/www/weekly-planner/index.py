@@ -1,6 +1,5 @@
 # weekly_planner
 import frappe
-import webbrowser
 import datetime
 from frappe import _
 from weekly_planner.__init__ import get_version
