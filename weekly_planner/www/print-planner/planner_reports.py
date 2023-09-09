@@ -1,4 +1,5 @@
 import frappe
+import tempfile
 import pdfkit
 import webbrowser
 from frappe import _
@@ -175,6 +176,7 @@ def build_planner_report(planner_name, file_name):
     html_text += '<!-- ./ Main -->    '
 
     # Check to see if file_name has a .pdf extension
+    file_name = tempfile.gettempdir() + '/' + file_name           # Store file in the tmp directory
     with open(file_name + '.html', 'w') as f:
         f.write(html_text)
 
