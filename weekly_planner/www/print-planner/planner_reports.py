@@ -3,11 +3,12 @@ import tempfile
 import pdfkit
 import webbrowser
 from frappe import _
+from frappe.utils import random_string
 from datetime import date, timedelta, datetime
 from weekly_planner.utils import diff_months
 
 @frappe.whitelist()
-def build_planner_report(planner_name, file_name):
+def build_planner_report(planner_name):
     # Remove %20 from planner_name
     if planner_name:    
         planner_name = planner_name.replace("%20", " ")
@@ -175,8 +176,8 @@ def build_planner_report(planner_name, file_name):
     html_text += '</main>'
     html_text += '<!-- ./ Main -->    '
 
-    # Check to see if file_name has a .pdf extension
-    file_name = tempfile.gettempdir() + '/' + file_name           # Store file in the tmp directory
+    # Return a random number between 1 and 9999
+    file_name = tempfile.gettempdir() + '/planner_report_' + frappe.utils.random_string(6)
     with open(file_name + '.html', 'w') as f:
         f.write(html_text)
 

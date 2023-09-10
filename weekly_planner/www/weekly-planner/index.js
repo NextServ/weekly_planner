@@ -260,15 +260,11 @@ function select_student(selected_action){
 
 
 function generate_planner_report(planner_name) {
-    // Generate random number between 1 to 999
-    var random_number = Math.floor(Math.random() * 999) + 1;
-    var file_name = "planner_report_" + random_number;
-
+    // Generate random number between 1 to 9999
     frappe.call({
         method: "weekly_planner.www.print-planner.planner_reports.build_planner_report",
         args: {
             "planner_name": planner_name,
-            "file_name": file_name
         },
 
         callback: function(r) {
