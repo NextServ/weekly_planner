@@ -76,4 +76,6 @@ MIT
 **1.2.0**
 1. Refactor the Planner Detail Report using frappe.local response instead of using PDFKit to generate the PDF
 
-2. Various fixes based on the Issue List
+2. Refactor the Planner Detail Report so that it paginates properly
+
+3. Various fixes based on the Issue List
