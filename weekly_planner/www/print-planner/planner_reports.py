@@ -5,10 +5,10 @@ from weekly_planner.utils import diff_months
 from frappe.utils.pdf import get_pdf
 
 options = {
-    "margin-left": '0.15in',
-    "margin-right": '0.15in',
-    "margin-top": '0.15in',
-    "margin-bottom": '0.15in'
+    "margin-left": '1.5mm',
+    "margin-right": '1.5mm',
+    "margin-top": '1.5mm',
+    "margin-bottom": '1.5mm'
 }
 
 @frappe.whitelist()
@@ -65,13 +65,13 @@ def build_planner_report(planner_name):
     html_text += '                    <br />'
 
     if planner.is_approved:
-        html_text += '                <h5><span class="badge bg-success">Approved</span></h5>'
+        html_text += '                <h5>' + _("[Approved]") + '</h5>'
     elif planner.status == 0:
-        html_text += '                <h5><span class="badge bg-secondary">Draft</span></h5>'
+        html_text += '                <h5>' + _("[Draft]") + '</h5>'
     elif planner.status == 1:
-        html_text += '                <h5><span class="badge bg-primary">Submitted</span></h5>'
+        html_text += '                <h5>' + _("[Submitted]") + '</h5>'
     else:
-        html_text += '                <h5><span class="badge bg-warning">Cancelled</span></h5>'
+        html_text += '                <h5>' + _("[Cancelled]") + '</h5>'
 
     html_text += '                </div>'
     html_text += '            </div>'
