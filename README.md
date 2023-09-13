@@ -72,3 +72,8 @@ MIT
 
 **1.1.1**
 1. Fixed bug where the Planner Detail report is not opening in a new tab
+
+**1.2.0**
+1. Refactor the Planner Detail Report using frappe.local response instead of using PDFKit to generate the PDF
+
+2. Various fixes based on the Issue List
