@@ -5,16 +5,11 @@ from weekly_planner.utils import diff_months
 from frappe.utils.pdf import get_pdf
 
 options = {
-    "margin-left": "25.4mm",
-    "margin-right": "20.32mm",
-    "margin-top": "25.4mm",
-    "margin-bottom": "20.32mm"
+    "margin-left": '0.15in',
+    "margin-right": '0.15in',
+    "margin-top": '0.15in',
+    "margin-bottom": '0.15in'
 }
-
-# import pdfkit
-# import webbrowser
-# import tempfile
-# from frappe.utils import random_string
 
 @frappe.whitelist()
 def build_planner_report(planner_name):
@@ -185,27 +180,9 @@ def build_planner_report(planner_name):
     html_text += '</main>'
     html_text += '<!-- ./ Main -->    '
 
-    # Return a random number between 1 and 9999
-    # file_name = tempfile.gettempdir() + '/planner_report_' + frappe.utils.random_string(6)
     file_name = 'planner_report'
-    # with open(file_name + '.html', 'w') as f:
-    #     f.write(html_text)
-
-    # options = {
-    #     'page-size': 'A4',
-    #     'orientation': 'Landscape',
-    #     'margin-top': '0.15in',
-    #     'margin-right': '0.15in',
-    #     'margin-bottom': '0.15in',
-    #     'margin-left': '0.15in',
-    #     'encoding': "UTF-8",
-    #     'no-outline': None
-    # }
     options["page-size"] = "A4"
     options["orientation"] = "Landscape"
-
-    # pdfkit.from_file(file_name + '.html', file_name + '.pdf', options=options)
-    # webbrowser.open_new(file_name + '.pdf')
 
     frappe.local.response.filename = "{file_name}.pdf".format(file_name=file_name)
     frappe.local.response.filecontent = get_pdf(html_text, options)

@@ -61,7 +61,7 @@ frappe.ready(function() {
         }
 
         if (selected_report == "Planner") {
-            generate_planner_report(planner_name);
+            window.open("/api/method/weekly_planner.www.print-planner.planner_reports.build_planner_report?planner_name=" + planner_name, "_blank");
         } else {
             url_text =  "print-student/index.html?planner-name=" + planner_name
             url_text += "&student=" + student_id
@@ -256,22 +256,4 @@ function select_student(selected_action){
         $("#modal_select_student").modal("hide");
         $("#modal_print_planner").modal("show");
     }
-}
-
-
-function generate_planner_report(planner_name) {
-    // Generate random number between 1 to 9999
-    frappe.call({
-        method: "weekly_planner.www.print-planner.planner_reports.build_planner_report",
-        args: {
-            "planner_name": planner_name,
-        },
-
-        callback: function(r) {
-            if (r.exc) {
-                frappe.msgprint("Error building planner report");
-                return;
-            }
-        }
-    });
 }
