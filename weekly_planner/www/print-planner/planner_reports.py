@@ -30,15 +30,22 @@ def build_planner_report(planner_name):
                              ON p.student = s.name
                              WHERE p.parent = %(p_name)s''', {"p_name": planner_name}, as_dict=True)
     
-    # lessons = frappe.get_all("Planner Lesson", filters={"parent": planner_name}, fields=["*"])
-    topics = frappe.get_all("Planner Topic", filters={"parent": planner_name}, fields=["*"])
+    all_topics = frappe.get_all("Planner Topic", filters={"parent": planner_name}, fields=["*"])
+
     lessons = frappe.db.sql('''SELECT p.name, p.date, p.student, p.topic, l.abbreviation from `tabPlanner Lesson` p
                             INNER JOIN `tabLesson Status` l ON p.lesson_status = l.name
                             WHERE parent = %(p_name)s''', {"p_name": planner_name}, as_dict=True)
 
-    cols_per_batch = 12
-    total_batches = int((len(all_students) / cols_per_batch) + 1 if (len(all_students) % cols_per_batch) or (len(all_students) == cols_per_batch) else 0)
-    
+    studs_per_batch = 12
+    topics_per_batch = 8
+    topics_done = True
+    cur_page = 0
+    cur_student_batch = 0
+    total_students = len(all_students)
+    total_topics = len(all_topics)
+    total_stud_batches = int((total_students / studs_per_batch) + (1 if (total_students % studs_per_batch) or (total_students > studs_per_batch) else 0))
+    total_topic_batches = int((total_topics / topics_per_batch) + (1 if (total_topics % topics_per_batch) or (total_topics == topics_per_batch) else 0))
+    total_pages = total_stud_batches * total_topic_batches
                             
     html_text =  '<head>'
     html_text += '    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>'
@@ -48,13 +55,13 @@ def build_planner_report(planner_name):
     html_text += '</head>'
    
     html_text += '<!-- Header -->'
-    html_text += '<header class="container-fluid">'
+    html_text += '<header class="container">'
     html_text += '  <div>'
     html_text += '    <div>'
     html_text += '        <h3>' + _(frappe.db.get_single_value("Weekly Planner Settings", "title") + ' Detail') + '</h3>'
     html_text += '    </div>'
     html_text += '  </div>'
-    
+
     html_text += '  <!-- display table header titles vertically -->'
     html_text += '  <style>'
     html_text += '      .new-page {'
@@ -92,12 +99,24 @@ def build_planner_report(planner_name):
     html_text += '<!-- ./ Header -->'
 
     html_text += '<!-- Main -->'
-    html_text += '<main class="container-fluid">'
+    html_text += '<main class="container-xl">'
 
-    for batch in range(total_batches):       
-        students = all_students[batch * cols_per_batch:batch + cols_per_batch]
-        html_text += '<p class=new-page />' if batch else ''
-                            
+    print('* build_planner_report')
+
+    while True:
+        cur_page += 1
+        if cur_page > total_pages:
+            break
+
+        if topics_done:
+            cur_topic_batch = 1
+            cur_student_batch += 1
+            students = all_students[(cur_student_batch - 1) * studs_per_batch:cur_student_batch * studs_per_batch]
+            print('student batch: ' + str(cur_student_batch) + ' / ' + str(total_stud_batches) + ' | students: ' + str(total_students))
+        
+        html_text += '<p class=new-page />' if cur_page > 1 else ''
+        print('  topic_batch: ' + str(cur_topic_batch) + ' / ' + str(total_topic_batches) + ' | topics: ' + str(total_topics) + ' | topics_done: ' + str(topics_done))
+
         html_text += '    <!-- Planner Header -->'
         html_text += '    <br />'
         html_text += '    <section id="header">'
@@ -123,13 +142,13 @@ def build_planner_report(planner_name):
         html_text += '                    <br />'
 
         if planner.is_approved:
-            html_text += '                <h5>' + _("[Approved]") + '</h5>'
+            html_text += '                <h5>' + _("Approved") + '</h5>'
         elif planner.status == 0:
-            html_text += '                <h5>' + _("[Draft]") + '</h5>'
+            html_text += '                <h5>' + _("Draft") + '</h5>'
         elif planner.status == 1:
-            html_text += '                <h5>' + _("[Submitted]") + '</h5>'
+            html_text += '                <h5>' + _("Submitted") + '</h5>'
         else:
-            html_text += '                <h5>' + _("[Cancelled]") + '</h5>'
+            html_text += '                <h5>' + _("Cancelled") + '</h5>'
 
         html_text += '                </div>'
         html_text += '            </div>'
@@ -171,8 +190,13 @@ def build_planner_report(planner_name):
         html_text += "</tr></thead><tbody>"
 
         # Load up the rows
+        topics = all_topics[(cur_topic_batch - 1) * topics_per_batch:cur_topic_batch * topics_per_batch]
+
+        cur_topic_batch += 1
+        topics_done = cur_topic_batch > total_topic_batches
+                            
         for topic in topics:
-            html_text += "<tr><td>" + topic.topic + "</td>"
+            html_text += "<tr><td class='fs-6'>" + topic.topic + "</td>"
 
             if not topic.topic in topic_headers:
                 topic_headers.append(topic.topic)
@@ -183,10 +207,8 @@ def build_planner_report(planner_name):
                     html_text += "<td class='text-center'>"
 
                     if item != []:
-                        lesson_item = item[0].abbreviation + " " + item[0].date.strftime('%m-%d-%y')
-                        html_text += "<span class='text-center'>[" + lesson_item + "]</span>"
-                    else:
-                        html_text += "<span><p hidden>student: " + col_header + " | name: none | </span>"
+                        lesson_item = item[0].abbreviation + " " + item[0].date.strftime('%m-%d')
+                        html_text += "<span class='text-center fs-6'>" + lesson_item + "</span>"
                     
                     html_text += "</td>"
 

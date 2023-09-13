@@ -276,6 +276,12 @@ function delete_planner(e) {
 }
 
 
+function print_planner(e) {
+    planner_name = getQueryVariable("planner-name").replace(/%20/g, " ");  // remove %20s
+    window.open("/api/method/weekly_planner.www.print-planner.planner_reports.build_planner_report?planner_name=" + planner_name, "_blank");
+}
+
+
 function submit_planner(e) {
     planner_name = getQueryVariable("planner-name").replace(/%20/g, " ");  // remove %20s
     planner = frappe.get_doc("Weekly Planner", planner_name);

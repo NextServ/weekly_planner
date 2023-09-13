@@ -91,6 +91,7 @@
     <button type="button" class="btn btn-outline-primary" onclick="go_to_main()">Back</button>
     <button type="button" class="btn btn-primary" onclick="duplicate_planner()">{{ _("Duplicate Planner") }}</button> 
     <button type="button" class="btn btn-primary" onclick="delete_planner()">Del Planner</button>
+    <button type="button" class="btn btn-primary" onclick="print_planner()">Print Planner</button>
 
     {% if planner.status == 0 %}
       <button type="button" class="btn btn-primary" id="submit_button" onclick="submit_planner('{{ planner.name }}')">{{ _("Submit Planner") }}</button> 
