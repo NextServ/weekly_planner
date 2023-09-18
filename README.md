@@ -78,4 +78,4 @@ MIT
 
 2. Refactor the Planner Detail Report so that it paginates properly
 
-3. Various fixes based on the Issue List
+3. Added functionality to delete a Topic from the Planner Detail page

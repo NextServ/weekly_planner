@@ -43,17 +43,17 @@ def build_planner_report(planner_name):
     cur_student_batch = 0
     total_students = len(all_students)
     total_topics = len(all_topics)
-    total_stud_batches = int((total_students / studs_per_batch) + (1 if (total_students % studs_per_batch) or (total_students > studs_per_batch) else 0))
+    total_stud_batches = int((total_students / studs_per_batch) + (1 if (total_students % studs_per_batch) and (total_students == studs_per_batch) else 0))
     total_topic_batches = int((total_topics / topics_per_batch) + (1 if (total_topics % topics_per_batch) or (total_topics == topics_per_batch) else 0))
     total_pages = total_stud_batches * total_topic_batches
                             
     html_text =  '<head>'
-    # html_text += '    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>'
-    html_text += '    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">'
-    # html_text += '    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>'
-    # html_text += '    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>'
+    # html_text += '    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">'
+    html_text += '  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">'
+    html_text += '  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>'
+
     html_text += '</head>'
-   
+       
     html_text += '<!-- Header -->'
     html_text += '<header class="container">'
     html_text += '  <div>'
@@ -70,8 +70,8 @@ def build_planner_report(planner_name):
                    
     html_text += '      .rotated-text {'
     html_text += '          transform-origin: bottom center;'
-
     html_text += '          transform: rotate(-90deg) translateX(50%) translateY(12%); /* Rotate the text by 90 degrees */'
+
     html_text += '          -webkit-transform: rotate(-90deg) translate(-60px, -60px);'
     html_text += '          -moz-transform: rotate(-90deg) translate(-60px, -60px);'
     html_text += '          -ms-transform: rotate(-90deg) translate(-60px, -60px);'
@@ -129,9 +129,9 @@ def build_planner_report(planner_name):
         html_text += '        <!-- Grid -->'
         html_text += '        <form>'
         html_text += '            <div class="row">'
-        html_text += '                <div class="col">'
+        html_text += '                <div class="col"><h6>'
         html_text += '                    ' + _("Instructor")
-        html_text += '                    <input type="text" class="form-control" placeholder="First name" value="' + planner.instructor + '" readonly>'
+        html_text += '                    <input type="text" class="form-control" placeholder="First name" value="' + planner.instructor + '" readonly></h6>'
         html_text += '                </div>'
         html_text += '                <div class="col">'
         html_text += '                    ' + _("Student Group")
