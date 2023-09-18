@@ -5,10 +5,10 @@ from weekly_planner.utils import diff_months
 from frappe.utils.pdf import get_pdf
 
 options = {
-    "margin-left": '1.5mm',
-    "margin-right": '1.5mm',
-    "margin-top": '1.5mm',
-    "margin-bottom": '1.5mm'
+    "margin-left": '2mm',
+    "margin-right": '2mm',
+    "margin-top": '2mm',
+    "margin-bottom": '2mm'
 }
 
 @frappe.whitelist()
@@ -37,7 +37,7 @@ def build_planner_report(planner_name):
                             WHERE parent = %(p_name)s''', {"p_name": planner_name}, as_dict=True)
 
     studs_per_batch = 12
-    topics_per_batch = 8
+    topics_per_batch = 7
     topics_done = True
     cur_page = 0
     cur_student_batch = 0
@@ -69,17 +69,16 @@ def build_planner_report(planner_name):
     html_text += '      }'
                    
     html_text += '      .rotated-text {'
-    html_text += '          transform-origin: bottom center;'
-    html_text += '          transform: rotate(-90deg) translateX(50%) translateY(12%); /* Rotate the text by 90 degrees */'
+    # html_text += '          transform-origin: top center;'
+    # html_text += '          transform: rotate(-90deg) translateX(50%) translateY(12%); /* Rotate the text by 90 degrees */'
 
-    html_text += '          -webkit-transform: rotate(-90deg) translate(-60px, -60px);'
-    html_text += '          -moz-transform: rotate(-90deg) translate(-60px, -60px);'
-    html_text += '          -ms-transform: rotate(-90deg) translate(-60px, -60px);'
-    html_text += '          -o-transform: rotate(-90deg) translate(-60px, -60px);'
+    html_text += '          -webkit-transform: rotate(-90deg) translate(-55px, -50px);'
+    # html_text += '          -moz-transform: rotate(-90deg) translate(-60px, -60px);'
+    # html_text += '          -ms-transform: rotate(-90deg) translate(-60px, -60px);'
+    # html_text += '          -o-transform: rotate(-90deg) translate(-60px, -60px);'
     
     html_text += '          white-space: nowrap; /* Keep the text on one line */'
-    html_text += '          text-align: center;'
-    html_text += '          /* left: 50%; */'
+    html_text += '          text-align: top;'
     html_text += '          height: 200px;'
     html_text += '      }'
                    
@@ -99,13 +98,18 @@ def build_planner_report(planner_name):
     html_text += '          margin-left: 0px !important;'
     html_text += '          margin-right: 0px !important;'
     html_text += '      }'
+
+    html_text += '      h7 {'
+    html_text += '          font-family: Arial, Helvetica, sans-serif;'
+    html_text += '          font-size: 9pt;'
+    html_text += '      }'
     html_text += '  </style>'
 
     html_text += '</header>'
     html_text += '<!-- ./ Header -->'
 
     html_text += '<!-- Main -->'
-    html_text += '<main class="container-xl">'
+    html_text += '<main class="container-xl"><h7>'
 
     print('* build_planner_report')
 
@@ -125,41 +129,22 @@ def build_planner_report(planner_name):
 
         html_text += '    <!-- Planner Header -->'
         html_text += '    <br />'
-        html_text += '    <section id="header">'
-        html_text += '        <!-- Grid -->'
-        html_text += '        <form>'
-        html_text += '            <div class="row">'
-        html_text += '                <div class="col"><h6>'
-        html_text += '                    ' + _("Instructor")
-        html_text += '                    <input type="text" class="form-control" placeholder="First name" value="' + planner.instructor + '" readonly></h6>'
-        html_text += '                </div>'
-        html_text += '                <div class="col">'
-        html_text += '                    ' + _("Student Group")
-        html_text += '                    <input type="text" class="form-control" placeholder="Last name" value="' + planner.student_group +'" readonly>'
-        html_text += '                </div>'
-        html_text += '            </div>'
-        html_text += '            <br />'
-        html_text += '            <div class="row">'
-        html_text += '                <div class="col">'
-        html_text += '                    '+ _("Date")
-        html_text += '                    <input type="text" class="form-control" placeholder="Date" value="' + start_date + ' to ' +  end_date + '" readonly>'
-        html_text += '                </div>'
-        html_text += '                <div class="col">'
-        html_text += '                    <br />'
+        html_text += '    <!-- Grid -->'
+        html_text += '    <div class="container">'
+        html_text += '      ' + _("Instructor:") + '&nbsp <b>' + planner.instructor + '</b>&nbsp &nbsp &nbsp' + _("Student Group: ") + '<b>' + planner.student_group + '</b>'
+        html_text += '      &nbsp &nbsp &nbsp'
+        html_text += '      ' + _("Dates:") + '&nbsp <b>' + start_date + '</b> to <b>' +  end_date + '</b> &nbsp &nbsp &nbsp' + _("Status:") + '&nbsp <b>'
 
         if planner.is_approved:
-            html_text += '                <h5>' + _("Approved") + '</h5>'
+            html_text += _("Approved")
         elif planner.status == 0:
-            html_text += '                <h5>' + _("Draft") + '</h5>'
+            html_text += _("Draft")
         elif planner.status == 1:
-            html_text += '                <h5>' + _("Submitted") + '</h5>'
+            html_text +=_("Submitted")
         else:
-            html_text += '                <h5>' + _("Cancelled") + '</h5>'
+            html_text += _("Cancelled")
 
-        html_text += '                </div>'
-        html_text += '            </div>'
-        html_text += '        </form>'
-        html_text += '    </section>'
+        html_text += '    </b></div>'
         html_text += '    <br />'
         html_text += '    <!-- ./ Planner Header -->'
 
@@ -171,9 +156,9 @@ def build_planner_report(planner_name):
         # Build the table html
         html_text += '    <!-- Tables -->'
         html_text += '    <table class="table table-bordered" id="items_table">'
-        html_text += '      <thead>'
+        html_text += '      <thead><h7>'
         html_text += '        <tr>'
-        html_text += '          <th><span width="15px">Topic</span></th>'
+        html_text += '          <th><span width="15px"><h7>Topic</h7></span></th>'
 
         # Load up the columns
         for student in students:
@@ -185,15 +170,15 @@ def build_planner_report(planner_name):
                     years = int(diff_months(datetime.today(), student.date_of_birth) / 12)
                     months = years % 12
 
-                html_text += "<th class='rotated-text'>" + student.last_name + " " + student.first_name
+                html_text += "<th class='rotated-text'><h7>" + student.last_name + " " + student.first_name
                 if show_age:
-                    html_text += "<h6><i class='fw-light'>" + str(years) + " Years " + str(months) + " Months</i></h6>"
+                    html_text += "<p class='fw-light'><i>" + str(years) + " Years " + str(months) + " Months</i><p>"
                 
-                html_text += "</th>"
+                html_text += "</h7></th>"
 
             student_headers[student.student] = student.student
         
-        html_text += "</tr></thead><tbody>"
+        html_text += "</tr></h7></thead><tbody><h7>"
 
         # Load up the rows
         topics = all_topics[(cur_topic_batch - 1) * topics_per_batch:cur_topic_batch * topics_per_batch]
@@ -202,7 +187,7 @@ def build_planner_report(planner_name):
         topics_done = cur_topic_batch > total_topic_batches
                             
         for topic in topics:
-            html_text += "<tr><td class='fs-6'>" + topic.topic + "</td>"
+            html_text += "<tr><td><h7>" + topic.topic + "</h7></td>"
 
             if not topic.topic in topic_headers:
                 topic_headers.append(topic.topic)
@@ -210,24 +195,25 @@ def build_planner_report(planner_name):
                 # loop through keys
                 for col_header in student_headers.keys():
                     item = [entry for entry in lessons if entry["topic"] == topic.topic and entry["student"] == col_header]
-                    html_text += "<td class='text-center'>"
+                    html_text += "<td class='text-center'><h7>"
 
                     if item != []:
                         lesson_item = item[0].abbreviation + " " + item[0].date.strftime('%m-%d')
-                        html_text += "<span class='text-center fs-6'>" + lesson_item + "</span>"
+                        html_text += "<span class='text-center'>" + lesson_item + "</span>"
                     
-                    html_text += "</td>"
+                    html_text += "</h7></td>"
 
         html_text += '      </tr>'
-        html_text += '    </tbody></table>'
+        html_text += '    </h7></tbody></table>'
         html_text += '    <!-- ./ Tables -->'
         
-    html_text += '</main>'
+    html_text += '</h7></main>'
     html_text += '<!-- ./ Main -->    '
 
     file_name = 'planner_report'
     options["page-size"] = "A4"
     options["orientation"] = "Landscape"
+    options["minimum-font-size"] = "9"
 
     frappe.local.response.filename = "{file_name}.pdf".format(file_name=file_name)
     frappe.local.response.filecontent = get_pdf(html_text, options)
