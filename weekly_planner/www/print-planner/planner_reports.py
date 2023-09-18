@@ -72,7 +72,7 @@ def build_planner_report(planner_name):
     # html_text += '          transform-origin: top center;'
     # html_text += '          transform: rotate(-90deg) translateX(50%) translateY(12%); /* Rotate the text by 90 degrees */'
 
-    html_text += '          -webkit-transform: rotate(-90deg) translate(-55px, -50px);'
+    html_text += '          -webkit-transform: rotate(-90deg) translate(-55px, -60px);'
     # html_text += '          -moz-transform: rotate(-90deg) translate(-60px, -60px);'
     # html_text += '          -ms-transform: rotate(-90deg) translate(-60px, -60px);'
     # html_text += '          -o-transform: rotate(-90deg) translate(-60px, -60px);'
@@ -158,7 +158,7 @@ def build_planner_report(planner_name):
         html_text += '    <table class="table table-bordered" id="items_table">'
         html_text += '      <thead><h7>'
         html_text += '        <tr>'
-        html_text += '          <th><span width="15px"><h7>Topic</h7></span></th>'
+        html_text += '          <th><span width="30px"><h7>Topic</h7></span></th>'
 
         # Load up the columns
         for student in students:
