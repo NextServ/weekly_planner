@@ -187,7 +187,7 @@ def build_planner_report(planner_name):
         topics_done = cur_topic_batch > total_topic_batches
                             
         for topic in topics:
-            html_text += "<tr><td><h7>" + topic.topic + "</h7></td>"
+            html_text += "<tr><td><h7>" + topic.topic[:50] + ('...' if len(topic.topic) > 50 else '') + "</h7></td>"
 
             if not topic.topic in topic_headers:
                 topic_headers.append(topic.topic)
