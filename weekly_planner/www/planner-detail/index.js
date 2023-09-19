@@ -40,10 +40,19 @@ frappe.ready(function() {
         }
     });
 
+    // Check for Add Students button clicked
+    $('#modal_add_students').on('show.bs.modal', function (e) {
+        show_add_students_modal(planner_name);
+    })
+    
     // Check for Add Topics button clicked
-    $('#modal_add_topics').on('show.bs.modal', function (e) {
-        // alert("modal shown");
-        show_topics(e);
+    $('#btn_add_topics').on('click', function (e) {
+        show_topics('add');
+    })
+
+    // Check for Delete Topics button clicked
+    $('#btn_del_topics').on('click', function (e) {
+        show_topics('delete');
     })
 
     $('#save_lesson_button').on('click', function (e) {
@@ -414,30 +423,39 @@ function save_students(planner_name, insert_list) {
 }
 
 
-function show_topics(e) {
+function show_topics(show_action) {
     // Retrieve topics from Frappe
     planner_name = getQueryVariable("planner-name").replace(/%20/g, " ");  // remove %20s
 
     frappe.call({
         method: "weekly_planner.www.planner-detail.planner_actions.get_topics_for_selection",
         args: {
-            "planner_name": planner_name
+            "planner_name": planner_name,
+            "show_action": show_action
         },
 
         callback: function(topics) {
             if (topics.message) {
                 var topics_table = document.getElementById("topics_table");
+                if (show_action == "add") {
+                    document.getElementById("modal_topics_title").innerHTML = __("Add Topics");
+                    document.getElementById("add_topics_button").innerHTML = __("Add Selected");
+                } else {
+                    document.getElementById("modal_topics_title").innerHTML = __("Delete Topics");
+                    document.getElementById("add_topics_button").innerHTML = __("Delete Selected");
+                }
 
                 // Show the topics table
                 topics_table.innerHTML = "";
 
                 // Build the topics_table with columns topic, campus and group using the dataset returned from get_topics method
-                var topics_table_html = '<thead><tr><th>Topic</th><th>Course</th></tr></thead><tbody>';
+                var topics_table_html = '<thead><tr><th>Topic</th><th>Course</th><th>Key</th></tr></thead><tbody>';
                 
                 topics.message.forEach((topic) => {
                     course = topic.parent ? topic.parent : "";
-                    topics_table_html += '<tr><td>' + topic.name + '</td>';
-                    topics_table_html += '<td>' + course + '</td></tr>';
+                    topics_table_html += '<tr><td>' + topic.subject + '</td>';
+                    topics_table_html += '<td>' + course + '</td>'
+                    topics_table_html += '<td>' + topic.record_key + '</td></tr>';
                 });
                 topics_table_html += '</tbody>';
                 // console.log(topics_table_html);
@@ -449,8 +467,15 @@ function show_topics(e) {
                     rowGroup: {
                         dataSrc: 1
                     },
+                    columnDefs: [{
+                        target: 2,
+                        visible: false,
+                        searchable: false
+                    }],
                     order: [[1, 'asc']]
                 });
+
+                $('#modal_add_topics').modal('show');
 
                 table.on('click', 'tbody tr', function (e) {
                     e.currentTarget.classList.toggle('selected');
@@ -466,12 +491,16 @@ function show_topics(e) {
                     const insert_list = [];
                     table.rows(".selected").every(function ( rowIdx, tableLoop, rowLoop ) {
                         // Build an array containing both student and planner_name
-                        item = this.data()[0];
+                        if (show_action == 'add') {
+                            item = this.data()[0].replace(/&amp;/g, "&");
+                        } else {
+                            item = this.data()[2]           // topic name for deleting; this is a hidden column
+                        }
                         insert_list.push(item);
                     });
                     
                     // Output to console log each element in the insert_list array
-                    save_topics(planner_name, insert_list);
+                    save_topics(planner_name, insert_list, show_action);
                 });
 
                 document.querySelector('#cancel_topics_button').addEventListener('click', function () {
@@ -487,12 +516,21 @@ function show_topics(e) {
 }
 
 
-function save_topics(planner_name, insert_list) {
+function save_topics(planner_name, insert_list, show_action) {
+    // Confirm that the user wants to delete the selected topic before proceeding
+    if (show_action == "delete") {
+        if (!confirm(__("Are you sure you want to delete the selected topics?"))) {
+            // User clicked "Cancel"
+            return;
+        }
+    }
+
     frappe.call({
         method: "weekly_planner.www.planner-detail.planner_actions.save_topics",
         args: {
             "planner_name": planner_name,
-            "insert_list": insert_list
+            "insert_list": insert_list,
+            "show_action": show_action
         },
 
         callback: function(r) {
@@ -530,7 +568,7 @@ function show_add_students_modal(planner_name) {
         }
     });
 
-    $("#modal_add_students").modal("show");
+    // $("#modal_add_students").modal("show");
 }
 
 

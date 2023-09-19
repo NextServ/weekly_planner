@@ -312,26 +312,31 @@ def save_students(planner_name, insert_list):
 
 
 @frappe.whitelist()
-def get_topics_for_selection(planner_name):
+def get_topics_for_selection(planner_name, show_action):
     # Retrieve topics that are not already in Planner Topic
-    # select topic, course_name from `tabCourse Topic` t inner join `tabCourse` c on parent = c.name order by course_name, topic;
-    sql = '''SELECT t.name, parent FROM `tabTopic` t
-            LEFT JOIN `tabCourse Topic` c ON t.name = c.topic    
-            WHERE t.name NOT IN (SELECT topic FROM `tabPlanner Topic` WHERE parent = %(planner_name)s)'''
+    if show_action == "add":
+        sql = '''SELECT t.name subject, c.parent, LEFT(t.name, 10) record_key FROM `tabTopic` t
+                LEFT JOIN `tabCourse Topic` c ON t.name = c.topic    
+                WHERE t.name NOT IN (SELECT topic FROM `tabPlanner Topic` WHERE parent = %(planner_name)s)'''
+    else:
+        sql = '''SELECT t.topic subject, c.parent, t.name record_key FROM `tabPlanner Topic` t
+                LEFT JOIN `tabCourse Topic` c ON t.topic = c.topic
+                WHERE t.parent = %(planner_name)s'''
     topics = frappe.db.sql(sql, {"planner_name": planner_name}, as_dict=True)
 
     return topics
 
 
 @frappe.whitelist()
-def save_topics(planner_name, insert_list):
+def save_topics(planner_name, insert_list, show_action):
     topics = json.loads(insert_list)
     
     planner_doc = frappe.get_doc("Weekly Planner", planner_name)
     for t in topics:
-        planner_doc.append("topics", {
-            "topic": t
-        })
+        if show_action == "add":
+            planner_doc.append("topics", {"topic": t})
+        else:
+            planner_doc.delete("topics", {"name": t})
 
     planner_doc.save()
    
