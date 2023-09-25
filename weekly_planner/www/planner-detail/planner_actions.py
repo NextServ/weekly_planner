@@ -171,7 +171,7 @@ def build_planner_items(planner_name):
                              WHERE p.parent = %(p_name)s''', {"p_name": planner_name}, as_dict=True)
 
     # lessons = frappe.get_all("Planner Lesson", filters={"parent": planner_name}, fields=["*"])
-    topics = frappe.get_all("Planner Topic", filters={"parent": planner_name}, fields=["*"])
+    topics = frappe.get_all("Planner Topic", filters={"parent": planner_name, "is_hidden": 0}, fields=["*"])
     lessons = frappe.db.sql('''SELECT p.name, p.date, p.student, p.topic, l.abbreviation from `tabPlanner Lesson` p
                             INNER JOIN `tabLesson Status` l ON p.lesson_status = l.name
                             WHERE parent = %(p_name)s''', {"p_name": planner_name}, as_dict=True)
@@ -212,8 +212,10 @@ def build_planner_items(planner_name):
     table_html += "</tr></thead><tbody>"
 
     # Load up the rows
+    topic_idx = 0
     for topic in topics:
-        table_html += "<tr><td>" + str(topic.idx) + "</td>"
+        topic_idx += 1
+        table_html += "<tr><td>" + str(topic_idx) + "</td>"
         table_html += "<td>" + topic.topic + "</td>"
 
         if not topic.topic in topic_headers:
@@ -315,13 +317,14 @@ def save_students(planner_name, insert_list):
 def get_topics_for_selection(planner_name, show_action):
     # Retrieve topics that are not already in Planner Topic
     if show_action == "add":
-        sql = '''SELECT t.name subject, c.parent, LEFT(t.name, 10) record_key FROM `tabTopic` t
+        sql = '''SELECT t.name subject, c.parent, t.name record_key FROM `tabTopic` t
                 LEFT JOIN `tabCourse Topic` c ON t.name = c.topic    
-                WHERE t.name NOT IN (SELECT topic FROM `tabPlanner Topic` WHERE parent = %(planner_name)s)'''
+                WHERE t.name NOT IN (SELECT topic FROM `tabPlanner Topic` WHERE (parent = %(planner_name)s)
+                AND (is_hidden = 0))'''
     else:
         sql = '''SELECT t.topic subject, c.parent, t.name record_key FROM `tabPlanner Topic` t
                 LEFT JOIN `tabCourse Topic` c ON t.topic = c.topic
-                WHERE t.parent = %(planner_name)s'''
+                WHERE (t.parent = %(planner_name)s) AND (is_hidden = 0)'''
     topics = frappe.db.sql(sql, {"planner_name": planner_name}, as_dict=True)
 
     return topics
@@ -332,13 +335,27 @@ def save_topics(planner_name, insert_list, show_action):
     topics = json.loads(insert_list)
     
     planner_doc = frappe.get_doc("Weekly Planner", planner_name)
+    append_count = 0
+    recs_to_hide = []
     for t in topics:
         if show_action == "add":
-            planner_doc.append("topics", {"topic": t})
-        else:
-            planner_doc.delete("topics", {"name": t})
+            # Check to see if the topic already exists in the Planner Topic table
+            if frappe.db.exists("Planner Topic", {"topic": t, "parent": planner_name}):
+                recs_to_hide.append(t)
 
-    planner_doc.save()
+            else:
+                planner_doc.append("topics", {"topic": t})
+                append_count += 1
+        else:
+            frappe.db.sql('''UPDATE `tabPlanner Topic` SET is_hidden = 1 WHERE name = %1s''', t)
+
+    if append_count:
+        planner_doc.save()
+
+    if len(recs_to_hide):
+        for r in recs_to_hide:
+            frappe.db.sql('''UPDATE `tabPlanner Topic` SET is_hidden = 0
+                WHERE (topic = %(topic)s) AND (parent = %(planner_name)s)''', {"topic": r, "planner_name": planner_name})
    
     return
 

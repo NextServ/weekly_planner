@@ -6,7 +6,8 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "topic"
+  "topic",
+  "is_hidden"
  ],
  "fields": [
   {
@@ -15,12 +16,18 @@
    "in_list_view": 1,
    "label": "Topic",
    "options": "Topic"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_hidden",
+   "fieldtype": "Check",
+   "label": "Is Hidden"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-07-12 21:46:16.836628",
+ "modified": "2023-09-25 13:41:45.633271",
  "modified_by": "Administrator",
  "module": "Weekly Planner",
  "name": "Planner Topic",

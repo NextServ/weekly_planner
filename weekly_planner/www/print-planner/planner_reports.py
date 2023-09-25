@@ -30,7 +30,7 @@ def build_planner_report(planner_name):
                              ON p.student = s.name
                              WHERE p.parent = %(p_name)s''', {"p_name": planner_name}, as_dict=True)
     
-    all_topics = frappe.get_all("Planner Topic", filters={"parent": planner_name}, fields=["*"])
+    all_topics = frappe.get_all("Planner Topic", filters={"parent": planner_name, "is_hidden": 0}, fields=["*"])
 
     lessons = frappe.db.sql('''SELECT p.name, p.date, p.student, p.topic, l.abbreviation from `tabPlanner Lesson` p
                             INNER JOIN `tabLesson Status` l ON p.lesson_status = l.name
