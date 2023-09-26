@@ -7,6 +7,45 @@ from weekly_planner.install import add_settings
 
 
 @frappe.whitelist()
+def build_planner_list():
+    cur_user = frappe.get_user()
+    cur_roles = cur_user.get_roles()
+    is_hos = "Head of School" in cur_roles
+    is_head_instructor = "Head Instructor" in cur_roles
+    planners = []
+
+    # print("* build_planner_list\n")
+
+    # Retrieve Instructor from User
+    # instructor = frappe.get_all("Instructor", fields=["name", "instructor_name", "user", "employee"], filters={"user": frappe.session.user})
+    sql = '''SELECT i.name, instructor_name, e.user_id AS user, i.employee FROM `tabInstructor` i
+        INNER JOIN tabEmployee e on i.employee = e.name
+        WHERE e.user_id = %(user)s'''
+    instructor = frappe.db.sql(sql, {"user": frappe.session.user}, as_dict=False)
+
+    # Load weekly planners (all for Head Instructor and System Manager, only for current instructor otherwise)
+    if is_head_instructor or is_hos:
+        # Load all instructors reporting to current user
+        sql = '''SELECT p.name, p.instructor, student_group, start_date, DATE_ADD(start_date, INTERVAL 7 DAY) AS end_date, 
+            p.status, p.is_approved FROM `tabWeekly Planner` p
+            INNER JOIN `tabInstructor` i ON p.instructor = i.name INNER JOIN `tabEmployee` e ON i.employee = e.name '''
+        
+        if is_hos:
+            planners = frappe.db.sql(sql, as_dict=False)
+        else:
+            sql += '''WHERE e.reports_to = %(head)s OR p.instructor = %(instructor)s'''                
+            planners = frappe.db.sql(sql, {"head": instructor[0].employee, "instructor": instructor[0].name}, as_dict=False)
+
+    else:
+        # Test to see if instructor exists and throw an error if not
+        sql = '''SELECT p.name, p.instructor, student_group, start_date, DATE_ADD(start_date, INTERVAL 7 DAY) AS end_date, 
+                p.status, p.is_approved FROM `tabWeekly Planner` p WHERE p.instructor = %(instructor)s'''
+        planners = frappe.db.sql(sql, {"instructor": instructor[0].name}, as_dict=False)
+    
+    return planners
+
+
+@frappe.whitelist()
 def create_planner(instructor, selected_group, start_date, description):
     planner = frappe.new_doc("Weekly Planner")
     planner.instructor = instructor

@@ -1,5 +1,31 @@
 frappe.ready(function() {
-    new DataTable('#main_table');
+    frappe.call({
+        method: "weekly_planner.www.planner-detail.planner_actions.build_planner_list",
+        callback: function(r) {
+            if (r.exc) {
+                // Throw error message
+                return;
+            }
+
+            const main_width = document.getElementById("main-container").clientWidth
+            const main_height = document.getElementById("main-container").clientHeight
+            const container = document.querySelector('#planner-table');
+            const hot = new Handsontable(container, {
+                data: r.message,
+                colHeaders: [__('Name'), __('Instructor'), __('Student Group'), __('Start Date'), __('End Date'), __('Approved'), __('Status')],
+                colWidths: [0, main_width * .4, main_width * .3, main_width * .07, main_width * .07, main_width * .05, main_width * .05], 
+                rowHeaders: true,
+                width: main_width,
+                height: main_height,
+                hiddenColumns: {
+                    columns: [0],
+                    indicators: false
+                },
+
+                licenseKey: 'non-commercial-and-evaluation' // for non-commercial use only
+            });        
+        }
+    });
 
     // Check for Approve Planner button click
     $("#modal_action_primary").on("click", function(e) {
