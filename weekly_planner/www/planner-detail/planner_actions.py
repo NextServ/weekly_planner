@@ -419,14 +419,17 @@ def build_add_students_modal(planner_name):
 
 
 @frappe.whitelist()
-def build_lesson_entry_modal(lesson_name, status_abbr, lesson_date, org_lesson_value):
+def build_lesson_entry_modal(student, topic, lesson_name, status_abbr, lesson_date, org_lesson_value):
     # Get lesson status value based on abbreviation
-    if org_lesson_value == "none":
-        lesson_date = ""
-    else:
+    try:
         # Convert lesson_date to date object
         lesson_date = datetime.strptime(lesson_date, '%m-%d-%y').strftime('%Y-%m-%d')
+    except:
+        lesson_date = ""
 
+    # Get student name
+    student_name = frappe.get_doc("Student", student, ["first_name", "last_name"])
+    
     # Get all lesson status options
     status_value = ""
     status_options = ""
@@ -437,7 +440,19 @@ def build_lesson_entry_modal(lesson_name, status_abbr, lesson_date, org_lesson_v
             status_options += '<option value="' + option.status + '">' + option.status + '</option>'
     
     # Build the modal for the lesson entry
-    modal_html =   '<div class="container px-2 py-2 border bg-light">'
+    modal_html =   '<div class="container px-2 py-2">'
+    modal_html +=  '  <div class="row gx-5">'
+    modal_html +=  '    <div class="col">'
+    modal_html +=           ("Student: ") + '<b>' + student_name.first_name + ' ' + student_name.last_name + '</b>'
+    modal_html +=  '    </div>'
+    modal_html +=  '  </div>'
+    modal_html +=  '  <div class="row gx-5">'
+    modal_html +=  '    <div class="col">'
+    modal_html +=           ("Topic: ") + '<b>' + topic + '</b>'
+    modal_html +=  '    </div>'
+    modal_html +=  '  </div>'
+    modal_html +=  '  <br />'
+    modal_html +=   '<div class="container px-2 py-2 border bg-light">'
     modal_html +=  '  <div class="row gx-5">'
     modal_html +=  '    <div class="col">'
     modal_html +=  '      <label>' + _("Status") + '</label>'
@@ -487,7 +502,9 @@ def build_lesson_entry_modal(lesson_name, status_abbr, lesson_date, org_lesson_v
 @frappe.whitelist()
 def save_lesson_entry(lesson_name, planner_name, student, topic, status, lesson_date, org_lesson_value):
     # Get status id
-    status_id = frappe.db.sql('''SELECT name FROM `tabLesson Status` WHERE status = %(status)s''', {"status": status}, as_dict=True)[0].name
+    status = frappe.db.sql('''SELECT name, abbreviation FROM `tabLesson Status` WHERE status = %(status)s''', {"status": status}, as_dict=True)
+    status_id = status[0].name
+    status_abbr = status[0].abbreviation
 
     # Save the lesson entry
     if org_lesson_value == "none":
@@ -532,8 +549,15 @@ def save_lesson_entry(lesson_name, planner_name, student, topic, status, lesson_
         original.lesson_status = status_id
         original.date = lesson_date
         original.save()
+
+    # Change the date format of lesson_date to the format mm-dd-yy
+    lesson_date = datetime.strptime(lesson_date, '%Y-%m-%d').strftime('%m-%d-%y')
     
-    return "success"
+    # Create an array of status_id and lesson_date
+    table_html = "<span role='button' class='badge badge-pill badge-primary text-center'>" + status_abbr + " " + lesson_date + \
+        "<p hidden>student: " + student + " | name: " + lesson_name + " | </span>"
+
+    return table_html
 
 
 @frappe.whitelist()

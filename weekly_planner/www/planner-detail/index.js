@@ -38,12 +38,13 @@ frappe.ready(function() {
                 table.on('click', 'td', function (e) {
                     // Get the cell data clicked on
                     row = table.row(this).data()
-                    cell = table.cell(this).data()
+                    cell = table.cell(this)
+                    cell_data = cell.data()
                     // console.log("row: " + row + "\ncell: " + cell);
 
                     // Check if the cell contains "<span>"
-                    if (cell.includes("<span")) {
-                        show_lesson_modal(row, cell);
+                    if (cell_data.includes("<span")) {
+                        show_lesson_modal(row, cell_data);
                     } else {
                         // User clicked a topic; prompt if user wants to delete the topic
                         
@@ -93,13 +94,12 @@ frappe.ready(function() {
                 "lesson_date": document.getElementById("lesson_date").value,
                 "org_lesson_value": save_button.getAttribute("org_lesson_value")
             },
-            callback: function(response) {
-                if (response.exc) {
+            callback: function(r) {
+                if (r.exc) {
                     frappe.msgprint(__("Error saving Lesson Entry!"));
                     return;
                 } else {
-                    // Reload the page
-                    location.reload();                                
+                    cell.data(r.message).draw('false');
                 }
             }   
         });
@@ -623,6 +623,8 @@ function show_lesson_modal(row, cell) {
         method: "weekly_planner.www.planner-detail.planner_actions.build_lesson_entry_modal",
 
         args: {
+            "student": student,
+            "topic": topic,
             "lesson_name": lesson_name,
             "status_abbr": status_abbr,
             "lesson_date": lesson_date,
