@@ -12,14 +12,27 @@ frappe.ready(function() {
             if (r.message) {
                 var items_table = document.getElementById("items_table");
                 items_table.innerHTML = r.message;
+                
+                const targets = [];
+                const columns = document.querySelectorAll('#items_table th');
+                for (let i = 2; i < columns.length; i++) {
+                    targets.push(i);
+                }
 
                 const table = new DataTable('#items_table', {
                     order: [[0, 'asc']],
                     scrollX: true,
                     scrollY: true,
-                    searching: false
+                    searching: false,
+                    columnDefs: [
+                        {"targets": 1, "width": "50px", "orderable": true},
+                        {"targets": targets, "orderable": false}
+                    ],
+                    fixedColumns: {
+                        left: 2
+                    }
                 });
-
+            
                 // Listen for the click on the body of the table
                 table.on('click', 'td', function (e) {
                     // Get the cell data clicked on

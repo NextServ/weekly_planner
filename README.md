@@ -79,3 +79,10 @@ MIT
 2. Refactor the Planner Detail Report so that it paginates properly
 
 3. Added functionality to delete a Topic from the Planner Detail page
+
+**1.3.0**
+1. Group Topics by Course in Planner Detail
+
+2. Head of School now has the option of only seeing planners of direct reports (default) or of all guides
+
+3. Freeze the Topic column in the Planner Detail page
