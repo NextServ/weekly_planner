@@ -86,3 +86,5 @@ MIT
 2. Head of School now has the option of only seeing planners of direct reports (default) or of all guides
 
 3. Freeze the Topic column in the Planner Detail page
+
+4. Freeze the entire header row in the Planner Detail page

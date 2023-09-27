@@ -30,7 +30,8 @@ frappe.ready(function() {
                     ],
                     fixedColumns: {
                         left: 2
-                    }
+                    },
+                    fixedHeader: true
                 });
             
                 // Listen for the click on the body of the table
