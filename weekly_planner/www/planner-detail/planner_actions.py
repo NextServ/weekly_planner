@@ -523,13 +523,13 @@ def save_lesson_entry(lesson_name, planner_name, student, topic, status, lesson_
         })
 
         lesson_doc.save()
+        lesson_name = lesson_doc.lessons[-1].name
+        # print("* save_lesson_entry\n" + "new lesson_name: " + lesson_name)
 
     else:    
         # Retrieve Instructor based on frappe.session.user
         instructor = frappe.db.sql('''SELECT i.name FROM `tabInstructor` i INNER JOIN `tabEmployee` e on i.employee = e.name
                         WHERE e.user_id = %(user_id)s''', {"user_id": frappe.session.user}, as_dict=True)[0].name
-        
-        print("lesson_name: " + lesson_name)
         
         # Save the original lesson entry to the history table
         original = frappe.get_doc("Planner Lesson", lesson_name)
@@ -557,7 +557,10 @@ def save_lesson_entry(lesson_name, planner_name, student, topic, status, lesson_
     table_html = "<span role='button' class='badge badge-pill badge-primary text-center'>" + status_abbr + " " + lesson_date + \
         "<p hidden>student: " + student + " | name: " + lesson_name + " | </span>"
 
-    return table_html
+    return_array = []
+    return_array.append(table_html)
+    return_array.append(lesson_name)
+    return return_array
 
 
 @frappe.whitelist()
@@ -567,20 +570,33 @@ def delete_lesson_entry(lesson_name):
     frappe.db.delete("Planner Lesson", lesson_name)
 
     return "success"
+    
+
+@frappe.whitelist()
+def hos_show_all():
+    cur_user = frappe.get_user()
+    employee = frappe.get_doc("Employee", frappe.get_all("Employee", filters={"user_id": cur_user.name}, fields=["name"])[0])
+
+    employee.hos_show_all = 1 if employee.hos_show_all == 0 else 0
+    employee.save()
 
 
+
+@frappe.whitelist()
 def hex_to_rgb(hex_color):
     # Convert hex color to RGB tuple
     hex_color = hex_color.lstrip('#')
     return tuple(int(hex_color[i:i + 2], 16) for i in (0, 2, 4))
 
 
+@frappe.whitelist()
 def get_brightness(rgb_color):
     # Calculate the brightness of the color (RGB)
     r, g, b = rgb_color
     return (r * 299 + g * 587 + b * 114) / 1000
 
 
+@frappe.whitelist()
 def adjust_text_color(hex_background_color):
     # Get the RGB values of the background color
     rgb_color = hex_to_rgb(hex_background_color)

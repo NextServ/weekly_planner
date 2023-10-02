@@ -88,3 +88,5 @@ MIT
 3. Freeze the Topic column in the Planner Detail page
 
 4. Freeze the entire header row in the Planner Detail page
+
+5. Adding new lesson entries in the Planner Detail page no longer refreshes the whole page

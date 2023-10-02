@@ -99,7 +99,8 @@ frappe.ready(function() {
                     frappe.msgprint(__("Error saving Lesson Entry!"));
                     return;
                 } else {
-                    cell.data(r.message).draw('false');
+                    cell.data(r.message[0]).draw('false');
+                    document.getElementById("delete_lesson_button").setAttribute("lesson_name", r.message[1]);
                 }
             }   
         });

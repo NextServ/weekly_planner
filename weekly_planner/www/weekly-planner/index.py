@@ -1,7 +1,9 @@
 # weekly_planner
 import frappe
 import datetime
+import requests
 from frappe import _
+from weekly_planner.utils import get_root_url
 from weekly_planner.__init__ import get_version
 
 no_cache = 1
@@ -11,14 +13,17 @@ def get_context(context):
     context.welcome_text = _(frappe.db.get_single_value("Weekly Planner Settings", "welcome_text"))
     context.banner_image = frappe.db.get_single_value("Website Settings", "banner_image")
 
+    # Check if HoS has set the Show All flag
+    cur_user = frappe.get_user()
+    context.hos_show_all = frappe.get_all("Employee", filters={"user_id": cur_user.name}, fields=["hos_show_all"])[0].hos_show_all
+    
+
     # Make sure user has the correct role
     context.invalid_role = True
-    cur_user = frappe.get_user()
     cur_roles = cur_user.get_roles()
     is_hos = "Head of School" in cur_roles
     is_head_instructor = "Head Instructor" in cur_roles
     is_instructor = "Instructor" in cur_roles
-
 
     planners = []
 
@@ -29,7 +34,7 @@ def get_context(context):
         WHERE e.user_id = %(user)s'''
     instructor = frappe.db.sql(sql, {"user": frappe.session.user}, as_dict=True)
 
-    context.invalid_role = not (is_hos or is_head_instructor or is_instructor) or len(instructor) == 0
+    context.invalid_role = not (is_hos or is_head_instructor or is_instructor) or (len(instructor) == 0)
     if context.invalid_role:
         return context
 
@@ -41,7 +46,7 @@ def get_context(context):
                 p.status, p.is_approved FROM `tabWeekly Planner` p
                 INNER JOIN `tabInstructor` i ON p.instructor = i.name INNER JOIN `tabEmployee` e ON i.employee = e.name '''
             
-            if is_hos:
+            if (is_hos and context.hos_show_all):
                 planners = frappe.db.sql(sql, as_dict=True)
             else:
                 sql += '''WHERE e.reports_to = %(head)s OR p.instructor = %(instructor)s'''                

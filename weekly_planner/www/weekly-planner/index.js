@@ -75,7 +75,27 @@ frappe.ready(function() {
     $("#modal_action_select").on("click", function(e) {
         document.getElementById("selected_student").value = document.getElementById("modal_action_select").getAttribute("selected-student");
     })
+
+    $("#btn_show_all").on("click", function(e) {
+        hos_show_all();
+    })
 });
+
+
+function hos_show_all() {
+    // Store HoS show_all value per HoS in tabSingles
+    frappe.call({
+        method: "weekly_planner.www.planner-detail.planner_actions.hos_show_all",
+        callback: function(r) {
+            if (r.exc) {
+                // Throw error message
+                return;
+            }
+            
+            location.reload();
+        }
+    });
+}
 
 
 function calc_end_date(label_start_date, label_end_date) {
