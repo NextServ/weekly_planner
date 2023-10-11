@@ -81,7 +81,7 @@ MIT
 3. Added functionality to delete a Topic from the Planner Detail page
 
 **1.3.0**
-1. Group Topics by Course in Planner Detail
+1. Add Campus columns in Main Table [Oct 11]; cannot add Program as Instructors can be assigned to multiple Programs
 
 2. Head of School now has the option of only seeing planners of direct reports (default) or of all guides
 
@@ -90,3 +90,15 @@ MIT
 4. Freeze the entire header row in the Planner Detail page
 
 5. Adding new lesson entries in the Planner Detail page no longer refreshes the whole page
+
+**1.4.0 PLANNED**
+1. Group Topics by Course in Planner Detail
+
+2. Add another role like HoS but without Approval capabilities [Oct 13]
+
+3. If instructor/teacher of DVO L1C logs in, only DVO L1C student group appears and not all the student groups [Oct 18]
+
+**1.5.0 PLANNED**
+1. Monthly Report [Oct 21]
+
+2. Color Codes [Oct 21]

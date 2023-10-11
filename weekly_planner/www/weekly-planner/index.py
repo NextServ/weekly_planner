@@ -13,17 +13,19 @@ def get_context(context):
     context.welcome_text = _(frappe.db.get_single_value("Weekly Planner Settings", "welcome_text"))
     context.banner_image = frappe.db.get_single_value("Website Settings", "banner_image")
 
-    # Check if HoS has set the Show All flag
-    cur_user = frappe.get_user()
-    context.hos_show_all = frappe.get_all("Employee", filters={"user_id": cur_user.name}, fields=["hos_show_all"])[0].hos_show_all
-    
-
     # Make sure user has the correct role
+    cur_user = frappe.get_user()
     context.invalid_role = True
     cur_roles = cur_user.get_roles()
     is_hos = "Head of School" in cur_roles
     is_head_instructor = "Head Instructor" in cur_roles
     is_instructor = "Instructor" in cur_roles
+
+    # Check if HoS has set the Show All flag
+    try:
+        context.hos_show_all = frappe.get_all("Employee", filters={"user_id": cur_user.name}, fields=["hos_show_all"])[0].hos_show_all
+    except:
+        context.hos_show_all = False
 
     planners = []
 
@@ -42,7 +44,7 @@ def get_context(context):
     elif is_head_instructor or is_hos:
         # Load all instructors reporting to current user
         if instructor[0].employee:
-            sql = '''SELECT p.name, p.instructor, student_group, start_date, DATE_ADD(start_date, INTERVAL 7 DAY) AS end_date, 
+            sql = '''SELECT p.name, p.instructor, campus, student_group, start_date, DATE_ADD(start_date, INTERVAL 7 DAY) AS end_date, 
                 p.status, p.is_approved FROM `tabWeekly Planner` p
                 INNER JOIN `tabInstructor` i ON p.instructor = i.name INNER JOIN `tabEmployee` e ON i.employee = e.name '''
             
@@ -59,7 +61,7 @@ def get_context(context):
 
     elif is_instructor:
         # Test to see if instructor exists and throw an error if not
-        sql = '''SELECT p.name, p.instructor, student_group, start_date, DATE_ADD(start_date, INTERVAL 7 DAY) AS end_date, 
+        sql = '''SELECT p.name, p.instructor, campus, student_group, start_date, DATE_ADD(start_date, INTERVAL 7 DAY) AS end_date, 
                 p.status, p.is_approved FROM `tabWeekly Planner` p WHERE p.instructor = %(instructor)s'''
         planners = frappe.db.sql(sql, {"instructor": instructor[0].name}, as_dict=True)
     
