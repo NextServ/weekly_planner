@@ -18,6 +18,9 @@ def add_roles():
     if not frappe.db.exists("Role", "Head of School"):
         frappe.get_doc({"doctype": "Role", "role_name": "Head Instructor", "desk_access": 1}).save()
 
+    if not frappe.db.exists("Role", "Planner Reviewer"):
+        frappe.get_doc({"doctype": "Role", "role_name": "Planner Reviewer", "desk_access": 1}).save()
+
 
 def add_settings():
     frappe.db.set_single_value(

@@ -168,7 +168,8 @@ def build_planner_items(planner_name):
     students = frappe.db.sql('''SELECT p.student, s.first_name, s.last_name, s.date_of_birth
                              FROM `tabPlanner Student` p INNER JOIN `tabStudent` s
                              ON p.student = s.name
-                             WHERE p.parent = %(p_name)s''', {"p_name": planner_name}, as_dict=True)
+                             WHERE p.parent = %(p_name)s
+                             ORDER BY s.last_name, s.first_name''', {"p_name": planner_name}, as_dict=True)
 
     # lessons = frappe.get_all("Planner Lesson", filters={"parent": planner_name}, fields=["*"])
     topics = frappe.get_all("Planner Topic", filters={"parent": planner_name, "is_hidden": 0}, fields=["*"])

@@ -16,7 +16,8 @@ def get_context(context):
     context.is_hos = "Head of School" in cur_roles
     context.is_head = "Head Instructor" in cur_roles
     context.is_instructor = "Instructor" in cur_roles
-    context.invalid_role = not (context.is_head or context.is_instructor or context.is_hos)
+    context.is_reviewer = "Planner Reviewer" in cur_roles
+    context.invalid_role = not (context.is_head or context.is_instructor or context.is_hos or context.is_reviewer)
 
     # Get planner_name from url parameter
     planner_name = frappe.form_dict.get("planner-name")

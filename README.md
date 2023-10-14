@@ -10,9 +10,13 @@ MIT
 
 **0.5.0**
 1. Duplicate Planner functionality now available (except the ability to include lessons)
+
 2. Topics will still show in the Topics dialog even if they are not attached to a Course
+
 3. Included a Help button and sidebar to show instructions on how to use the Planner Detail page
+
 4. Fix bug on the Weekly Planner page where the planners of the head instructor are not showing
+
 5. Fix bug where not all topics were showing in the Add Topics modal of Planner Detail
 
 **0.5.5**
@@ -26,11 +30,14 @@ MIT
 
 **0.6.6**
 1. Added the Head of School role that will show all planners regardless of the Reports To value
+
 2. Added Help button to the Weekly Planner page
+
 3. Added help content on both main and detail pages
 
 **0.7.0**
 1. Designate a Lesson Status as default
+
 2. When adding a new Lesson, the default status will be selected
 
 **0.7.1**
@@ -44,27 +51,37 @@ MIT
 
 **0.8.5**
 1. Fixed bug where Head of School capabilities not showing up on main page
+
 3. Fixed bug where the lesson entries are affecting other lesson entries
 
 **0.8.7**
 1. Fixed bug where New Planner button opened the wrong modal
+
 2. Fixed the Approve Planner functionality when clicked from the Planner Detail page
 
 **0.9.0**
 1. Added Settings page
+
 2. Change the format of the table in the Print Planner page so that now has borders
+
 3. Added version number at the bottom left of the main page
+
 4. Fixed the issue where students from DVO L1B aren't showing in the Show Students modal
 
 **0.9.5**
 1. Fixed the bug where the Approved Plan functionality is not working
+
 2. Limit the students showing in the Show Students modal to only those that in the Instructor's Student Group
+
 3. Show student names vertically in the Planner Report header
+
 4. Allow Instructors to print the Planner Detail Report
 
 **1.0.0**
 1. Generate Student Lesson Report
+
 2. Refactored diff_months()
+
 3. Improved how the age appears on the Planner Detail page
 
 **1.1.0**
@@ -91,12 +108,14 @@ MIT
 
 5. Adding new lesson entries in the Planner Detail page no longer refreshes the whole page
 
-**1.4.0 PLANNED**
+**1.4.0**
 1. Group Topics by Course in Planner Detail
 
-2. Add another role like HoS but without Approval capabilities [Oct 13]
+2. Add another role like HoS but without Approval capabilities [Oct 13] - DONE (a)
 
 3. If instructor/teacher of DVO L1C logs in, only DVO L1C student group appears and not all the student groups [Oct 18]
+
+4. Display Students in alphabetical order in Planner Detail - DONE (a)
 
 **1.5.0 PLANNED**
 1. Monthly Report [Oct 21]
