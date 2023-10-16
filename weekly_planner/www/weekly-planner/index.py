@@ -63,9 +63,9 @@ def get_context(context):
     elif is_instructor:
         # Test to see if instructor exists and throw an error if not
         sql = '''SELECT p.name, p.instructor, campus, student_group, start_date, DATE_ADD(start_date, INTERVAL 7 DAY) AS end_date, 
-                p.status, p.is_approved FROM `tabWeekly Planner` 
+                p.status, p.is_approved FROM `tabWeekly Planner`p
                 INNER JOIN `tabInstructor` i ON p.instructor = i.name INNER JOIN `tabEmployee` e ON i.employee = e.name 
-                p WHERE p.instructor = %(instructor)s'''
+                WHERE p.instructor = %(instructor)s'''
         planners = frappe.db.sql(sql, {"instructor": instructor[0].name}, as_dict=True)
     
     # Add record counters to each planner
