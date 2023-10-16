@@ -15,12 +15,12 @@ def get_context(context):
 
     # Make sure user has the correct role
     cur_user = frappe.get_user()
-    context.invalid_role = True
     cur_roles = cur_user.get_roles()
     is_hos = "Head of School" in cur_roles
     is_head_instructor = "Head Instructor" in cur_roles
     is_instructor = "Instructor" in cur_roles
     is_reviewer = "Planner Reviewer" in cur_roles
+    context.invalid_role = True
 
     # Check if HoS has set the Show All flag
     try:
@@ -63,7 +63,9 @@ def get_context(context):
     elif is_instructor:
         # Test to see if instructor exists and throw an error if not
         sql = '''SELECT p.name, p.instructor, campus, student_group, start_date, DATE_ADD(start_date, INTERVAL 7 DAY) AS end_date, 
-                p.status, p.is_approved FROM `tabWeekly Planner` p WHERE p.instructor = %(instructor)s'''
+                p.status, p.is_approved FROM `tabWeekly Planner` 
+                INNER JOIN `tabInstructor` i ON p.instructor = i.name INNER JOIN `tabEmployee` e ON i.employee = e.name 
+                p WHERE p.instructor = %(instructor)s'''
         planners = frappe.db.sql(sql, {"instructor": instructor[0].name}, as_dict=True)
     
     # Add record counters to each planner
