@@ -105,7 +105,10 @@
     <div class="d-flex bd-highlight mb-3">
       <div class="btn btn-outline-primary" role="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">{{ _("Help") }}</div>
       &nbsp;
-      <div class="btn btn-primary" role="button" data-toggle="modal" data-target="#modal_new_planner">{{ _("New Planner") }}</div>
+
+      {% if not is_reviewer %}
+        <div class="btn btn-primary" role="button" data-toggle="modal" data-target="#modal_new_planner">{{ _("New Planner") }}</div>
+      {% endif %}
 
       {%if is_hos %}
         <div class="container pull-right">
@@ -271,7 +274,7 @@
                 <select class="form-select bg-light" name="student_group" id="selected_group" required>
                   <option value="" selected>{{ _("Select Student Group") }}</option>
                   {% for group in student_groups %}
-                    <option value="{{ group.student_group_name }}">{{ group.student_group_name }}</option>
+                    <option value="{{ group.parent }}">{{ group.parent }}</option>
                   {% endfor %}
                 </select>
               </div>

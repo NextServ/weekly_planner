@@ -113,7 +113,7 @@ MIT
 
 2. Add another role like HoS but without Approval capabilities [Oct 13] - DONE (a)
 
-3. If instructor/teacher of DVO L1C logs in, only DVO L1C student group appears and not all the student groups [Oct 18]
+3. If instructor/teacher of DVO L1C logs in, only DVO L1C student group appears and not all the student groups [Oct 18] - DONE (d)
 
 4. Display Students in alphabetical order in Planner Detail - DONE (a)
 

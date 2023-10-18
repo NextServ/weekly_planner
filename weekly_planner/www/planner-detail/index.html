@@ -91,43 +91,48 @@
         <div class="col-sm-auto">
           <button class="btn btn-outline-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
             Help
-          </button>&nbsp; | &nbsp;
+          </button> &nbsp;
         </div>
         <div class="col-sm-auto">
           <button type="button" class="btn btn-outline-primary" onclick="go_to_main()">Back</button>
         </div>
-        <div class="col-sm-auto">
-          <button type="button" class="btn btn-primary" onclick="duplicate_planner()">{{ _("Duplicate Planner") }}</button> 
-        </div>
-        <div class="col-sm-auto">
-          <button type="button" class="btn btn-primary" onclick="delete_planner()">Del Planner</button>
-        </div>
+
+        {% if not is_reviewer %}
+          <div class="col-sm-auto">
+            <button type="button" class="btn btn-primary" onclick="duplicate_planner()">{{ _("Duplicate Planner") }}</button> 
+          </div>
+          <div class="col-sm-auto">
+            <button type="button" class="btn btn-primary" onclick="delete_planner()">Del Planner</button>
+          </div>
+        {% endif %}
+
         <div class="col-sm-auto">
           <button type="button" class="btn btn-primary" onclick="print_planner()">Print Planner</button>
         </div>
 
         <div class="col-sm-auto">
           {% if planner.status == 0 %}
-            <button type="button" class="btn btn-primary" id="submit_button" onclick="submit_planner('{{ planner.name }}')">{{ _("Submit Planner") }}</button> 
+            <button type="button" class="btn btn-primary" id="submit_button" onclick="submit_planner('{{ planner.name }}')">{{ _("Submit Planner") }}</button>
           {% elif planner.status == 1  and is_head and not is_approved %}
-            <button type="button" class="btn btn-primary" id="submit_button" onclick="approve_planner('{{ planner.name }}')">{{ _("Approve Planner") }}</button> 
+            <button type="button" class="btn btn-primary" id="submit_button" onclick="approve_planner('{{ planner.name }}')">{{ _("Approve Planner") }}</button>
           {% endif %}    
-          &nbsp; | &nbsp;
         </div>
-
-        <div class="col-sm-auto">
-          <div class="dropdown">
-            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton1" data-toggle="dropdown" aria-expanded="false">
-              {{ _("Actions") }}
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-              <li><a class="dropdown-item" data-toggle="modal" data-target="#modal_add_students" href="#">{{ _("Add Students") }}</a></li>
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" href="#" id="btn_add_topics">{{ _("Add Topics") }}</a></li>
-              <li><a class="dropdown-item" href="#" id="btn_del_topics">{{ _("Delete Topics") }}</a></li>
-            </ul>
+        
+        {% if not is_reviewer %}
+          <div class="col-sm-auto">
+            <div class="dropdown">
+              <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton1" data-toggle="dropdown" aria-expanded="false">
+                {{ _("Actions") }}
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <li><a class="dropdown-item" data-toggle="modal" data-target="#modal_add_students" href="#">{{ _("Add Students") }}</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="#" id="btn_add_topics">{{ _("Add Topics") }}</a></li>
+                <li><a class="dropdown-item" href="#" id="btn_del_topics">{{ _("Delete Topics") }}</a></li>
+              </ul>
+            </div>
           </div>
-        </div>
+        {% endif %}
     </div>
     
     <!-- <div class="btn-group" role="group" aria-label="Add...">

@@ -365,7 +365,7 @@ def save_topics(planner_name, insert_list, show_action):
 def build_add_students_modal(planner_name):
     planner = frappe.get_doc("Weekly Planner", planner_name)
     campuses = frappe.get_all("Campus", fields=["campus_name"])
-    groups = frappe.get_all("Student Group", fields=["student_group_name"])
+    groups = frappe.get_all("Student Group Instructor", fields=["parent"], filters={"instructor": planner.instructor})
 
     # Get the roles for the Instructor
     cur_user = frappe.get_user()
@@ -397,7 +397,7 @@ def build_add_students_modal(planner_name):
     else:
         body_html += '     <option selected value="">All Groups</option>'
         for g in groups:
-            body_html += ' <option value="' + g.student_group_name + '">' + g.student_group_name + '</option>'
+            body_html += ' <option value="' + g.parent + '">' + g.parent + '</option>'
     
     body_html += '      </select>'
     body_html += '    </div>'

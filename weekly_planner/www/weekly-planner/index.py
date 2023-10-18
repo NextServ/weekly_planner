@@ -55,6 +55,8 @@ def get_context(context):
                 sql += '''WHERE e.reports_to = %(head)s OR p.instructor = %(instructor)s'''                
                 planners = frappe.db.sql(sql, {"head": instructor[0].employee, "instructor": instructor[0].name}, as_dict=True)
 
+            context.student_groups = frappe.get_all("Student Group Instructor", fields=["parent"])
+
             # print(planners)
         else:
             frappe.throw("There is no linked Employee record for this Instructor. Please contact your System Administrator.")
@@ -67,6 +69,8 @@ def get_context(context):
                 INNER JOIN `tabInstructor` i ON p.instructor = i.name INNER JOIN `tabEmployee` e ON i.employee = e.name 
                 WHERE p.instructor = %(instructor)s'''
         planners = frappe.db.sql(sql, {"instructor": instructor[0].name}, as_dict=True)
+        
+        context.student_groups = frappe.get_all("Student Group Instructor", fields=["parent"], filters={"instructor": instructor[0].name})
     
     # Add record counters to each planner
     counter = 0
@@ -76,7 +80,6 @@ def get_context(context):
     
     context.version = get_version()
     context.weekly_planners = planners
-    context.student_groups = frappe.get_all("Student Group", fields=["student_group_name"])
     context.instructor = instructor[0].instructor_name 
     context.is_head_instructor = is_head_instructor
     context.is_hos = is_hos
