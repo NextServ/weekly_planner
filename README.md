@@ -121,3 +121,7 @@ MIT
 1. Monthly Report [Oct 21]
 
 2. Color Codes [Oct 21]
+
+3. Added the Weekly Planning workspace
+
+4. Fixed the bug in Lesson Status where the default status is not being saved

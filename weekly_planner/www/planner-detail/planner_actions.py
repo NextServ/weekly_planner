@@ -173,7 +173,7 @@ def build_planner_items(planner_name):
 
     # lessons = frappe.get_all("Planner Lesson", filters={"parent": planner_name}, fields=["*"])
     topics = frappe.get_all("Planner Topic", filters={"parent": planner_name, "is_hidden": 0}, fields=["*"])
-    lessons = frappe.db.sql('''SELECT p.name, p.date, p.student, p.topic, l.abbreviation from `tabPlanner Lesson` p
+    lessons = frappe.db.sql('''SELECT p.name, p.date, p.student, p.topic, l.abbreviation, l.color from `tabPlanner Lesson` p
                             INNER JOIN `tabLesson Status` l ON p.lesson_status = l.name
                             WHERE parent = %(p_name)s''', {"p_name": planner_name}, as_dict=True)
     
@@ -229,7 +229,11 @@ def build_planner_items(planner_name):
 
                 if item != []:
                     lesson_item = item[0].abbreviation + " " + item[0].date.strftime('%m-%d-%y')
-                    table_html += "<span role='button' class='badge badge-pill badge-primary text-center'>" + lesson_item + \
+                    badge_bg_color = item[0].color
+                    badge_fg_color = adjust_text_color(badge_bg_color)
+
+                    table_html += "<span role='button' style=background-color:" + badge_bg_color + \
+                        "; color:" + badge_fg_color + "; class='badge badge-pill badge-primary text-center'>" + lesson_item + \
                         "<p hidden>student: " + col_header + " | name: " + item[0].name + " | </span>"
                 else:
                     table_html += "<span><p hidden>student: " + col_header + " | name: none | </span>"
@@ -503,9 +507,11 @@ def build_lesson_entry_modal(student, topic, lesson_name, status_abbr, lesson_da
 @frappe.whitelist()
 def save_lesson_entry(lesson_name, planner_name, student, topic, status, lesson_date, org_lesson_value):
     # Get status id
-    status = frappe.db.sql('''SELECT name, abbreviation FROM `tabLesson Status` WHERE status = %(status)s''', {"status": status}, as_dict=True)
+    status = frappe.db.sql('''SELECT name, abbreviation, color FROM `tabLesson Status` WHERE status = %(status)s''', {"status": status}, as_dict=True)
     status_id = status[0].name
     status_abbr = status[0].abbreviation
+    status_bg_color = status[0].color
+    status_color = adjust_text_color(status_bg_color)
 
     # Save the lesson entry
     if org_lesson_value == "none":
@@ -555,7 +561,8 @@ def save_lesson_entry(lesson_name, planner_name, student, topic, status, lesson_
     lesson_date = datetime.strptime(lesson_date, '%Y-%m-%d').strftime('%m-%d-%y')
     
     # Create an array of status_id and lesson_date
-    table_html = "<span role='button' class='badge badge-pill badge-primary text-center'>" + status_abbr + " " + lesson_date + \
+    table_html = "<span role='button' style=background-color:" + status_bg_color + "; color:" + status_color + \
+        "; class='badge badge-pill badge-primary text-center'>" + status_abbr + " " + lesson_date + \
         "<p hidden>student: " + student + " | name: " + lesson_name + " | </span>"
 
     return_array = []
