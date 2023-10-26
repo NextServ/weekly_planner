@@ -33,7 +33,7 @@ def get_settings():
     modal_html =   '<div class="container px-2 py-2 border bg-light">'
     modal_html +=  '  <div class="row gx-5">'
     modal_html +=  '    <div class="col">'
-    modal_html +=  '      <label>' + _("Title") + '</label>'
+    modal_html +=  '      <label>' + _("Portal Title") + '</label>'
     modal_html +=  '      <input class="text-align-left bg-light" id="title" type="text" value="' + title + '" required>'
     modal_html +=  '    </div>'
     modal_html +=  '  </div>'

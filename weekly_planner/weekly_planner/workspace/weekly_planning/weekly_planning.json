@@ -1,6 +1,6 @@
 {
  "charts": [],
- "content": "[{\"id\":\"ZXY7hdt219\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Get Started</span>\",\"col\":12}},{\"id\":\"DzMieaF4YH\",\"type\":\"paragraph\",\"data\":{\"text\":\"<a href=\\\"/weekly-planner\\\" draggable=\\\"false\\\">Weekly Planner</a>\",\"col\":3}},{\"id\":\"qPCHLIHEfu\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Lesson Status\",\"col\":3}}]",
+ "content": "[{\"id\":\"ZXY7hdt219\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Get Started</span>\",\"col\":12}},{\"id\":\"DzMieaF4YH\",\"type\":\"paragraph\",\"data\":{\"text\":\"<a href=\\\"/weekly-planner\\\" draggable=\\\"false\\\">Weekly Planner</a>\",\"col\":4}},{\"id\":\"qPCHLIHEfu\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Lesson Status\",\"col\":4}},{\"id\":\"9DcHKnctD3\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Weekly Planner Settings\",\"col\":4}}]",
  "creation": "2023-10-23 11:19:24.084983",
  "custom_blocks": [],
  "docstatus": 0,
@@ -13,7 +13,7 @@
  "is_hidden": 0,
  "label": "Weekly Planning",
  "links": [],
- "modified": "2023-10-23 17:35:09.511853",
+ "modified": "2023-10-24 23:12:19.097560",
  "modified_by": "Administrator",
  "module": "Weekly Planner",
  "name": "Weekly Planning",
@@ -31,6 +31,13 @@
    "label": "Lesson Status",
    "link_to": "Lesson Status",
    "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Weekly Planner Settings",
+   "link_to": "Weekly Planner Settings",
    "type": "DocType"
   }
  ],

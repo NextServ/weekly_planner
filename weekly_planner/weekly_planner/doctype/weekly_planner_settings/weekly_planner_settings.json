@@ -17,7 +17,7 @@
    "default": "Weekly Planner Settings",
    "fieldname": "title",
    "fieldtype": "Data",
-   "label": "Title"
+   "label": "Portal Title"
   },
   {
    "default": "This tool will allow your Instructors prepare their weekly lesson plans and submit them for approval. If you have Instructors under you, the table below will show you their weekly planners as well as your own.",
@@ -40,7 +40,7 @@
  ],
  "issingle": 1,
  "links": [],
- "modified": "2023-08-27 19:16:28.385098",
+ "modified": "2023-10-24 23:17:17.303546",
  "modified_by": "Administrator",
  "module": "Weekly Planner",
  "name": "Weekly Planner Settings",
