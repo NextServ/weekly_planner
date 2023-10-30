@@ -7,32 +7,116 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "title",
   "instructor",
-  "student"
+  "student",
+  "column_break_hy6j1",
+  "academic_year",
+  "month",
+  "section_break_cbcyg",
+  "generate_lessons",
+  "learning_areas",
+  "behavioral_report_section",
+  "assessment",
+  "section_break_vnipd",
+  "things_to_bring",
+  "column_break_dr4vy",
+  "supplementary_work",
+  "section_break_a6afg",
+  "comments"
  ],
  "fields": [
   {
-   "fieldname": "title",
-   "fieldtype": "Data",
-   "label": "Title"
-  },
-  {
    "fieldname": "instructor",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Instructor",
-   "options": "Instructor"
+   "options": "Instructor",
+   "reqd": 1
   },
   {
    "fieldname": "student",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Student",
-   "options": "Student"
+   "options": "Student",
+   "reqd": 1
+  },
+  {
+   "fieldname": "assessment",
+   "fieldtype": "Text Editor",
+   "label": "Assessment"
+  },
+  {
+   "fieldname": "things_to_bring",
+   "fieldtype": "Text Editor",
+   "label": "Things to Bring"
+  },
+  {
+   "fieldname": "supplementary_work",
+   "fieldtype": "Text Editor",
+   "label": "Supplementary Work"
+  },
+  {
+   "fieldname": "comments",
+   "fieldtype": "Text Editor",
+   "label": "Comments"
+  },
+  {
+   "fieldname": "learning_areas",
+   "fieldtype": "Table",
+   "options": "Learning Areas"
+  },
+  {
+   "fieldname": "column_break_hy6j1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "academic_year",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Academic Year",
+   "options": "Academic Year",
+   "reqd": 1
+  },
+  {
+   "fieldname": "month",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Month",
+   "options": "January\nFebruary\nMarch\nApril\nMay\nJune\nJuly\nAugust\nSeptember\nOctober\nNovember\nDecember",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_cbcyg",
+   "fieldtype": "Section Break",
+   "label": "Learning Areas"
+  },
+  {
+   "fieldname": "section_break_vnipd",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_dr4vy",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_a6afg",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "generate_lessons",
+   "fieldtype": "Button",
+   "label": "Generate Lessons"
+  },
+  {
+   "fieldname": "behavioral_report_section",
+   "fieldtype": "Section Break",
+   "label": "Behavioral Report"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-10-26 13:42:33.506592",
+ "modified": "2023-10-30 22:11:18.460501",
  "modified_by": "Administrator",
  "module": "Weekly Planner",
  "name": "Monthly Behavioral Assessment",

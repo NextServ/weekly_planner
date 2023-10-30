@@ -120,8 +120,8 @@ MIT
 **1.5.0 PLANNED**
 1. Monthly Report [Oct 21]
 
-2. Color Codes [Oct 21]
+2. Color Codes [Oct 21] - DONE (a)
 
-3. Added the Weekly Planning workspace
+3. Added the Weekly Planning workspace - DONE (a)
 
 4. Fixed the bug in Lesson Status where the default status is not being saved
