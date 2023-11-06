@@ -9,4 +9,4 @@ class MonthlyBehavioralAssessment(Document):
         # Get the student name
         last_name, first_name = frappe.db.get_value('Student', self.student, ['last_name', 'first_name'])
 
-        self.name = last_name + ', ' + first_name + ' - ' + self.month + ' - ' + self.academic_year
+        self.name = last_name + ', ' + first_name + ' - ' + self.month + ' - ' + str(self.year)

@@ -25,3 +25,31 @@ def get_students_from_instructor(doctype, txt, searchfield, start, page_len, fil
 
     return frappe.db.sql(sql, ({'instructor': filters['instructor'], 'searchfield': searchfield, \
                                 'txt': txt, 'page_len': page_len, 'start': start}), as_dict=True)
+
+
+# Get Student Group from Student
+@frappe.whitelist()
+def get_student_group(student):
+    sql =  '''SELECT parent FROM `tabStudent Group Student` '''
+    sql += '''WHERE (student = %(student)s) LIMIT 1'''
+
+    student_group = frappe.db.sql(sql, ({'student': student}))
+    print('*** get_student_group ***\nstudent: ', student, '\nstudent_group: ', student_group)
+
+    return student_group[0]
+
+
+# Populate Learning Areas in Monthly Behavioral Assessment
+@frappe.whitelist()
+def generate_lesson_areas(doc_name, student, year, month):
+    sql =  '''SELECT date, l.topic, c.parent 'course', student FROM `tabPlanner Lesson` l '''
+    sql += '''INNER JOIN `tabCourse Topic` c ON c.topic = l.topic '''
+    sql += '''WHERE (student = %(student)s) AND (YEAR(date) = %(year)s) AND (MONTHNAME(date) = %(month)s) '''
+
+    assessment = frappe.get_doc('Monthly Behavioral Assessment', doc_name)
+    lessons = frappe.db.sql(sql, ({'student': student, 'year': year, 'month': month}), as_dict=True)
+
+    for lesson in lessons:
+        assessment.append('learning_areas', {'date': lesson.date, 'topic': lesson.topic, 'course': lesson.course})
+
+    assessment.save()

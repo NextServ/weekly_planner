@@ -11,7 +11,7 @@
   "student",
   "student_group",
   "column_break_hy6j1",
-  "academic_year",
+  "year",
   "month",
   "section_break_cbcyg",
   "generate_lessons",
@@ -65,19 +65,12 @@
   {
    "fieldname": "learning_areas",
    "fieldtype": "Table",
+   "hidden": 1,
    "options": "Learning Areas"
   },
   {
    "fieldname": "column_break_hy6j1",
    "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "academic_year",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Academic Year",
-   "options": "Academic Year",
-   "reqd": 1
   },
   {
    "fieldname": "month",
@@ -107,6 +100,7 @@
   {
    "fieldname": "generate_lessons",
    "fieldtype": "Button",
+   "hidden": 1,
    "label": "Generate Lessons"
   },
   {
@@ -117,13 +111,19 @@
   {
    "fieldname": "student_group",
    "fieldtype": "Data",
-   "label": "Student Group",
-   "read_only": 1
+   "hidden": 1,
+   "label": "Student Group"
+  },
+  {
+   "fieldname": "year",
+   "fieldtype": "Data",
+   "label": "Year",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-11-05 12:45:23.974077",
+ "modified": "2023-11-05 20:16:19.470585",
  "modified_by": "Administrator",
  "module": "Weekly Planner",
  "name": "Monthly Behavioral Assessment",
