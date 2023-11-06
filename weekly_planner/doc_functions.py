@@ -13,7 +13,7 @@ def get_instructor_name(user_name):
 @frappe.validate_and_sanitize_search_inputs
 def get_students_from_instructor(doctype, txt, searchfield, start, page_len, filters):
     print('*** get_students_from_instructor ***\ninstructor: ', filters['instructor'], '\nsearchfield: ', searchfield)
-
+    
     searchfields = frappe.get_meta("Student").get_search_fields()
     searchfields = " or ".join("s." + field + " like %(txt)s" for field in searchfields)
 
