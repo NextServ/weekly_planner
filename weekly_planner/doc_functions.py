@@ -10,10 +10,11 @@ def get_instructor_name(user_name):
 
 # Student Query in Monthly Behavioral Assessment
 @frappe.whitelist()
+@frappe.validate_and_sanitize_search_inputs
 def get_students_from_instructor(doctype, txt, searchfield, start, page_len, filters):
     print('*** get_students_from_instructor ***\ninstructor: ', filters['instructor'], '\nsearchfield: ', searchfield)
 
-    sql =  '''SELECT student_name FROM `tabStudent Group Student` '''
+    sql =  '''SELECT student, student_name FROM `tabStudent Group Student` '''
     sql += '''WHERE (parent IN (SELECT parent FROM `tabStudent Group Instructor` WHERE instructor_name = %(instructor)s)) '''
     sql += '''AND (%(searchfield)s LIKE %(txt)s OR name LIKE %(txt)s)''' if txt else ''' '''
     sql += '''ORDER BY student_name '''
@@ -23,5 +24,5 @@ def get_students_from_instructor(doctype, txt, searchfield, start, page_len, fil
     
     print('\nsql: ', sql)
 
-    return frappe.db.sql(sql, ({'instructor': filters['instructor'], 'searchfield': searchfield, \
-                                'txt': txt, 'page_len': page_len, 'start': start}), as_dict=True)
+    return frappe.db.sql(sql, ({'instructor': filters.get('instructor'), 'searchfield': searchfield, \
+                                'txt': txt, 'page_len': page_len, 'start': start}))
