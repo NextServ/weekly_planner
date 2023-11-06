@@ -11,8 +11,8 @@
   "student",
   "student_group",
   "column_break_hy6j1",
-  "year",
-  "month",
+  "assess_year",
+  "assess_month",
   "section_break_cbcyg",
   "generate_lessons",
   "learning_areas",
@@ -73,14 +73,6 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "month",
-   "fieldtype": "Select",
-   "in_list_view": 1,
-   "label": "Month",
-   "options": "January\nFebruary\nMarch\nApril\nMay\nJune\nJuly\nAugust\nSeptember\nOctober\nNovember\nDecember",
-   "reqd": 1
-  },
-  {
    "fieldname": "section_break_cbcyg",
    "fieldtype": "Section Break",
    "label": "Learning Areas"
@@ -115,15 +107,23 @@
    "label": "Student Group"
   },
   {
-   "fieldname": "year",
+   "fieldname": "assess_year",
    "fieldtype": "Data",
    "label": "Year",
+   "reqd": 1
+  },
+  {
+   "fieldname": "assess_month",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Month",
+   "options": "January\nFebruary\nMarch\nApril\nMay\nJune\nJuly\nAugust\nSeptember\nOctober\nNovember\nDecember",
    "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-11-05 20:16:19.470585",
+ "modified": "2023-11-06 11:05:26.333817",
  "modified_by": "Administrator",
  "module": "Weekly Planner",
  "name": "Monthly Behavioral Assessment",

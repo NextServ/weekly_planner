@@ -2,20 +2,22 @@
 // For license information, please see license.txt
 frappe.ui.form.on("Monthly Behavioral Assessment", {
     onload(frm) {
+        if (!frm.doc.instructor) return;
+
         // Student field should only show students from the same instructor
-        // frm.set_query('student', () => {
-        //     return {
-        //         query: 'weekly_planner.doc_functions.get_students_from_instructor',
-        //         filters: {
-        //             instructor: frm.doc.instructor
-        //         }
-        //     }
-        // });
+        frm.set_query('student', () => {
+            return {
+                query: 'weekly_planner.doc_functions.get_students_from_instructor',
+                filters: {
+                    instructor: frm.doc.instructor
+                }
+            }
+        });
     },
     
     refresh(frm) {
-        // Retrieve instructor name from user
         if (frm.is_new()) {
+            // Retrieve instructor name from user
             frappe.call({
                 method: "weekly_planner.doc_functions.get_instructor_name",
                 args: {
@@ -30,10 +32,20 @@ frappe.ui.form.on("Monthly Behavioral Assessment", {
             year = new Date().getFullYear();
             month = new Date().toLocaleString('default', { month: 'long' });
 
-            frm.set_value("year", year);
-            frm.set_value("month", month);
+            frm.set_value("assess_year", year);
+            frm.set_value("assess_month", month);
+        } else {
+            // Prevent any changes after saving to preserve document name and the integrity of the learning areas generated
+            ins = frm.get_field('instructor');
+            st = frm.get_field('student');
+            yr = frm.get_field('assess_year');
+            mo = frm.get_field('assess_month');
+            ins.$input.prop('readonly', true);
+            st.$input.prop('readonly', true);
+            yr.$input.prop('readonly', true);
+            mo.$input.prop('readonly', true);
         }
-
+        
         frm.toggle_display(['learning_areas', 'generate_lessons', 'student_group'], !frm.is_new());
         sg = frm.get_field('student_group');
         sg.$input.prop('readonly', true);
@@ -45,6 +57,8 @@ frappe.ui.form.on("Monthly Behavioral Assessment", {
     },
 
     before_save(frm) {
+        if (!frm.doc.student) return;
+        
         // Retrieve Student Group from Student
         frappe.call({
             method: "weekly_planner.doc_functions.get_student_group",
@@ -60,6 +74,36 @@ frappe.ui.form.on("Monthly Behavioral Assessment", {
     
     },
 
+    assess_month: function(frm) {
+        // Warn that changing the month will delete all learning areas
+        if (frm.is_new() || !frm.is_dirty()) return;
+
+        // Preserve the new month value
+        new_month = frm.doc.assess_month;
+
+        frappe.confirm(
+            'Changing the month will delete all learning areas. Are you sure you want to continue?',
+            () => {
+
+                frappe.call({
+                    method: "weekly_planner.doc_functions.delete_learning_areas",
+                    args: {
+                        doc_name: frm.doc.name,
+                        assess_month: new_month
+                    },
+                    callback: function(data) {
+                        frm.reload_doc();
+                    }
+                });
+                
+                frm.set_value("assess_month", new_month);
+            },
+            () => {
+                frm.set_value("assess_month", frm.doc.month);
+            }
+        );
+    },
+
     generate_lessons: function(frm) {
         if (frm.is_dirty()) {
             frappe.throw(__("Please save the document before generating lessons."));
@@ -71,8 +115,8 @@ frappe.ui.form.on("Monthly Behavioral Assessment", {
             args: {
                 doc_name: frm.doc.name,
                 student: frm.doc.student,
-                month: frm.doc.month,
-                year: frm.doc.year
+                month: frm.doc.assess_month,
+                year: frm.doc.assess_year
             },
             callback: function(data) {
                 frm.reload_doc();
