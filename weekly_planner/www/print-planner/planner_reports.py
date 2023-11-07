@@ -36,16 +36,19 @@ def build_planner_report(planner_name):
                             INNER JOIN `tabLesson Status` l ON p.lesson_status = l.name
                             WHERE parent = %(p_name)s''', {"p_name": planner_name}, as_dict=True)
 
-    studs_per_batch = 12
+    studs_per_batch = 35
     topics_per_batch = 7
     topics_done = True
     cur_page = 0
     cur_student_batch = 0
     total_students = len(all_students)
     total_topics = len(all_topics)
-    total_stud_batches = int((total_students / studs_per_batch) + (1 if (total_students % studs_per_batch) and (total_students == studs_per_batch) else 0))
+    # We can't always assure that the total_students will always be equal to studs_per_batch. This results to 0 value. Not sure of the purpose.
+    total_stud_batches = int((total_students / studs_per_batch) + (1 if (total_students % studs_per_batch) and (total_students <= studs_per_batch) else 0))
+    # total_stud_batches = int((total_students / studs_per_batch) + (1 if (total_students % studs_per_batch)else 0))
     total_topic_batches = int((total_topics / topics_per_batch) + (1 if (total_topics % topics_per_batch) or (total_topics == topics_per_batch) else 0))
     total_pages = total_stud_batches * total_topic_batches
+    # breakpoint()
                             
     html_text =  '<head>'
     # html_text += '    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">'
@@ -79,7 +82,7 @@ def build_planner_report(planner_name):
     
     html_text += '          white-space: nowrap; /* Keep the text on one line */'
     html_text += '          text-align: top;'
-    html_text += '          height: 200px;'
+    html_text += '          height: 180px;'
     html_text += '      }'
                    
     html_text += '      table#items_table > thead > tr {'
@@ -87,7 +90,9 @@ def build_planner_report(planner_name):
     html_text += '      }'
                    
     html_text += '      table#items_table th:not(:first-child) {'
-    html_text += '          max-width: 80px;'
+    # html_text += '          max-width: 50px;'
+    html_text += '          max-width: ' + _(str(1750 / total_students)) + 'px;'
+    # html_text += '          max-width: 2%;'
     html_text += '      }'
                    
     html_text += '      table#items_table {'
@@ -101,7 +106,7 @@ def build_planner_report(planner_name):
 
     html_text += '      h7 {'
     html_text += '          font-family: Arial, Helvetica, sans-serif;'
-    html_text += '          font-size: 9pt;'
+    html_text += '          font-size: 7pt;'
     html_text += '      }'
     html_text += '  </style>'
 
@@ -158,7 +163,7 @@ def build_planner_report(planner_name):
         html_text += '    <table class="table table-bordered" id="items_table">'
         html_text += '      <thead><h7>'
         html_text += '        <tr>'
-        html_text += '          <th><span width="30px"><h7>Topic</h7></span></th>'
+        html_text += '          <th style="min-width: 250px;"><span><h7>Topic</h7></span></th>'
 
         # Load up the columns
         for student in students:
@@ -213,7 +218,7 @@ def build_planner_report(planner_name):
     file_name = 'planner_report'
     options["page-size"] = "A4"
     options["orientation"] = "Landscape"
-    options["minimum-font-size"] = "9"
+    # options["minimum-font-size"] = "3"
 
     frappe.local.response.filename = "{file_name}.pdf".format(file_name=file_name)
     frappe.local.response.filecontent = get_pdf(html_text, options)
