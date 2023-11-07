@@ -82,7 +82,7 @@ def build_planner_report(planner_name):
     
     html_text += '          white-space: nowrap; /* Keep the text on one line */'
     html_text += '          text-align: top;'
-    html_text += '          height: 180px;'
+    html_text += '          height: 190px;'
     html_text += '      }'
                    
     html_text += '      table#items_table > thead > tr {'
@@ -91,7 +91,8 @@ def build_planner_report(planner_name):
                    
     html_text += '      table#items_table th:not(:first-child) {'
     # html_text += '          max-width: 50px;'
-    html_text += '          max-width: ' + _(str(1750 / total_students)) + 'px;'
+    # html_text += '          max-width: ' + _(str(1750 / total_students)) + 'px;'
+    html_text += '          max-width: ' + _(str(1000 / total_students)) + 'px;'
     # html_text += '          max-width: 2%;'
     html_text += '      }'
                    
@@ -106,7 +107,7 @@ def build_planner_report(planner_name):
 
     html_text += '      h7 {'
     html_text += '          font-family: Arial, Helvetica, sans-serif;'
-    html_text += '          font-size: 7pt;'
+    html_text += '          font-size: 5pt;'
     html_text += '      }'
     html_text += '  </style>'
 
@@ -163,7 +164,7 @@ def build_planner_report(planner_name):
         html_text += '    <table class="table table-bordered" id="items_table">'
         html_text += '      <thead><h7>'
         html_text += '        <tr>'
-        html_text += '          <th style="min-width: 250px;"><span><h7>Topic</h7></span></th>'
+        html_text += '          <th style="width: 10px;"><span><h7>Topic</h7></span></th>'
 
         # Load up the columns
         for student in students:
