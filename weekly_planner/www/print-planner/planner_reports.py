@@ -37,7 +37,7 @@ def build_planner_report(planner_name):
                             WHERE parent = %(p_name)s''', {"p_name": planner_name}, as_dict=True)
 
     studs_per_batch = 35
-    topics_per_batch = 7
+    topics_per_batch = 20
     topics_done = True
     cur_page = 0
     cur_student_batch = 0

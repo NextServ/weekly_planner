@@ -125,3 +125,5 @@ MIT
 3. Added the Weekly Planning workspace - DONE (a)
 
 4. Fixed the bug in Lesson Status where the default status is not being saved
+
+5. Fixed the Weekly Planner Report so that it allows up to 35 students to be printed on a single page - DONE (c)
