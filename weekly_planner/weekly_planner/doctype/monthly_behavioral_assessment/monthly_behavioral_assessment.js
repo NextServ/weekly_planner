@@ -29,8 +29,8 @@ frappe.ui.form.on("Monthly Behavioral Assessment", {
             });
 
             // Default Year and Month to current month name  and year
-            year = new Date().getFullYear();
-            month = new Date().toLocaleString('default', { month: 'long' });
+            let year = new Date().getFullYear();
+            let month = new Date().toLocaleString('default', { month: 'long' });
 
             frm.set_value("assess_year", year);
             frm.set_value("assess_month", month);
@@ -79,7 +79,7 @@ frappe.ui.form.on("Monthly Behavioral Assessment", {
         if (frm.is_new() || !frm.is_dirty()) return;
 
         // Preserve the new month value
-        new_month = frm.doc.assess_month;
+        let new_month = frm.doc.assess_month;
 
         frappe.confirm(
             'Changing the month will delete all learning areas. Are you sure you want to continue?',
