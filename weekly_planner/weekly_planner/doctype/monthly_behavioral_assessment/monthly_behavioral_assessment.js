@@ -47,7 +47,7 @@ frappe.ui.form.on("Monthly Behavioral Assessment", {
         }
         
         frm.toggle_display(['learning_areas', 'generate_lessons', 'student_group'], !frm.is_new());
-        sg = frm.get_field('student_group');
+        let sg = frm.get_field('student_group');
         sg.$input.prop('readonly', true);
 
         if (!frm.doc.student_group) {
