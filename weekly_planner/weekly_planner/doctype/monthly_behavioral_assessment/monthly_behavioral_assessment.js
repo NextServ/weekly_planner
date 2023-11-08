@@ -36,11 +36,11 @@ frappe.ui.form.on("Monthly Behavioral Assessment", {
             frm.set_value("assess_month", month);
         } else {
             // Prevent any changes after saving to preserve document name and the integrity of the learning areas generated
-            ins = frm.get_field('instructor');
+            inst = frm.get_field('instructor');
             st = frm.get_field('student');
             yr = frm.get_field('assess_year');
             mo = frm.get_field('assess_month');
-            ins.$input.prop('readonly', true);
+            inst.$input.prop('readonly', true);
             st.$input.prop('readonly', true);
             yr.$input.prop('readonly', true);
             mo.$input.prop('readonly', true);
