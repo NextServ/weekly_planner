@@ -12,7 +12,7 @@ options = {
 }
 
 @frappe.whitelist()
-def build_planner_report(planner_name):
+def build_planner_report(planner_name, paper_size):
     # Remove %20 from planner_name
     if planner_name:    
         planner_name = planner_name.replace("%20", " ")
@@ -37,7 +37,7 @@ def build_planner_report(planner_name):
                             WHERE parent = %(p_name)s''', {"p_name": planner_name}, as_dict=True)
 
     studs_per_batch = 35
-    topics_per_batch = 20
+    topics_per_batch = 9
     topics_done = True
     cur_page = 0
     cur_student_batch = 0
@@ -48,6 +48,8 @@ def build_planner_report(planner_name):
     # total_stud_batches = int((total_students / studs_per_batch) + (1 if (total_students % studs_per_batch)else 0))
     total_topic_batches = int((total_topics / topics_per_batch) + (1 if (total_topics % topics_per_batch) or (total_topics == topics_per_batch) else 0))
     total_pages = total_stud_batches * total_topic_batches
+    # This is the variable that adjusts to the size the printer(person) selects.
+    base_size = 1000 if paper_size == "A4" else 950
     # breakpoint()
                             
     html_text =  '<head>'
@@ -92,7 +94,7 @@ def build_planner_report(planner_name):
     html_text += '      table#items_table th:not(:first-child) {'
     # html_text += '          max-width: 50px;'
     # html_text += '          max-width: ' + _(str(1750 / total_students)) + 'px;'
-    html_text += '          max-width: ' + _(str(1000 / total_students)) + 'px;'
+    html_text += '          max-width: ' + _(str(base_size / total_students)) + 'px;'
     # html_text += '          max-width: 2%;'
     html_text += '      }'
                    
@@ -164,7 +166,7 @@ def build_planner_report(planner_name):
         html_text += '    <table class="table table-bordered" id="items_table">'
         html_text += '      <thead><h7>'
         html_text += '        <tr>'
-        html_text += '          <th style="width: 10px;"><span><h7>Topic</h7></span></th>'
+        html_text += '          <th><span>Topic</span></th>'
 
         # Load up the columns
         for student in students:
@@ -184,7 +186,7 @@ def build_planner_report(planner_name):
 
             student_headers[student.student] = student.student
         
-        html_text += "</tr></h7></thead><tbody><h7>"
+        html_text += "</tr></h7></thead><tbody>"
 
         # Load up the rows
         topics = all_topics[(cur_topic_batch - 1) * topics_per_batch:cur_topic_batch * topics_per_batch]
@@ -217,7 +219,7 @@ def build_planner_report(planner_name):
     html_text += '<!-- ./ Main -->    '
 
     file_name = 'planner_report'
-    options["page-size"] = "A4"
+    options["page-size"] = paper_size
     options["orientation"] = "Landscape"
     # options["minimum-font-size"] = "3"
 

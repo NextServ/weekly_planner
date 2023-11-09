@@ -301,8 +301,11 @@ function delete_planner(e) {
 
 
 function print_planner(e) {
+    // This planner-name can be accessed by e.
+    // onclick="print_planner(['{{ planner.name }}', 'A4'])"
+    // console.log(e[0]) and console.log(e[1]) etc...
     planner_name = getQueryVariable("planner-name").replace(/%20/g, " ");  // remove %20s
-    window.open("/api/method/weekly_planner.www.print-planner.planner_reports.build_planner_report?planner_name=" + planner_name, "_blank");
+    window.open("/api/method/weekly_planner.www.print-planner.planner_reports.build_planner_report?planner_name=" + planner_name + "&paper_size=" + e, "_blank");
 }
 
 

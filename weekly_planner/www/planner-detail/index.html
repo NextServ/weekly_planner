@@ -107,7 +107,15 @@
         {% endif %}
 
         <div class="col-sm-auto">
-          <button type="button" class="btn btn-primary" onclick="print_planner()">Print Planner</button>
+          <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButtonPrint" data-toggle="dropdown" aria-expanded="false">
+              {{ _("Print Planner") }}
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButtonPrint">
+              <li><a class="dropdown-item" href="#" id="btn_print_a4" onclick="print_planner('A4')">{{ _("Print A4 Size") }}</a></li>
+              <li><a class="dropdown-item" href="#" id="btn_print_letter" onclick="print_planner('Letter')">{{ _("Print Letter Size") }}</a></li>
+            </ul>
+          </div>
         </div>
 
         <div class="col-sm-auto">
