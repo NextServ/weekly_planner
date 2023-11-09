@@ -29,25 +29,25 @@ frappe.ui.form.on("Monthly Behavioral Assessment", {
             });
 
             // Default Year and Month to current month name  and year
-            year = new Date().getFullYear();
-            month = new Date().toLocaleString('default', { month: 'long' });
+            let year = new Date().getFullYear();
+            let month = new Date().toLocaleString('default', { month: 'long' });
 
             frm.set_value("assess_year", year);
             frm.set_value("assess_month", month);
         } else {
             // Prevent any changes after saving to preserve document name and the integrity of the learning areas generated
-            ins = frm.get_field('instructor');
-            st = frm.get_field('student');
-            yr = frm.get_field('assess_year');
-            mo = frm.get_field('assess_month');
-            ins.$input.prop('readonly', true);
+            let inst = frm.get_field('instructor');
+            let st = frm.get_field('student');
+            let yr = frm.get_field('assess_year');
+            let mo = frm.get_field('assess_month');
+            inst.$input.prop('readonly', true);
             st.$input.prop('readonly', true);
             yr.$input.prop('readonly', true);
             mo.$input.prop('readonly', true);
         }
         
         frm.toggle_display(['learning_areas', 'generate_lessons', 'student_group'], !frm.is_new());
-        sg = frm.get_field('student_group');
+        let sg = frm.get_field('student_group');
         sg.$input.prop('readonly', true);
 
         if (!frm.doc.student_group) {
@@ -79,7 +79,7 @@ frappe.ui.form.on("Monthly Behavioral Assessment", {
         if (frm.is_new() || !frm.is_dirty()) return;
 
         // Preserve the new month value
-        new_month = frm.doc.assess_month;
+        let new_month = frm.doc.assess_month;
 
         frappe.confirm(
             'Changing the month will delete all learning areas. Are you sure you want to continue?',
