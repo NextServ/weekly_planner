@@ -107,16 +107,9 @@
         {% endif %}
 
         <div class="col-sm-auto">
-          <div class="dropdown">
-            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButtonPrint" data-toggle="dropdown" aria-expanded="false">
-              {{ _("Print Planner") }}
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButtonPrint">
-              <li><a class="dropdown-item" href="#" id="btn_print_a4" onclick="print_planner('A4')">{{ _("Print A4 Size") }}</a></li>
-              <li><a class="dropdown-item" href="#" id="btn_print_letter" onclick="print_planner('Letter')">{{ _("Print Letter Size") }}</a></li>
-            </ul>
-          </div>
+          <a class="btn btn-primary" data-toggle="modal" data-target="#modal_print_planner" href="#">{{ _("Print Planner") }}</a>
         </div>
+
 
         <div class="col-sm-auto">
           {% if planner.status == 0 %}
@@ -263,6 +256,33 @@
     </div>
   </div>
   <!-- ./ Add/Edit Lesson Modal -->
+
+  <!-- Print Planner Modal -->
+  <div class="modal fade" id="modal_print_planner" data-backdrop="static" data-keyboard="true" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">{{ _("Print Planner - Paper Sizes") }}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body" id="modal_print_planner_body">
+          <div class="btn-group d-flex justify-content-center gap-1" role="group" aria-label="List Actions">
+            <button type="button" class="btn btn-primary" id="btn_print_a4" onclick="print_planner('A4')">{{ _("A4") }}</button>
+            <button type="button" class="btn btn-primary" id="btn_print_a4" onclick="print_planner('Legal')">{{ _("Legal") }}</button>
+            <button type="button" class="btn btn-primary" id="btn_print_a4" onclick="print_planner('Letter')">{{ _("Letter") }}</button>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ _("Cancel") }}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- ./ Print Planner Modal -->
 
   <!-- Offcanvas to display the Help -->
   <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">

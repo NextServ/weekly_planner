@@ -37,7 +37,7 @@ def build_planner_report(planner_name, paper_size):
                             WHERE parent = %(p_name)s''', {"p_name": planner_name}, as_dict=True)
 
     studs_per_batch = 35
-    topics_per_batch = 9
+    topics_per_batch = 10 if paper_size == "Legal" else 9
     topics_done = True
     cur_page = 0
     cur_student_batch = 0
@@ -50,6 +50,12 @@ def build_planner_report(planner_name, paper_size):
     total_pages = total_stud_batches * total_topic_batches
     # This is the variable that adjusts to the size the printer(person) selects.
     base_size = 1000 if paper_size == "A4" else 950
+    if paper_size == "Legal":
+        base_size = 1200
+    elif paper_size == "A4":
+        base_size = 1000
+    else:
+        base_size = 950
     # breakpoint()
                             
     html_text =  '<head>'
