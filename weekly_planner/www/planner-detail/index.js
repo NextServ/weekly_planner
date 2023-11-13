@@ -221,6 +221,51 @@ frappe.ready(function() {
     });
 })
 
+$("#modal_print_planner_button").on("click", function(e) {
+    // I have to call from a python file. For some reasons i cant do a simple frappe.get_doc here.
+    frappe.call({
+        method: "weekly_planner.www.planner-detail.planner_actions.fetch_paper_size",
+        args: {
+            "planner_name": planner_name,
+        },
+
+        callback: function(r) {
+            if (r.exc) {
+                frappe.msgprint(__("Error remembering print size"));
+                return;
+            }
+            if(r.message){
+                // console.log(r.message)
+                $("#selected_paper_size").val(r.message).change();
+            }
+        }
+    });
+})
+
+$("#print_planner_button").on("click", function(e) {
+    let is_remember = $('#remember_selected_paper_size').is(":checked")
+    let paper_size = $('#selected_paper_size').find(":selected").text();
+
+    if(is_remember){
+        frappe.call({
+            method: "weekly_planner.www.planner-detail.planner_actions.remember_paper_size",
+            args: {
+                "planner_name": planner_name,
+                "paper_size": paper_size
+            },
+    
+            callback: function(r) {
+                if (r.exc) {
+                    frappe.msgprint(__("Error remembering print size"));
+                    return;
+                }
+                // console.log(r.message)
+            }
+        });
+    }
+    print_planner(paper_size)
+})
+
 
 function getQueryVariable(variable) {
     var query = window.location.search.substring(1);
@@ -301,8 +346,11 @@ function delete_planner(e) {
 
 
 function print_planner(e) {
+    // This planner-name can be accessed by e.
+    // onclick="print_planner(['{{ planner.name }}', 'A4'])"
+    // console.log(e[0]) and console.log(e[1]) etc...
     planner_name = getQueryVariable("planner-name").replace(/%20/g, " ");  // remove %20s
-    window.open("/api/method/weekly_planner.www.print-planner.planner_reports.build_planner_report?planner_name=" + planner_name, "_blank");
+    window.open("/api/method/weekly_planner.www.print-planner.planner_reports.build_planner_report?planner_name=" + planner_name + "&paper_size=" + e, "_blank");
 }
 
 

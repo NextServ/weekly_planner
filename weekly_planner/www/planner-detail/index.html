@@ -107,8 +107,9 @@
         {% endif %}
 
         <div class="col-sm-auto">
-          <button type="button" class="btn btn-primary" onclick="print_planner()">Print Planner</button>
+          <a class="btn btn-primary" data-toggle="modal" data-target="#modal_print_planner" href="#" id="modal_print_planner_button">{{ _("Print Planner") }}</a>
         </div>
+
 
         <div class="col-sm-auto">
           {% if planner.status == 0 %}
@@ -255,6 +256,39 @@
     </div>
   </div>
   <!-- ./ Add/Edit Lesson Modal -->
+
+  <!-- Print Planner Modal -->
+  <div class="modal fade" id="modal_print_planner" data-backdrop="static" data-keyboard="true" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">{{ _("Print Planner - Paper Sizes") }}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body" id="modal_print_planner_body">
+          <select class="form-select bg-light" name="paper_size_group" id="selected_paper_size" required>
+            <option value="Legal">{{ _("Legal") }}</option>
+            <option value="Letter" >{{ _("Letter") }}</option>
+            <option value="A4">{{ _("A4") }}</option>
+          </select>
+          <br>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="remember_selected_paper_size" checked>
+            <label class="form-check-label" for="remember_selected_paper_size">{{ _("Remember Print Size") }}</label>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ _("Cancel") }}</button>
+          <button type="button" class="btn btn-primary" id="print_planner_button">{{ _("Print") }}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- ./ Print Planner Modal -->
 
   <!-- Offcanvas to display the Help -->
   <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
