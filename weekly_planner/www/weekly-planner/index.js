@@ -48,6 +48,8 @@ frappe.ready(function() {
 
     $("#modal_action_print").on("click", function(e) {
         planner_name = e.currentTarget.getAttribute("planner-name");
+        let is_remember = $('#remember_selected_paper_size').is(":checked")
+        let paper_size = $('#selected_paper_size').find(":selected").text()
 
         // First validate that the end date is not before the start date
         selected_report = document.getElementById("selected_report").value;
@@ -61,7 +63,24 @@ frappe.ready(function() {
         }
 
         if (selected_report == "Planner") {
-            window.open("/api/method/weekly_planner.www.print-planner.planner_reports.build_planner_report?planner_name=" + planner_name, "_blank");
+            if(is_remember){
+                frappe.call({
+                    method: "weekly_planner.www.planner-detail.planner_actions.remember_paper_size",
+                    args: {
+                        "planner_name": planner_name,
+                        "paper_size": paper_size
+                    },
+            
+                    callback: function(r) {
+                        if (r.exc) {
+                            frappe.msgprint(__("Error remembering print size"));
+                            return;
+                        }
+                        // console.log(r.message)
+                    }
+                });
+            }
+            window.open("/api/method/weekly_planner.www.print-planner.planner_reports.build_planner_report?planner_name=" + planner_name + "&paper_size=" + paper_size, "_blank");
         } else {
             url_text =  "print-student/index.html?planner-name=" + planner_name
             url_text += "&student=" + student_id
@@ -70,6 +89,7 @@ frappe.ready(function() {
             url_text += "&limit-to-planner=" + limit_to_planner
             window.open(url_text, "_blank");
         }
+
     });
 
     $("#modal_action_select").on("click", function(e) {
@@ -202,6 +222,25 @@ function print_planner_modal(e = event) {
     enable_report_options(true);
 
     $("#modal_print_planner").modal("show");
+
+    // Fetch the stored remembered size
+    frappe.call({
+        method: "weekly_planner.www.planner-detail.planner_actions.fetch_paper_size",
+        args: {
+            "planner_name": planner_name,
+        },
+
+        callback: function(r) {
+            if (r.exc) {
+                frappe.msgprint(__("Error remembering print size"));
+                return;
+            }
+            if(r.message){
+                // console.log(r.message)
+                $("#selected_paper_size").val(r.message).change();
+            }
+        }
+    });
 }
 
 
@@ -229,6 +268,10 @@ function enable_report_options(newly_selected = false) {
         document.getElementById("report_start_date").value = start_date;
         document.getElementById("report_end_date").value = end_date;
     }
+
+    // Select Print Report Size
+    $("#selected_paper_size").prop('disabled', !options_disabled)
+    $("#remember_selected_paper_size").prop('disabled', !options_disabled)
 }
 
 
