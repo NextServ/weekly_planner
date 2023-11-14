@@ -92,7 +92,7 @@
                 <div class="badge badge-primary translate-middle-x" planner-name="{{ planner.name }}" role="button" onclick="approve_planner()">{{ _("Approve") }}</div>
                 <div class="badge badge-primary translate-middle-x"></div>
               {% endif %}
-              <div class="badge badge-secondary translate-middle-x" role="button" planner-name="{{ planner.name }}" planner-start="{{ planner.start_date }}" 
+              <div class="badge badge-secondary translate-middle-x" id="modal_print_planner_button" role="button" planner-name="{{ planner.name }}" planner-start="{{ planner.start_date }}" 
                 onclick="print_planner_modal()">{{ _("Print") }}</div>
             </td>
           </tr>
@@ -191,8 +191,21 @@
                 <label>{{_("Select Report") }}</label>
                 <select class="form-select bg-light" name="student_group" id="selected_report" onchange="enable_report_options()" required>
                   <option value="Planner" selected>{{ _("Planner") }}</option>
-                  <option value="Student">Student</option>
+                  <option value="Student">{{ _("Student") }}</option>
                 </select>
+                <!-- Print report size here -->
+                <br>
+                <label>{{_("Select Print Report Size") }}</label>
+                <select class="form-select bg-light" name="paper_size_group" id="selected_paper_size" required>
+                  <option value="Legal">{{ _("Legal") }}</option>
+                  <option value="Letter" >{{ _("Letter") }}</option>
+                  <option value="A4">{{ _("A4") }}</option>
+                </select>
+                <br>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="" id="remember_selected_paper_size" checked>
+                  <label class="form-check-label" for="remember_selected_paper_size">{{ _("Remember Print Size") }}</label>
+                </div>
               </div>
             </div>
             <div class="row">
