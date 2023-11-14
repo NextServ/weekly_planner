@@ -118,7 +118,7 @@ MIT
 4. Display Students in alphabetical order in Planner Detail - DONE (a)
 
 **1.5.0 PLANNED**
-1. Monthly Report [Oct 21]
+1. Monthly Report [Oct 21] - DONE (g)
 
 2. Color Codes [Oct 21] - DONE (a)
 
@@ -127,3 +127,8 @@ MIT
 4. Fixed the bug in Lesson Status where the default status is not being saved
 
 5. Fixed the Weekly Planner Report so that it allows up to 35 students to be printed on a single page - DONE (c)
+
+**1.5.1 PLANNED**
+1. Allow end user to choose (and save) the paper size to use when printing the Weekly Planner Report
+
+2. Restrict the Monthly Report list to only show assessments created by that guide and his/her supervisor. HoS can see all.

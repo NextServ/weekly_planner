@@ -618,22 +618,18 @@ def adjust_text_color(hex_background_color):
     else:
         return '#FFFFFF'  # White for dark background
 
+
 @frappe.whitelist()
 def fetch_paper_size(planner_name):
-    paper_size = frappe.db.get_value('Weekly Planner Print Settings', planner_name, 'paper_size')
+    paper_size = frappe.db.get_value('Weekly Planner', planner_name, 'paper_size')
 
     if paper_size:
         return paper_size
 
+
 @frappe.whitelist()
 def remember_paper_size(planner_name, paper_size):
-    if (frappe.db.exists("Weekly Planner Print Settings", planner_name)):
-        doc = frappe.get_doc('Weekly Planner Print Settings', planner_name)
-        if doc.paper_size != paper_size:
-            doc.paper_size = paper_size
-            doc.save()
-    else:
-        doc = frappe.new_doc('Weekly Planner Print Settings')
-        doc.weekly_planner = planner_name
+    doc = frappe.get_doc('Weekly Planner', planner_name)
+    if doc.paper_size != paper_size:
         doc.paper_size = paper_size
-        doc.insert()
+        doc.save()
