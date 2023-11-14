@@ -36,20 +36,22 @@ def build_planner_report(planner_name, paper_size):
                             INNER JOIN `tabLesson Status` l ON p.lesson_status = l.name
                             WHERE parent = %(p_name)s''', {"p_name": planner_name}, as_dict=True)
 
-    studs_per_batch = 35
+    studs_per_batch = 45 if paper_size == "Legal" else 35
     topics_per_batch = 10 if paper_size == "Legal" else 9
     topics_done = True
     cur_page = 0
     cur_student_batch = 0
     total_students = len(all_students)
     total_topics = len(all_topics)
+    
     # We can't always assure that the total_students will always be equal to studs_per_batch. This results to 0 value. Not sure of the purpose.
     total_stud_batches = int((total_students / studs_per_batch) + (1 if (total_students % studs_per_batch) and (total_students <= studs_per_batch) else 0))
+    
     # total_stud_batches = int((total_students / studs_per_batch) + (1 if (total_students % studs_per_batch)else 0))
     total_topic_batches = int((total_topics / topics_per_batch) + (1 if (total_topics % topics_per_batch) or (total_topics == topics_per_batch) else 0))
     total_pages = total_stud_batches * total_topic_batches
+    
     # This is the variable that adjusts to the size the printer(person) selects.
-    base_size = 1000 if paper_size == "A4" else 950
     if paper_size == "Legal":
         base_size = 1200
     elif paper_size == "A4":

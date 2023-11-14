@@ -80,7 +80,9 @@ frappe.ready(function() {
                     }
                 });
             }
+
             window.open("/api/method/weekly_planner.www.print-planner.planner_reports.build_planner_report?planner_name=" + planner_name + "&paper_size=" + paper_size, "_blank");
+            
         } else {
             url_text =  "print-student/index.html?planner-name=" + planner_name
             url_text += "&student=" + student_id
