@@ -92,8 +92,7 @@
                 <div class="badge badge-primary translate-middle-x" planner-name="{{ planner.name }}" role="button" onclick="approve_planner()">{{ _("Approve") }}</div>
                 <div class="badge badge-primary translate-middle-x"></div>
               {% endif %}
-              <div class="badge badge-secondary translate-middle-x" id="modal_print_planner_button" role="button" planner-name="{{ planner.name }}" planner-start="{{ planner.start_date }}" 
-                onclick="print_planner_modal()">{{ _("Print") }}</div>
+              <div class="badge badge-secondary translate-middle-x" id="modal_print_planner_button" role="button" planner-name="{{ planner.name }}" planner-instructor="{{ planner.instructor }}" student-group="{{ planner.student_group }}" planner-start="{{ planner.start_date }}" onclick="print_planner_modal()">{{ _("Print") }}</div>
             </td>
           </tr>
         {% endfor %}
