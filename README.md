@@ -128,7 +128,13 @@ MIT
 
 5. Fixed the Weekly Planner Report so that it allows up to 35 students to be printed on a single page - DONE (c)
 
-**1.5.1 PLANNED**
+**1.5.1**
 1. Allow end user to choose (and save) the paper size to use when printing the Weekly Planner Report
 
-2. Restrict the Monthly Report list to only show assessments created by that guide and his/her supervisor. HoS can see all.
+**1.5.2**
+1. Fixed the following issues: ISS-2023-00063, ISS-2023-00066, and ISS-2023-00068
+
+**1.5.3 PLANNED**
+1. Restrict the Monthly Report list to only show assessments created by that guide and his/her supervisor. HoS can see all.
+
+2. Allow end users to remove students from existing planners
