@@ -33,7 +33,12 @@ def monthly_behavioral_assessment_query(user):
                 reports_to_list.append(item.employee_name)
 
             format_strings = ','.join('"{0}"'.format(instructor) for instructor in reports_to_list)
-            return "(`tabMonthly Behavioral Assessment`.owner = {user} OR `tabMonthly Behavioral Assessment`.instructor IN ({reports_to}))".format(user=frappe.db.escape(user), reports_to = format_strings)
+            # Bug fix where if a user with head instructor role has no employees with reports_to pointing to this user, it SQL errors due to empty string.
+            if format_strings:
+                return "(`tabMonthly Behavioral Assessment`.owner = {user} OR `tabMonthly Behavioral Assessment`.instructor IN ({reports_to}))".format(user=frappe.db.escape(user), reports_to = format_strings)
+            else:
+                return "(`tabMonthly Behavioral Assessment`.owner = {user})".format(user=frappe.db.escape(user))
+
 
     # If you're an instructor/don't or not an employee, return everything you own instead.
     # Catch all.
