@@ -37,7 +37,7 @@ def build_planner_report(planner_name, paper_size):
                             WHERE parent = %(p_name)s''', {"p_name": planner_name}, as_dict=True)
 
     studs_per_batch = 45 if paper_size == "Legal" else 35
-    topics_per_batch = 10 if paper_size == "Legal" else 9
+    topics_per_batch = 11 if paper_size == "Legal" else 10
     topics_done = True
     cur_page = 0
     cur_student_batch = 0
@@ -203,7 +203,8 @@ def build_planner_report(planner_name, paper_size):
         topics_done = cur_topic_batch > total_topic_batches
                             
         for topic in topics:
-            html_text += "<tr><td><h7>" + topic.topic[:50] + ('...' if len(topic.topic) > 50 else '') + "</h7></td>"
+            html_text += "<tr><td><h7>" + topic.topic[:100] + ('...' if len(topic.topic) > 100 else '') + "</h7></td>"
+            # html_text += "<tr><td><h7>"+ topic.topic + "</h7></td>"
 
             if not topic.topic in topic_headers:
                 topic_headers.append(topic.topic)
