@@ -61,6 +61,11 @@ frappe.ready(function() {
     })
     
     // Check for Add Topics button clicked
+    $('#btn_del_students').on('click', function (e) {
+        show_students("Delete");
+    })
+
+    // Check for Add Topics button clicked
     $('#btn_add_topics').on('click', function (e) {
         show_topics('add');
     })
@@ -388,7 +393,7 @@ function approve_planner(e) {
 }
 
 
-function show_students(e) {
+function show_students(mode = "Add") {
     planner_name = getQueryVariable("planner-name").replace(/%20/g, " ");  // remove %20s
 
     // Retrieve students from Frappe
@@ -398,6 +403,7 @@ function show_students(e) {
             "selected_campus": document.getElementById("selected_campus").value,
             "selected_group": document.getElementById("selected_group").value,
             "planner_name": planner_name,
+            "mode": mode,
         },
 
         callback: function(students) {
@@ -429,6 +435,10 @@ function show_students(e) {
                         }
                     ]
                 });                
+
+                if (mode == "Delete") {
+                    $('#modal_del_students').modal('show');
+                }
 
                 // todo: fix the selection of rows
                 table.on('click', 'tbody tr', function (e) {
@@ -627,11 +637,8 @@ function show_add_students_modal(planner_name) {
 
             var modal_body = document.getElementById("modal_add_students_body");
             modal_body.innerHTML = r.message;
-
         }
     });
-
-    // $("#modal_add_students").modal("show");
 }
 
 

@@ -251,7 +251,7 @@ def get_lesson_status_options():
 
 
 @frappe.whitelist()
-def get_students_for_selection(selected_campus, selected_group, planner_name):
+def get_students_for_selection(selected_campus, selected_group, planner_name, mode):
     # Build the rest of the SQL statement based on whether there is value in selected_group and selected_campus
     sql = '''SELECT s.name, s.first_name, s.last_name, s.date_of_birth, g.parent FROM `tabStudent Group Student` g
                 INNER JOIN `tabStudent` s ON g.student = s.name '''
