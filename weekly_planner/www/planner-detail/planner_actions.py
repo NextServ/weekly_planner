@@ -256,7 +256,13 @@ def get_students_for_selection(selected_campus, selected_group, planner_name, mo
     sql = '''SELECT s.name, s.first_name, s.last_name, s.date_of_birth, g.parent FROM `tabStudent Group Student` g
                 INNER JOIN `tabStudent` s ON g.student = s.name '''
 
-    if selected_campus and selected_group:
+    if mode == "Delete":
+        sql = '''SELECT s.name, s.first_name, s.last_name, s.date_of_birth, g.parent FROM `tabPlanner Student` p
+                    INNER JOIN `tabStudent` s ON p.student = s.name 
+                    INNER JOIN `tabStudent Group Student` g ON s.name = g.student
+                    WHERE p.parent = %(planner_name)s'''
+        students = frappe.db.sql(sql, {"planner_name": planner_name}, as_dict=True)
+    elif selected_campus and selected_group:
         sql = sql + '''WHERE campus = %(campus)s AND student_group = %(group)s AND s.name NOT IN (SELECT student from `tabPlanner Student` WHERE parent = %(planner_name)s)'''
         students = frappe.db.sql(sql, {"campus": selected_campus, "group": selected_group, "planner_name": planner_name}, as_dict=True)
     elif selected_campus:

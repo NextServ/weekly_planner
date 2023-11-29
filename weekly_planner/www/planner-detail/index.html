@@ -224,7 +224,9 @@
             <button type="button" class="btn btn-primary" id="del_button">{{ _("Delete Selected") }}</button>
             <button type="button" class="btn btn-secondary" id="clear_del_button">{{ _("Clear Selection") }}</button>
           </div>
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ _("Cancel") }}</button>
+          
+          <!-- TODO: solve the disabling of the entire page when this button is clicked instead of pressing Esc -->
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _("Cancel") }}</button>
         </div>
       </div>
     </div>

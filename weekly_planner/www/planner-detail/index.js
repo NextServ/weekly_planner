@@ -394,21 +394,31 @@ function approve_planner(e) {
 
 
 function show_students(mode = "Add") {
-    planner_name = getQueryVariable("planner-name").replace(/%20/g, " ");  // remove %20s
-
+    var planner_name = getQueryVariable("planner-name").replace(/%20/g, " ");  // remove %20s
+    var campus = (mode == "Add") ? document.getElementById("selected_campus").value : "";
+    var group = (mode == "Add") ? document.getElementById("selected_group").value : "";
+    
     // Retrieve students from Frappe
     frappe.call({
         method: "weekly_planner.www.planner-detail.planner_actions.get_students_for_selection",
         args: {
-            "selected_campus": document.getElementById("selected_campus").value,
-            "selected_group": document.getElementById("selected_group").value,
+            "selected_campus": campus,
+            "selected_group": group,
             "planner_name": planner_name,
             "mode": mode,
         },
 
         callback: function(students) {
             if (students.message) {
-                var lesson_body = document.getElementById("students_table");
+                if (mode == "Delete") {
+                    $('#modal_del_students').modal('show');
+                }
+
+                // Make sure the right table name is used
+                var table_name = (mode == "Add") ? "students_table" : "del_students_table";
+
+                var lesson_body = document.getElementById(table_name);
+                table_name = "#" + table_name;
 
                 // Build the lesson_body with columns student, campus and group using the dataset returned from get_students_for_selection method
                 var lesson_body_html = '<thead><tr><th>ID</th><th>First Name</th><th>Last Name</th><th>DOB</th><th>Student Group</th></tr></thead><tbody>';
@@ -423,10 +433,11 @@ function show_students(mode = "Add") {
                 lesson_body.innerHTML = lesson_body_html;
 
                 // todo: Adjust modal in case the table is too big
-                // myModal.handleUpdate()                
+                // myModal.handleUpdate()
 
-                const table = new DataTable('#students_table', {
+                const table = new DataTable(table_name, {
                     destroy: true,
+                    order: [[2, 'asc'], [1, 'asc']],
                     columnDefs: [
                         {
                             target: 0,
@@ -436,34 +447,32 @@ function show_students(mode = "Add") {
                     ]
                 });                
 
-                if (mode == "Delete") {
-                    $('#modal_del_students').modal('show');
-                }
-
                 // todo: fix the selection of rows
                 table.on('click', 'tbody tr', function (e) {
                     e.currentTarget.classList.toggle('selected');
                 });
                 
-                document.querySelector('#clear_button').addEventListener('click', function () {
-                    table.rows('.selected').nodes().each((row) => row.classList.toggle('selected'));
-                });
-
-                // Add selected students to the planner
-                document.querySelector('#add_button').addEventListener('click', function () {
-                    // Output to console.log details of each student in selected_students
-
-                    const insert_list = [];
-                    table.rows(".selected").every(function ( rowIdx, tableLoop, rowLoop ) {
-                        // Build an array containing both student and planner_name
-                        item = this.data()[0];
-                        insert_list.push(item);
+                if (mode == "Add") {
+                    document.querySelector('#clear_button').addEventListener('click', function () {
+                        table.rows('.selected').nodes().each((row) => row.classList.toggle('selected'));
                     });
-                    
-                    // Output to console log each element in the insert_list array
-                    // console.log(insert_list);
-                    save_students(planner_name, insert_list);
-                });
+
+                    // Add selected students to the planner
+                    document.querySelector('#add_button').addEventListener('click', function () {
+                        // Output to console.log details of each student in selected_students
+
+                        const insert_list = [];
+                        table.rows(".selected").every(function ( rowIdx, tableLoop, rowLoop ) {
+                            // Build an array containing both student and planner_name
+                            item = this.data()[0];
+                            insert_list.push(item);
+                        });
+                        
+                        // Output to console log each element in the insert_list array
+                        // console.log(insert_list);
+                        save_students(planner_name, insert_list);
+                    });
+                }
             }
         }
     });
