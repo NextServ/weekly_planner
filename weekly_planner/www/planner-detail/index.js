@@ -490,9 +490,17 @@ function show_students(mode = "Add") {
                             del_list.push(item);
                         });
                         
-                        // Output to console log each element in the insert_list array
-                        // console.log(insert_list);
-                        delete_students(planner_name, del_list);
+                        // Warn the user that the selected students will be deleted
+                        // frappe.warn(title, message_html, proceed_action, primary_label, is_minimizable)
+                        frappe.warn(__('Are you sure you wish to delete selected Students)?'),
+                            __('Lesson data for selected Students will also be deleted.'),
+                            () => {
+                                // action to perform if Continue is selected
+                                delete_students(planner_name, del_list);
+                            },
+                            'Continue',
+                            true // Sets dialog as minimizable
+                        )
                     });
 
                     document.querySelector('#btn_del_students_cancel').addEventListener('click', function () {

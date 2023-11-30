@@ -142,3 +142,6 @@ MIT
 **1.5.4 PLANNED**
 
 1. Allow end users to remove students from existing planners
+
+**1.5.5 PLANNED**
+1. Fix bug where Planner Detail fails to display data if no color is assigned in Lesson Status
