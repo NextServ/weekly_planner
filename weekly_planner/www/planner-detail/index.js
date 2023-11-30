@@ -59,7 +59,7 @@ frappe.ready(function() {
     $('#modal_add_students').on('show.bs.modal', function (e) {
         show_add_students_modal(planner_name);
     })
-    
+
     // Check for Add Topics button clicked
     $('#btn_del_students').on('click', function (e) {
         show_students("Delete");
@@ -410,10 +410,6 @@ function show_students(mode = "Add") {
 
         callback: function(students) {
             if (students.message) {
-                if (mode == "Delete") {
-                    $('#modal_del_students').modal('show');
-                }
-
                 // Make sure the right table name is used
                 var table_name = (mode == "Add") ? "students_table" : "del_students_table";
 
@@ -472,6 +468,17 @@ function show_students(mode = "Add") {
                         // console.log(insert_list);
                         save_students(planner_name, insert_list);
                     });
+                } else {
+                    $('#modal_del_students').modal('show');
+
+                    document.querySelector('#clear_del_button').addEventListener('click', function () {
+                        table.rows('.selected').nodes().each((row) => row.classList.toggle('selected'));
+                    });
+
+                    document.querySelector('#btn_del_students_cancel').addEventListener('click', function () {
+                        $('modal_del_students').modal('hide');
+                    });
+
                 }
             }
         }
