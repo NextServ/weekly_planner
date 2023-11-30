@@ -329,14 +329,19 @@ def delete_students(planner_name, del_list):
     # Add students in the Planner Student table for each student selected
     students = json.loads(del_list)
 
-    planner_doc = frappe.get_doc("Weekly Planner", planner_name)
-    for s in students:
-        planner_doc.append("students", {
-            "student": s
-        })
+    print("** delete_students **")
 
-    planner_doc.save()
-   
+    for s in students:
+        print("\nstudent: " + s)
+        
+        # First delete all lessons for the student
+        frappe.db.sql('''DELETE FROM `tabPlanner Lesson` WHERE (parent = %(planner_name)s) AND (student = %(student)s)''', 
+            {"planner_name": planner_name, "student": s})
+        
+        # Then delete the student from the Planner Student table
+        frappe.db.sql('''DELETE FROM `tabPlanner Student` WHERE (parent = %(planner_name)s) AND (student = %(student)s)''', 
+            {"planner_name": planner_name, "student": s})
+
     return 
 
 

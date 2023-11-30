@@ -139,9 +139,11 @@ MIT
 **1.5.3**
 1. Fixed the following issues: ISS-2023-00067, ISS-2023-00069, ISS-2023-00070, and ISS-2023-00072
 
-**1.5.4 PLANNED**
+**1.5.4**
 
 1. Allow end users to remove students from existing planners
+
+2. Change the Show All icon on the Weekly Planner page
 
 **1.5.5 PLANNED**
 1. Fix bug where Planner Detail fails to display data if no color is assigned in Lesson Status

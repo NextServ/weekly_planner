@@ -481,8 +481,6 @@ function show_students(mode = "Add") {
                     });
 
                     document.querySelector('#del_button').addEventListener('click', function () {
-                        // Output to console.log details of each student in selected_students
-
                         const del_list = [];
                         table.rows(".selected").every(function ( rowIdx, tableLoop, rowLoop ) {
                             // Build an array containing both student and planner_name
@@ -490,17 +488,8 @@ function show_students(mode = "Add") {
                             del_list.push(item);
                         });
                         
-                        // Warn the user that the selected students will be deleted
-                        // frappe.warn(title, message_html, proceed_action, primary_label, is_minimizable)
-                        frappe.warn(__('Are you sure you wish to delete selected Students)?'),
-                            __('Lesson data for selected Students will also be deleted.'),
-                            () => {
-                                // action to perform if Continue is selected
-                                delete_students(planner_name, del_list);
-                            },
-                            'Continue',
-                            true // Sets dialog as minimizable
-                        )
+                        modal_del_students.hide();
+                        delete_students(planner_name, del_list);
                     });
 
                     document.querySelector('#btn_del_students_cancel').addEventListener('click', function () {
@@ -540,27 +529,57 @@ function save_students(planner_name, insert_list) {
 
 
 function delete_students(planner_name, del_list) {
-    frappe.call({
-        method: "weekly_planner.www.planner-detail.planner_actions.delete_students",
-        args: {
-            "planner_name": planner_name,
-            "insert_list": del_list
-        },
+    var action_modal = new bootstrap.Modal(document.getElementById('modal_action'), {
+        keyboard: true
+    })
 
-        callback: function(r) {
-            if (!r.exc) {
-                // Go back to the main page
-                location.reload();
-            } else {
-                frappe.show_alert(
-                    {
-                        message: __("Error deleting students!"),
-                        indicator: "red",
-                    },
-                    3
-                );
+    if (del_list.length == 0) {
+        // Check that there are students to delete
+        action_modal.show();
+        document.getElementById("modal_action_title").innerHTML = __("No Students selected");
+        document.getElementById("modal_action_body").innerHTML = __("Please select Students to delete.");
+        document.getElementById("modal_action_primary").innerHTML = __("OK");
+        document.getElementById("modal_action_secondary").visible = false;
+
+        location.reload();
+        return;
+    }
+
+    action_modal.show();
+    document.getElementById("modal_action_title").innerHTML = __("Are you sure you wish to delete the selected Students?");
+    document.getElementById("modal_action_body").innerHTML = __("Selected Students may have lesson entries. Deleting them will also delete the lesson entries.");
+    document.getElementById("modal_action_primary").innerHTML = __("Cancel");
+    document.getElementById("modal_action_secondary").innerHTML = __("Delete");
+
+    // Confirm that the user wants to delete the selected students before proceeding
+    document.querySelector('#modal_action_primary').addEventListener('click', function () {
+        location.reload();
+        return;
+    });
+
+    document.querySelector('#modal_action_secondary').addEventListener('click', function () {
+        frappe.call({
+            method: "weekly_planner.www.planner-detail.planner_actions.delete_students",
+            args: {
+                "planner_name": planner_name,
+                "del_list": del_list
+            },
+
+            callback: function(r) {
+                if (!r.exc) {
+                    // Go back to the main page
+                    location.reload();
+                } else {
+                    frappe.show_alert(
+                        {
+                            message: __("Error deleting students!"),
+                            indicator: "red",
+                        },
+                        3
+                    );
+                }
             }
-        }
+        });
     });
 }
 
