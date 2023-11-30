@@ -468,17 +468,36 @@ function show_students(mode = "Add") {
                         // console.log(insert_list);
                         save_students(planner_name, insert_list);
                     });
-                } else {
-                    $('#modal_del_students').modal('show');
+
+                } else {    // Delete selected students from the planner
+                    var modal_del_students = new bootstrap.Modal(document.getElementById('modal_del_students'), {
+                        keyboard: true
+                    })
+
+                    modal_del_students.show();
 
                     document.querySelector('#clear_del_button').addEventListener('click', function () {
                         table.rows('.selected').nodes().each((row) => row.classList.toggle('selected'));
                     });
 
-                    document.querySelector('#btn_del_students_cancel').addEventListener('click', function () {
-                        $('modal_del_students').modal('hide');
+                    document.querySelector('#del_button').addEventListener('click', function () {
+                        // Output to console.log details of each student in selected_students
+
+                        const del_list = [];
+                        table.rows(".selected").every(function ( rowIdx, tableLoop, rowLoop ) {
+                            // Build an array containing both student and planner_name
+                            item = this.data()[0];
+                            del_list.push(item);
+                        });
+                        
+                        // Output to console log each element in the insert_list array
+                        // console.log(insert_list);
+                        delete_students(planner_name, del_list);
                     });
 
+                    document.querySelector('#btn_del_students_cancel').addEventListener('click', function () {
+                        modal_del_students.hide();
+                    });
                 }
             }
         }
@@ -502,6 +521,32 @@ function save_students(planner_name, insert_list) {
                 frappe.show_alert(
                     {
                         message: __("Error loading students!"),
+                        indicator: "red",
+                    },
+                    3
+                );
+            }
+        }
+    });
+}
+
+
+function delete_students(planner_name, del_list) {
+    frappe.call({
+        method: "weekly_planner.www.planner-detail.planner_actions.delete_students",
+        args: {
+            "planner_name": planner_name,
+            "insert_list": del_list
+        },
+
+        callback: function(r) {
+            if (!r.exc) {
+                // Go back to the main page
+                location.reload();
+            } else {
+                frappe.show_alert(
+                    {
+                        message: __("Error deleting students!"),
                         indicator: "red",
                     },
                     3

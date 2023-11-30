@@ -324,6 +324,22 @@ def save_students(planner_name, insert_list):
     return 
 
 
+@frappe.whitelist()    
+def delete_students(planner_name, del_list):
+    # Add students in the Planner Student table for each student selected
+    students = json.loads(del_list)
+
+    planner_doc = frappe.get_doc("Weekly Planner", planner_name)
+    for s in students:
+        planner_doc.append("students", {
+            "student": s
+        })
+
+    planner_doc.save()
+   
+    return 
+
+
 @frappe.whitelist()
 def get_topics_for_selection(planner_name, show_action):
     # Retrieve topics that are not already in Planner Topic
