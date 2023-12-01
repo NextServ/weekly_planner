@@ -147,3 +147,5 @@ MIT
 
 **1.5.5 PLANNED**
 1. Fix bug where Planner Detail fails to display data if no color is assigned in Lesson Status
+
+2. Fix the bug where the Planner Detail page reloads immediately without waiting for input from user when Delete Students modal opens warning that there are no students selected to be deleted
