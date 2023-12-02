@@ -127,6 +127,7 @@
               </button>
               <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                 <li><a class="dropdown-item" data-toggle="modal" data-target="#modal_add_students" href="#">{{ _("Add Students") }}</a></li>
+                <li><a class="dropdown-item" data-toggle="modal" data-target="#modal_del_students" id="btn_del_students" href="#">{{ _("Delete Students") }}</a></li>
                 <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item" href="#" id="btn_add_topics">{{ _("Add Topics") }}</a></li>
                 <li><a class="dropdown-item" href="#" id="btn_del_topics">{{ _("Delete Topics") }}</a></li>
@@ -168,9 +169,8 @@
         </div>
         <div class="modal-body" id="modal_action_body" ></div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="modal_action_primary"></button>
-          <button type="button" class="btn btn-secondary" planner-name="{{ planner.name }}"
-            data-bs-dismiss="modal" id="modal_action_secondary"></button>
+          <button type="button" class="btn btn-primary" planner-name="{{ planner.name }}" data-bs-dismiss="modal" id="modal_action_primary"></button>
+          <button type="button" class="btn btn-secondary" planner-name="{{ planner.name }}" data-bs-dismiss="modal" id="modal_action_secondary"></button>
         </div>
       </div>
     </div>
@@ -202,6 +202,36 @@
   </div>
   <!-- ./ Add Students Modal -->
   
+  <!-- Delete Students Modal -->
+  <div class="modal fade" id="modal_del_students" data-backdrop="static" data-keyboard="true" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">{{ _("Delete Students") }}</h5>
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body" id="modal_del_students_body">
+          <br />
+          <table class="table table-md table-striped" style="width: 100%"  id="del_students_table"></table>
+        </div>
+
+        <div class="modal-footer">
+          <div class="btn-group" role="group" aria-label="List Actions">
+            <button type="button" class="btn btn-primary" id="del_button">{{ _("Delete Selected") }}</button>
+            <button type="button" class="btn btn-secondary" id="clear_del_button">{{ _("Clear Selection") }}</button>
+          </div>
+          
+          <!-- TODO: solve the disabling of the entire page when this button is clicked instead of pressing Esc -->
+          <button type="button" class="btn btn-secondary" id="btn_del_students_cancel" data-dismiss="modal">{{ _("Cancel") }}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- ./ Delete Students Modal -->
+    
   <!-- Add Topics Modal -->
   <div class="modal fade" id="modal_add_topics" data-backdrop="static" data-keyboard="true" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">

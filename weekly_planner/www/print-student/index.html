@@ -40,10 +40,16 @@
                 <div class="col">
                     {{ _("Student") }}
                     <input type="text" class="form-control" value="{{ student.last_name + ', ' + student.first_name }}" readonly>
+                    <br>
+                    {{ _("Guide") }}
+                    <input type="text" class="form-control" value="{{ instructor }}" readonly>
                 </div>
                 <div class="col">
                     {{ _("Coverage Dates") }}
                     <input type="text" class="form-control" value="{{ start_date }} to {{ end_date }}" readonly>
+                    <br>
+                    {{ _("Class") }}
+                    <input type="text" class="form-control" value="{{ student_group }}" readonly>
                 </div>
             </div>
         </form>
@@ -55,19 +61,44 @@
     <table class="table table-bordered" id="lesson_table">
         <thead>
             <tr>
-                <th scope="col">{{ _("Topic") }}</th>
-                <th scope="col">{{ _("Date") }}</th>
+                <th scope="col">{{ _("Learning Areas") }}</th>
+                <th scope="col">{{ _("Presentations") }}</th>
             </tr>
         </thead>
         <tbody>
             {% for lesson in lessons %}
             <tr>
+                <td>{{ lesson.parent }}</td>
                 <td>{{ lesson.topic }}</td>
-                <td>{{ lesson.date }}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+    <div>
+        <div class="border p-3" style="min-height: 200px;">
+            <h5><u>Behavioral Report</u></h5>
+            <p>{{ monthly_behavioral_assessment[0].assessment }}</p>
+        </div>
+        <div class="flex " style="width: 100%;">
+            <div class="border p-3 h-50" style="min-height: 200px; width: 100%;">
+                <h5><u>Things to bring</u></h5>
+                <p>{{ monthly_behavioral_assessment[0].things_to_bring }}</p>
+            </div>
+            <div class="border p-3" style="min-height: 200px; width: 100%;">
+                <h5><u>Supplementary work to be done at home</u></h5>
+                <p>{{ monthly_behavioral_assessment[0].supplementary_work }}</p>
+            </div>
+        </div>
+        <div class="border p-3" style="min-height: 200px; width: 100%;">
+            <h5><u> Comments/Suggestions</u></h5>
+            <p>{{ monthly_behavioral_assessment[0].comments }}</p>
+        </div>
+        <div class="flex flex-column align-items-center" style="text-align: center; margin-top: 100px;">
+            <b style="border-top: 1px solid black; width: 300px;">Parents' Signature/Date</b>
+            <br>
+            <p>Please return this to school, read and signed, tomorrow. Thank you!</p>
+        </div>
+    </div>
     <!-- ./ Tables -->
 </main>
 <!-- ./ Main -->

@@ -128,7 +128,24 @@ MIT
 
 5. Fixed the Weekly Planner Report so that it allows up to 35 students to be printed on a single page - DONE (c)
 
-**1.5.1 PLANNED**
+**1.5.1**
 1. Allow end user to choose (and save) the paper size to use when printing the Weekly Planner Report
 
-2. Restrict the Monthly Report list to only show assessments created by that guide and his/her supervisor. HoS can see all.
+**1.5.2**
+1. Restrict the Monthly Report list to only show assessments created by that guide and his/her supervisor. HoS can see all.
+
+2. Fixed the following issues: ISS-2023-00063 and ISS-2023-00068
+
+**1.5.3**
+1. Fixed the following issues: ISS-2023-00067, ISS-2023-00069, ISS-2023-00070, and ISS-2023-00072
+
+**1.5.4**
+
+1. Allow end users to remove students from existing planners
+
+2. Change the Show All icon on the Weekly Planner page
+
+**1.5.5 PLANNED**
+1. Fix bug where Planner Detail fails to display data if no color is assigned in Lesson Status
+
+2. Fix the bug where the Planner Detail page reloads immediately without waiting for input from user when Delete Students modal opens warning that there are no students selected to be deleted

@@ -59,7 +59,12 @@ frappe.ready(function() {
     $('#modal_add_students').on('show.bs.modal', function (e) {
         show_add_students_modal(planner_name);
     })
-    
+
+    // Check for Add Topics button clicked
+    $('#btn_del_students').on('click', function (e) {
+        show_students("Delete");
+    })
+
     // Check for Add Topics button clicked
     $('#btn_add_topics').on('click', function (e) {
         show_topics('add');
@@ -388,21 +393,28 @@ function approve_planner(e) {
 }
 
 
-function show_students(e) {
-    planner_name = getQueryVariable("planner-name").replace(/%20/g, " ");  // remove %20s
-
+function show_students(mode = "Add") {
+    var planner_name = getQueryVariable("planner-name").replace(/%20/g, " ");  // remove %20s
+    var campus = (mode == "Add") ? document.getElementById("selected_campus").value : "";
+    var group = (mode == "Add") ? document.getElementById("selected_group").value : "";
+    
     // Retrieve students from Frappe
     frappe.call({
         method: "weekly_planner.www.planner-detail.planner_actions.get_students_for_selection",
         args: {
-            "selected_campus": document.getElementById("selected_campus").value,
-            "selected_group": document.getElementById("selected_group").value,
+            "selected_campus": campus,
+            "selected_group": group,
             "planner_name": planner_name,
+            "mode": mode,
         },
 
         callback: function(students) {
             if (students.message) {
-                var lesson_body = document.getElementById("students_table");
+                // Make sure the right table name is used
+                var table_name = (mode == "Add") ? "students_table" : "del_students_table";
+
+                var lesson_body = document.getElementById(table_name);
+                table_name = "#" + table_name;
 
                 // Build the lesson_body with columns student, campus and group using the dataset returned from get_students_for_selection method
                 var lesson_body_html = '<thead><tr><th>ID</th><th>First Name</th><th>Last Name</th><th>DOB</th><th>Student Group</th></tr></thead><tbody>';
@@ -417,10 +429,11 @@ function show_students(e) {
                 lesson_body.innerHTML = lesson_body_html;
 
                 // todo: Adjust modal in case the table is too big
-                // myModal.handleUpdate()                
+                // myModal.handleUpdate()
 
-                const table = new DataTable('#students_table', {
+                const table = new DataTable(table_name, {
                     destroy: true,
+                    order: [[2, 'asc'], [1, 'asc']],
                     columnDefs: [
                         {
                             target: 0,
@@ -435,25 +448,54 @@ function show_students(e) {
                     e.currentTarget.classList.toggle('selected');
                 });
                 
-                document.querySelector('#clear_button').addEventListener('click', function () {
-                    table.rows('.selected').nodes().each((row) => row.classList.toggle('selected'));
-                });
-
-                // Add selected students to the planner
-                document.querySelector('#add_button').addEventListener('click', function () {
-                    // Output to console.log details of each student in selected_students
-
-                    const insert_list = [];
-                    table.rows(".selected").every(function ( rowIdx, tableLoop, rowLoop ) {
-                        // Build an array containing both student and planner_name
-                        item = this.data()[0];
-                        insert_list.push(item);
+                if (mode == "Add") {
+                    document.querySelector('#clear_button').addEventListener('click', function () {
+                        table.rows('.selected').nodes().each((row) => row.classList.toggle('selected'));
                     });
-                    
-                    // Output to console log each element in the insert_list array
-                    // console.log(insert_list);
-                    save_students(planner_name, insert_list);
-                });
+
+                    // Add selected students to the planner
+                    document.querySelector('#add_button').addEventListener('click', function () {
+                        // Output to console.log details of each student in selected_students
+
+                        const insert_list = [];
+                        table.rows(".selected").every(function ( rowIdx, tableLoop, rowLoop ) {
+                            // Build an array containing both student and planner_name
+                            item = this.data()[0];
+                            insert_list.push(item);
+                        });
+                        
+                        // Output to console log each element in the insert_list array
+                        // console.log(insert_list);
+                        save_students(planner_name, insert_list);
+                    });
+
+                } else {    // Delete selected students from the planner
+                    var modal_del_students = new bootstrap.Modal(document.getElementById('modal_del_students'), {
+                        keyboard: true
+                    })
+
+                    modal_del_students.show();
+
+                    document.querySelector('#clear_del_button').addEventListener('click', function () {
+                        table.rows('.selected').nodes().each((row) => row.classList.toggle('selected'));
+                    });
+
+                    document.querySelector('#del_button').addEventListener('click', function () {
+                        const del_list = [];
+                        table.rows(".selected").every(function ( rowIdx, tableLoop, rowLoop ) {
+                            // Build an array containing both student and planner_name
+                            item = this.data()[0];
+                            del_list.push(item);
+                        });
+                        
+                        modal_del_students.hide();
+                        delete_students(planner_name, del_list);
+                    });
+
+                    document.querySelector('#btn_del_students_cancel').addEventListener('click', function () {
+                        modal_del_students.hide();
+                    });
+                }
             }
         }
     });
@@ -482,6 +524,62 @@ function save_students(planner_name, insert_list) {
                 );
             }
         }
+    });
+}
+
+
+function delete_students(planner_name, del_list) {
+    var action_modal = new bootstrap.Modal(document.getElementById('modal_action'), {
+        keyboard: true
+    })
+
+    if (del_list.length == 0) {
+        // Check that there are students to delete
+        action_modal.show();
+        document.getElementById("modal_action_title").innerHTML = __("No Students selected");
+        document.getElementById("modal_action_body").innerHTML = __("Please select Students to delete.");
+        document.getElementById("modal_action_primary").innerHTML = __("OK");
+        document.getElementById("modal_action_secondary").visible = false;
+
+        location.reload();
+        return;
+    }
+
+    action_modal.show();
+    document.getElementById("modal_action_title").innerHTML = __("Are you sure you wish to delete the selected Students?");
+    document.getElementById("modal_action_body").innerHTML = __("Selected Students may have lesson entries. Deleting them will also delete the lesson entries.");
+    document.getElementById("modal_action_primary").innerHTML = __("Cancel");
+    document.getElementById("modal_action_secondary").innerHTML = __("Delete");
+
+    // Confirm that the user wants to delete the selected students before proceeding
+    document.querySelector('#modal_action_primary').addEventListener('click', function () {
+        location.reload();
+        return;
+    });
+
+    document.querySelector('#modal_action_secondary').addEventListener('click', function () {
+        frappe.call({
+            method: "weekly_planner.www.planner-detail.planner_actions.delete_students",
+            args: {
+                "planner_name": planner_name,
+                "del_list": del_list
+            },
+
+            callback: function(r) {
+                if (!r.exc) {
+                    // Go back to the main page
+                    location.reload();
+                } else {
+                    frappe.show_alert(
+                        {
+                            message: __("Error deleting students!"),
+                            indicator: "red",
+                        },
+                        3
+                    );
+                }
+            }
+        });
     });
 }
 
@@ -627,11 +725,8 @@ function show_add_students_modal(planner_name) {
 
             var modal_body = document.getElementById("modal_add_students_body");
             modal_body.innerHTML = r.message;
-
         }
     });
-
-    // $("#modal_add_students").modal("show");
 }
 
 
