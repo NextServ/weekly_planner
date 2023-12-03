@@ -37,14 +37,14 @@ def build_planner_report(planner_name, paper_size):
                             INNER JOIN `tabLesson Status` l ON p.lesson_status = l.name
                             WHERE parent = %(p_name)s''', {"p_name": planner_name}, as_dict=True)
 
-    course_topics = frappe.db.sql('''SELECT c.parent, l.topic 
+    courses = frappe.db.sql('''SELECT c.parent, l.topic 
                             FROM `tabPlanner Lesson` l 
                             LEFT JOIN `tabCourse Topic` c ON l.topic = c.topic_name 
                             ORDER BY c.parent, l.topic
                             ''', as_dict=True)
 
-    studs_per_batch = 35
-    topics_per_batch = 10 if paper_size == "Legal" else 9
+    studs_per_batch = 45 if paper_size == "Legal" else 35
+    topics_per_batch = 11 if paper_size == "Legal" else 10
     topics_done = True
     cur_page = 0
     cur_student_batch = 0
@@ -218,7 +218,7 @@ def build_planner_report(planner_name, paper_size):
             else:
                 html_text += "<tr><td class='text-center'><h7>{course_name}</h7></td>".format(course_name=course_name)
                 
-            html_text += "<tr><h7>" + topic.topic[:50] + ('...' if len(topic.topic) > 50 else '') + "</h7></td>"
+            html_text += "<td><h7>" + topic.topic[:100] + ('...' if len(topic.topic) > 100 else '') + "</h7></td>"
             prev_course_name = course_name
 
             if not topic.topic in topic_headers:
