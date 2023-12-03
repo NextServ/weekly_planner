@@ -62,6 +62,11 @@ def generate_lesson_areas(doc_name, student, year, month):
     assessment = frappe.get_doc('Monthly Behavioral Assessment', doc_name)
     lessons = frappe.db.sql(sql, ({'student': student, 'year': year, 'month': month}), as_dict=True)
 
+    # Delete the items first and then append the new ones
+    # This is to avoid duplications
+    for learning_area in assessment.learning_areas:
+        learning_area.delete()
+
     for lesson in lessons:
         assessment.append('learning_areas', {'date': lesson.date, 'topic': lesson.topic, 'course': lesson.course})
 

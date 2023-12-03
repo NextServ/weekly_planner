@@ -50,13 +50,15 @@ def build_planner_report(planner_name, paper_size):
     cur_student_batch = 0
     total_students = len(all_students)
     total_topics = len(all_topics)
+    
     # We can't always assure that the total_students will always be equal to studs_per_batch. This results to 0 value. Not sure of the purpose.
     total_stud_batches = int((total_students / studs_per_batch) + (1 if (total_students % studs_per_batch) and (total_students <= studs_per_batch) else 0))
+    
     # total_stud_batches = int((total_students / studs_per_batch) + (1 if (total_students % studs_per_batch)else 0))
     total_topic_batches = int((total_topics / topics_per_batch) + (1 if (total_topics % topics_per_batch) or (total_topics == topics_per_batch) else 0))
     total_pages = total_stud_batches * total_topic_batches
+    
     # This is the variable that adjusts to the size the printer(person) selects.
-    base_size = 1000 if paper_size == "A4" else 950
     if paper_size == "Legal":
         base_size = 1200
     elif paper_size == "A4":
@@ -220,6 +222,9 @@ def build_planner_report(planner_name, paper_size):
                 
             html_text += "<td><h7>" + topic.topic[:100] + ('...' if len(topic.topic) > 100 else '') + "</h7></td>"
             prev_course_name = course_name
+
+            html_text += "<tr><td><h7>" + topic.topic[:100] + ('...' if len(topic.topic) > 100 else '') + "</h7></td>"
+            # html_text += "<tr><td><h7>"+ topic.topic + "</h7></td>"
 
             if not topic.topic in topic_headers:
                 topic_headers.append(topic.topic)

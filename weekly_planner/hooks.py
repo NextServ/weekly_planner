@@ -87,9 +87,10 @@ after_sync = "weekly_planner.install.after_sync"
 # -----------
 # Permissions evaluated in scripted ways
 
-# permission_query_conditions = {
-#	"Event": "frappe.desk.doctype.event.event.get_permission_query_conditions",
-# }
+permission_query_conditions = {
+	# "Event": "frappe.desk.doctype.event.event.get_permission_query_conditions",
+    "Monthly Behavioral Assessment" : "weekly_planner.permissions.monthly_behavioral_assessment_query"
+}
 #
 # has_permission = {
 #	"Event": "frappe.desk.doctype.event.event.has_permission",

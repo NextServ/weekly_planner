@@ -251,12 +251,18 @@ def get_lesson_status_options():
 
 
 @frappe.whitelist()
-def get_students_for_selection(selected_campus, selected_group, planner_name):
+def get_students_for_selection(selected_campus, selected_group, planner_name, mode):
     # Build the rest of the SQL statement based on whether there is value in selected_group and selected_campus
     sql = '''SELECT s.name, s.first_name, s.last_name, s.date_of_birth, g.parent FROM `tabStudent Group Student` g
                 INNER JOIN `tabStudent` s ON g.student = s.name '''
 
-    if selected_campus and selected_group:
+    if mode == "Delete":
+        sql = '''SELECT s.name, s.first_name, s.last_name, s.date_of_birth, g.parent FROM `tabPlanner Student` p
+                    INNER JOIN `tabStudent` s ON p.student = s.name 
+                    INNER JOIN `tabStudent Group Student` g ON s.name = g.student
+                    WHERE p.parent = %(planner_name)s'''
+        students = frappe.db.sql(sql, {"planner_name": planner_name}, as_dict=True)
+    elif selected_campus and selected_group:
         sql = sql + '''WHERE campus = %(campus)s AND student_group = %(group)s AND s.name NOT IN (SELECT student from `tabPlanner Student` WHERE parent = %(planner_name)s)'''
         students = frappe.db.sql(sql, {"campus": selected_campus, "group": selected_group, "planner_name": planner_name}, as_dict=True)
     elif selected_campus:
@@ -315,6 +321,27 @@ def save_students(planner_name, insert_list):
 
     planner_doc.save()
    
+    return 
+
+
+@frappe.whitelist()    
+def delete_students(planner_name, del_list):
+    # Add students in the Planner Student table for each student selected
+    students = json.loads(del_list)
+
+    print("** delete_students **")
+
+    for s in students:
+        print("\nstudent: " + s)
+        
+        # First delete all lessons for the student
+        frappe.db.sql('''DELETE FROM `tabPlanner Lesson` WHERE (parent = %(planner_name)s) AND (student = %(student)s)''', 
+            {"planner_name": planner_name, "student": s})
+        
+        # Then delete the student from the Planner Student table
+        frappe.db.sql('''DELETE FROM `tabPlanner Student` WHERE (parent = %(planner_name)s) AND (student = %(student)s)''', 
+            {"planner_name": planner_name, "student": s})
+
     return 
 
 
@@ -618,22 +645,18 @@ def adjust_text_color(hex_background_color):
     else:
         return '#FFFFFF'  # White for dark background
 
+
 @frappe.whitelist()
 def fetch_paper_size(planner_name):
-    paper_size = frappe.db.get_value('Weekly Planner Print Settings', planner_name, 'paper_size')
+    paper_size = frappe.db.get_value('Weekly Planner', planner_name, 'paper_size')
 
     if paper_size:
         return paper_size
 
+
 @frappe.whitelist()
 def remember_paper_size(planner_name, paper_size):
-    if (frappe.db.exists("Weekly Planner Print Settings", planner_name)):
-        doc = frappe.get_doc('Weekly Planner Print Settings', planner_name)
-        if doc.paper_size != paper_size:
-            doc.paper_size = paper_size
-            doc.save()
-    else:
-        doc = frappe.new_doc('Weekly Planner Print Settings')
-        doc.weekly_planner = planner_name
+    doc = frappe.get_doc('Weekly Planner', planner_name)
+    if doc.paper_size != paper_size:
         doc.paper_size = paper_size
-        doc.insert()
+        doc.save()

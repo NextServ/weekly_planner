@@ -47,7 +47,10 @@ frappe.ready(function() {
     });
 
     $("#modal_action_print").on("click", function(e) {
+        // The passed attribute is now available to be passed as a URL parameter Step-3
         planner_name = e.currentTarget.getAttribute("planner-name");
+        planner_instructor = e.currentTarget.getAttribute("planner-instructor");
+        student_group = e.currentTarget.getAttribute("student-group");
         let is_remember = $('#remember_selected_paper_size').is(":checked")
         let paper_size = $('#selected_paper_size').find(":selected").text()
 
@@ -80,13 +83,20 @@ frappe.ready(function() {
                     }
                 });
             }
+
             window.open("/api/method/weekly_planner.www.print-planner.planner_reports.build_planner_report?planner_name=" + planner_name + "&paper_size=" + paper_size, "_blank");
+            
         } else {
+            // pass the contexts here
+            // Can be accessed by
+            // context.instructor = frappe.form_dict.get("planner-instructor") in the folder's py file.
             url_text =  "print-student/index.html?planner-name=" + planner_name
             url_text += "&student=" + student_id
             url_text += "&start-date=" + start_date
             url_text += "&end-date=" + end_date
             url_text += "&limit-to-planner=" + limit_to_planner
+            url_text += "&planner-instructor=" + planner_instructor
+            url_text += "&student-group=" + student_group
             window.open(url_text, "_blank");
         }
 
@@ -208,10 +218,16 @@ function approve_planner(e = event) {
 
 
 function print_planner_modal(e = event) {
+    // Get the attribute when the print button in weekly-planner is clicked in the list, this is set uniquely for each item in the "data-table". Step-1
     planner_name = e.currentTarget.getAttribute("planner-name");
     planner_start = e.currentTarget.getAttribute("planner-start");
+    planner_instructor = e.currentTarget.getAttribute("planner-instructor");
+    student_group = e.currentTarget.getAttribute("student-group")
+    // Set the fetched data from "data-table" to the current modal that we are gonna use when print button is clicked. Step-2
     document.getElementById("modal_action_print").setAttribute("planner-name", planner_name);
     document.getElementById("modal_action_print").setAttribute("planner-start", planner_start);
+    document.getElementById("modal_action_print").setAttribute("planner-instructor", planner_instructor);
+    document.getElementById("modal_action_print").setAttribute("student-group", student_group);
 
     // Reset modal fields
     document.getElementById("selected_report").value = "Planner";
