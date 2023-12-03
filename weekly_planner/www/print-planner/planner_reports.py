@@ -37,7 +37,6 @@ def build_planner_report(planner_name, paper_size):
                             INNER JOIN `tabLesson Status` l ON p.lesson_status = l.name
                             WHERE parent = %(p_name)s''', {"p_name": planner_name}, as_dict=True)
 
-<<<<<<< HEAD
     courses = frappe.db.sql('''SELECT c.parent, l.topic 
                             FROM `tabPlanner Lesson` l 
                             LEFT JOIN `tabCourse Topic` c ON l.topic = c.topic_name 
@@ -46,10 +45,6 @@ def build_planner_report(planner_name, paper_size):
 
     studs_per_batch = 45 if paper_size == "Legal" else 35
     topics_per_batch = 11 if paper_size == "Legal" else 10
-=======
-    studs_per_batch = 35
-    topics_per_batch = 10 if paper_size == "Legal" else 9
->>>>>>> parent of 77bf616 (ISS-2023-00071)
     topics_done = True
     cur_page = 0
     cur_student_batch = 0
@@ -184,6 +179,7 @@ def build_planner_report(planner_name, paper_size):
         html_text += '    <table class="table table-bordered" id="items_table">'
         html_text += '      <thead><h7>'
         html_text += '        <tr>'
+        html_text += '          <th><span>Course</span></th>'
         html_text += '          <th><span>Topic</span></th>'
 
         # Load up the columns
@@ -211,9 +207,9 @@ def build_planner_report(planner_name, paper_size):
 
         cur_topic_batch += 1
         topics_done = cur_topic_batch > total_topic_batches
+        prev_course_name = ""
                             
         for topic in topics:
-<<<<<<< HEAD
             course_data = [entry['parent'] for entry in courses if entry['topic'] == topic.topic]
             course_name = course_data[0] if course_data else "-"
 
@@ -224,9 +220,6 @@ def build_planner_report(planner_name, paper_size):
                 
             html_text += "<td><h7>" + topic.topic[:100] + ('...' if len(topic.topic) > 100 else '') + "</h7></td>"
             prev_course_name = course_name
-=======
-            html_text += "<tr><td><h7>" + topic.topic[:50] + ('...' if len(topic.topic) > 50 else '') + "</h7></td>"
->>>>>>> parent of 77bf616 (ISS-2023-00071)
 
             if not topic.topic in topic_headers:
                 topic_headers.append(topic.topic)
