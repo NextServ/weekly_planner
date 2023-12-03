@@ -31,6 +31,7 @@ frappe.ready(function() {
                 args: {
                     "title": document.getElementById("title").value,
                     "welcome_text": document.getElementById("welcome_text").value,
+                    "default_color": document.getElementById("default_color").value,
                     "show_student_age_in_view": document.getElementById("show_student_age_in_view").checked,
                     "show_student_age_in_print": document.getElementById("show_student_age_in_print").checked,
                 },

@@ -33,6 +33,7 @@ def add_settings():
             "modified_by": "Administrator",
             "title": "Weekly Planner",
             "welcome_text": "This tool will allow your Instructors prepare their weekly lesson plans and submit them for approval. If you have Instructors under you, the table below will show you their weekly planners as well as your own.",
+            "default_lesson_color": '#4974a5',
             "show_student_age_in_view": 1,
             "show_student_age_in_print": 1,
         },
