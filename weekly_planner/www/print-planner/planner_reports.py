@@ -37,6 +37,12 @@ def build_planner_report(planner_name, paper_size):
                             INNER JOIN `tabLesson Status` l ON p.lesson_status = l.name
                             WHERE parent = %(p_name)s''', {"p_name": planner_name}, as_dict=True)
 
+    course_topics = frappe.db.sql('''SELECT c.parent, l.topic 
+                            FROM `tabPlanner Lesson` l 
+                            LEFT JOIN `tabCourse Topic` c ON l.topic = c.topic_name 
+                            ORDER BY c.parent, l.topic
+                            ''', as_dict=True)
+
     studs_per_batch = 35
     topics_per_batch = 10 if paper_size == "Legal" else 9
     topics_done = True
@@ -173,6 +179,7 @@ def build_planner_report(planner_name, paper_size):
         html_text += '    <table class="table table-bordered" id="items_table">'
         html_text += '      <thead><h7>'
         html_text += '        <tr>'
+        html_text += '          <th><span>Course</span></th>'
         html_text += '          <th><span>Topic</span></th>'
 
         # Load up the columns
@@ -200,9 +207,19 @@ def build_planner_report(planner_name, paper_size):
 
         cur_topic_batch += 1
         topics_done = cur_topic_batch > total_topic_batches
+        prev_course_name = ""
                             
         for topic in topics:
-            html_text += "<tr><td><h7>" + topic.topic[:50] + ('...' if len(topic.topic) > 50 else '') + "</h7></td>"
+            course_data = [entry['parent'] for entry in courses if entry['topic'] == topic.topic]
+            course_name = course_data[0] if course_data else "-"
+
+            if course_name == prev_course_name:
+                html_text += "<tr><td class='text-center'><h7></h7></td>".format(course_name=course_name)
+            else:
+                html_text += "<tr><td class='text-center'><h7>{course_name}</h7></td>".format(course_name=course_name)
+                
+            html_text += "<tr><h7>" + topic.topic[:50] + ('...' if len(topic.topic) > 50 else '') + "</h7></td>"
+            prev_course_name = course_name
 
             if not topic.topic in topic_headers:
                 topic_headers.append(topic.topic)
