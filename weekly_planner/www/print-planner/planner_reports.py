@@ -44,7 +44,7 @@ def build_planner_report(planner_name, paper_size):
                             ''', as_dict=True)
 
     studs_per_batch = 45 if paper_size == "Legal" else 35
-    topics_per_batch = 11 if paper_size == "Legal" else 10
+    topics_per_batch = 12 if paper_size == "Legal" else 10
     topics_done = True
     cur_page = 0
     cur_student_batch = 0
@@ -106,11 +106,20 @@ def build_planner_report(planner_name, paper_size):
     html_text += '          height: auto;'
     html_text += '      }'
                    
+    # html_text += '      table#items_table th:not(:first-child) {'
+    # # html_text += '          max-width: 50px;'
+    # # html_text += '          max-width: ' + _(str(1750 / total_students)) + 'px;'
+    # html_text += '          max-width: ' + _(str(base_size / total_students)) + 'px;'
+    # # html_text += '          max-width: 2%;'
+    # html_text += '      }'
+
     html_text += '      table#items_table th:not(:first-child) {'
-    # html_text += '          max-width: 50px;'
-    # html_text += '          max-width: ' + _(str(1750 / total_students)) + 'px;'
-    html_text += '          max-width: ' + _(str(base_size / total_students)) + 'px;'
-    # html_text += '          max-width: 2%;'
+    if paper_size == "Legal":
+        html_text += '          max-width: ' + _(str(2500 / max(35, total_students))) + 'px;'
+    elif paper_size == "A4":
+        html_text += '          max-width: ' + _(str(2180 / 35)) + 'px;'
+    else:
+        html_text += '          max-width: ' + _(str(2000 / 35)) + 'px;'
     html_text += '      }'
                    
     html_text += '      table#items_table {'
