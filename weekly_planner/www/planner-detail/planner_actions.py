@@ -26,6 +26,7 @@ def get_settings():
 
     title = frappe.db.get_single_value("Weekly Planner Settings", "title")
     welcome_text = frappe.db.get_single_value("Weekly Planner Settings", "welcome_text")
+    default_color = frappe.db.get_single_value("Weekly Planner Settings", "default_lesson_color")
     show_student_age_in_view = frappe.db.get_single_value("Weekly Planner Settings", "show_student_age_in_view")
     show_student_age_in_print = frappe.db.get_single_value("Weekly Planner Settings", "show_student_age_in_print")
     
@@ -45,6 +46,9 @@ def get_settings():
     modal_html +=  '    </div>'
     modal_html +=  '  </div>'
     modal_html +=  '  <br />'
+    modal_html +=  '  <label for="default_color" class="form-label">' + _('Default Lesson Color') + '</label>'
+    modal_html +=  '  <input type="color" class="form-control form-control-color" id="default_color" value="' + default_color +'" title="Choose your color">'
+    modal_html +=  '  <br />'
     modal_html +=  '  <div class="form-check">'
     modal_html +=  '    <input class="form-check-input" type="checkbox" value="" id="show_student_age_in_view"' + (' checked' if show_student_age_in_view == 1 else '') + '>'
     modal_html +=  '    <label class="form-check-label" for="show_student_age_in_view">' + _("Show Student Age in View") + '</label>'
@@ -59,7 +63,7 @@ def get_settings():
 
 
 @frappe.whitelist()
-def save_settings(title, welcome_text, show_student_age_in_view, show_student_age_in_print):
+def save_settings(title, welcome_text, default_color, show_student_age_in_view, show_student_age_in_print):
     frappe.db.set_single_value(
         "Weekly Planner Settings",
         {
@@ -67,6 +71,7 @@ def save_settings(title, welcome_text, show_student_age_in_view, show_student_ag
             "modified_by": frappe.session.user,
             "title": title,
             "welcome_text": welcome_text,
+            "default_lesson_color": default_color,
             "show_student_age_in_view": show_student_age_in_view,
             "show_student_age_in_print": show_student_age_in_print
         }
@@ -229,7 +234,7 @@ def build_planner_items(planner_name):
 
                 if item != []:
                     lesson_item = item[0].abbreviation + " " + item[0].date.strftime('%m-%d-%y')
-                    badge_bg_color = item[0].color
+                    badge_bg_color = item[0].color if item[0].color else frappe.db.get_single_value("Weekly Planner Settings", "default_lesson_color")
                     badge_fg_color = adjust_text_color(badge_bg_color)
 
                     table_html += "<span role='button' style=background-color:" + badge_bg_color + \
@@ -537,7 +542,7 @@ def save_lesson_entry(lesson_name, planner_name, student, topic, status, lesson_
     status = frappe.db.sql('''SELECT name, abbreviation, color FROM `tabLesson Status` WHERE status = %(status)s''', {"status": status}, as_dict=True)
     status_id = status[0].name
     status_abbr = status[0].abbreviation
-    status_bg_color = status[0].color
+    status_bg_color = status[0].color if status[0].color else frappe.db.get_single_value("Weekly Planner Settings", "default_lesson_color")
     status_color = adjust_text_color(status_bg_color)
 
     # Save the lesson entry

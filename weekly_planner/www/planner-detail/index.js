@@ -541,8 +541,10 @@ function delete_students(planner_name, del_list) {
         document.getElementById("modal_action_primary").innerHTML = __("OK");
         document.getElementById("modal_action_secondary").visible = false;
 
-        location.reload();
-        return;
+        document.querySelector('#modal_action_primary').addEventListener('click', function () {
+            location.reload();
+            return;
+        });
     }
 
     action_modal.show();
