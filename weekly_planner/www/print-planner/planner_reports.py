@@ -60,11 +60,11 @@ def build_planner_report(planner_name, paper_size):
     
     # This is the variable that adjusts to the size the printer(person) selects.
     if paper_size == "Legal":
-        base_size = 1200
+        base_size = 1100
     elif paper_size == "A4":
-        base_size = 1000
+        base_size = 900
     else:
-        base_size = 950
+        base_size = 800
     # breakpoint()
                             
     html_text =  '<head>'
@@ -106,20 +106,11 @@ def build_planner_report(planner_name, paper_size):
     html_text += '          height: auto;'
     html_text += '      }'
                    
-    # html_text += '      table#items_table th:not(:first-child) {'
-    # # html_text += '          max-width: 50px;'
-    # # html_text += '          max-width: ' + _(str(1750 / total_students)) + 'px;'
-    # html_text += '          max-width: ' + _(str(base_size / total_students)) + 'px;'
-    # # html_text += '          max-width: 2%;'
-    # html_text += '      }'
-
     html_text += '      table#items_table th:not(:first-child) {'
-    if paper_size == "Legal":
-        html_text += '          max-width: ' + _(str(2500 / max(35, total_students))) + 'px;'
-    elif paper_size == "A4":
-        html_text += '          max-width: ' + _(str(2180 / 35)) + 'px;'
-    else:
-        html_text += '          max-width: ' + _(str(2000 / 35)) + 'px;'
+    # html_text += '          max-width: 50px;'
+    # html_text += '          max-width: ' + _(str(1750 / total_students)) + 'px;'
+    html_text += '          max-width: ' + _(str(base_size / total_students)) + 'px;'
+    # html_text += '          max-width: 2%;'
     html_text += '      }'
                    
     html_text += '      table#items_table {'
@@ -229,11 +220,10 @@ def build_planner_report(planner_name, paper_size):
             else:
                 html_text += "<tr><td class='text-center'><h7>{course_name}</h7></td>".format(course_name=course_name)
                 
-            html_text += "<td><h7>" + topic.topic[:100] + ('...' if len(topic.topic) > 100 else '') + "</h7></td>"
+            html_text += "<td><h7>" + topic.topic + "</h7></td>"
+            # Use this one just in case there's some issue with topics overflowing. Basically adjust the font of the culprit topic. In the meantime display everything.
+            # html_text += "<td>"+ ('<h7 style="font-size: 4pt;">' if paper_size == "Letter" else '<h7>') + topic.topic + '</h7>' + '</h7>' +"</td>"
             prev_course_name = course_name
-
-            html_text += "<tr><td><h7>" + topic.topic[:100] + ('...' if len(topic.topic) > 100 else '') + "</h7></td>"
-            # html_text += "<tr><td><h7>"+ topic.topic + "</h7></td>"
 
             if not topic.topic in topic_headers:
                 topic_headers.append(topic.topic)
