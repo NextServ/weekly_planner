@@ -151,7 +151,6 @@ MIT
 **1.5.6 PLANNED**
 1. Fix bug where Planner Detail fails to display data if no color is assigned in Lesson Status - DONE
 
-2. Allow user to assign default lesson color in Settings - DONE
 
 **1.5.7 PLANNED**
 1. Fix the bug where the Planner Detail page reloads immediately without waiting for input from user when Delete Students modal opens warning that there are no students selected to be deleted
