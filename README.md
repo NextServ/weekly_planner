@@ -155,5 +155,7 @@ MIT
 
 3. Fix loading of courses and topics on the Planner Detail page - DONE
 
+4. Deployed a fix to issue ISS-2023-00070 - DONE
+
 **1.5.7 PLANNED**
 1. Fix the bug where the Planner Detail page reloads immediately without waiting for input from user when Delete Students modal opens warning that there are no students selected to be deleted
