@@ -37,8 +37,14 @@ def build_planner_report(planner_name, paper_size):
                             INNER JOIN `tabLesson Status` l ON p.lesson_status = l.name
                             WHERE parent = %(p_name)s''', {"p_name": planner_name}, as_dict=True)
 
+    courses = frappe.db.sql('''SELECT c.parent, l.topic 
+                            FROM `tabPlanner Lesson` l 
+                            LEFT JOIN `tabCourse Topic` c ON l.topic = c.topic_name 
+                            ORDER BY c.parent, l.topic
+                            ''', as_dict=True)
+
     studs_per_batch = 45 if paper_size == "Legal" else 35
-    topics_per_batch = 11 if paper_size == "Legal" else 10
+    topics_per_batch = 12 if paper_size == "Legal" else 10
     topics_done = True
     cur_page = 0
     cur_student_batch = 0
@@ -54,11 +60,11 @@ def build_planner_report(planner_name, paper_size):
     
     # This is the variable that adjusts to the size the printer(person) selects.
     if paper_size == "Legal":
-        base_size = 1200
+        base_size = 1100
     elif paper_size == "A4":
-        base_size = 1000
+        base_size = 900
     else:
-        base_size = 950
+        base_size = 800
     # breakpoint()
                             
     html_text =  '<head>'
@@ -175,6 +181,7 @@ def build_planner_report(planner_name, paper_size):
         html_text += '    <table class="table table-bordered" id="items_table">'
         html_text += '      <thead><h7>'
         html_text += '        <tr>'
+        html_text += '          <th><span>Course</span></th>'
         html_text += '          <th><span>Topic</span></th>'
 
         # Load up the columns
@@ -202,10 +209,21 @@ def build_planner_report(planner_name, paper_size):
 
         cur_topic_batch += 1
         topics_done = cur_topic_batch > total_topic_batches
+        prev_course_name = ""
                             
         for topic in topics:
-            html_text += "<tr><td><h7>" + topic.topic[:100] + ('...' if len(topic.topic) > 100 else '') + "</h7></td>"
-            # html_text += "<tr><td><h7>"+ topic.topic + "</h7></td>"
+            course_data = [entry['parent'] for entry in courses if entry['topic'] == topic.topic]
+            course_name = course_data[0] if course_data else "-"
+
+            if course_name == prev_course_name:
+                html_text += "<tr><td class='text-center'><h7></h7></td>".format(course_name=course_name)
+            else:
+                html_text += "<tr><td class='text-center'><h7>{course_name}</h7></td>".format(course_name=course_name)
+                
+            html_text += "<td><h7>" + topic.topic + "</h7></td>"
+            # Use this one just in case there's some issue with topics overflowing. Basically adjust the font of the culprit topic. In the meantime display everything.
+            # html_text += "<td>"+ ('<h7 style="font-size: 4pt;">' if paper_size == "Letter" else '<h7>') + topic.topic + '</h7>' + '</h7>' +"</td>"
+            prev_course_name = course_name
 
             if not topic.topic in topic_headers:
                 topic_headers.append(topic.topic)

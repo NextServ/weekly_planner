@@ -9,6 +9,7 @@
  "field_order": [
   "title",
   "welcome_text",
+  "default_lesson_color",
   "show_student_age_in_view",
   "show_student_age_in_print"
  ],
@@ -36,11 +37,16 @@
    "fieldname": "show_student_age_in_print",
    "fieldtype": "Check",
    "label": "Show Student Age in Print"
+  },
+  {
+   "fieldname": "default_lesson_color",
+   "fieldtype": "Color",
+   "label": "Default Lesson Color"
   }
  ],
  "issingle": 1,
  "links": [],
- "modified": "2023-10-24 23:17:17.303546",
+ "modified": "2023-12-03 21:46:57.286739",
  "modified_by": "Administrator",
  "module": "Weekly Planner",
  "name": "Weekly Planner Settings",

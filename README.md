@@ -145,7 +145,17 @@ MIT
 
 2. Change the Show All icon on the Weekly Planner page
 
-**1.5.5 PLANNED**
-1. Fix bug where Planner Detail fails to display data if no color is assigned in Lesson Status
+**1.5.5**
+1. Fixed the following issues: ISS-2023-00043, ISS-2023-00062, ISS-2023-00065, ISS-2023-00067, ISS-2023-00071
 
-2. Fix the bug where the Planner Detail page reloads immediately without waiting for input from user when Delete Students modal opens warning that there are no students selected to be deleted
+**1.5.6**
+1. Fix bug where Planner Detail fails to display data if no color is assigned in Lesson Status - DONE
+
+2. Allow user to assign default lesson color in Settings - DONE
+
+3. Fix loading of courses and topics on the Planner Detail page - DONE
+
+4. Deployed a fix to issue ISS-2023-00070 - DONE
+
+**1.5.7 PLANNED**
+1. Fix the bug where the Planner Detail page reloads immediately without waiting for input from user when Delete Students modal opens warning that there are no students selected to be deleted
