@@ -157,5 +157,23 @@ MIT
 
 4. Deployed a fix to issue ISS-2023-00070 - DONE
 
-**1.5.7 PLANNED**
+**1.5.7**
+1. Report - Sales by Enrollment Phase
+
+2. Report - Sales by Payment Mode
+
+3. Report - Sales by Payment Type
+
+4. Report - Sales by Student Type
+
+5. MonthlyBA Print improvements
+
+**1.5.8**
+1. Fix many tickets/issues
+
+2. Report - Number of Foreign Students
+
+3. Report - Students with Special Discount
+
+**1.5.9 PLANNED**
 1. Fix the bug where the Planner Detail page reloads immediately without waiting for input from user when Delete Students modal opens warning that there are no students selected to be deleted
