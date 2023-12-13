@@ -58,6 +58,7 @@ def generate_lesson_areas(doc_name, student, year, month):
     sql =  '''SELECT date, l.topic, c.parent 'course', student FROM `tabPlanner Lesson` l '''
     sql += '''INNER JOIN `tabCourse Topic` c ON c.topic = l.topic '''
     sql += '''WHERE (student = %(student)s) AND (YEAR(date) = %(year)s) AND (MONTHNAME(date) = %(month)s) '''
+    sql += '''ORDER BY course ASC '''
 
     assessment = frappe.get_doc('Monthly Behavioral Assessment', doc_name)
     lessons = frappe.db.sql(sql, ({'student': student, 'year': year, 'month': month}), as_dict=True)
