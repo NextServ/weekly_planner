@@ -355,16 +355,18 @@ def get_topics_for_selection(planner_name, show_action):
     # Retrieve topics that are not already in Planner Topic
     if show_action == "add":
         sql = '''SELECT t.name subject, c.parent, t.name record_key FROM `tabTopic` t
-                LEFT JOIN `tabCourse Topic` c ON t.name = c.topic    
+                INNER JOIN `tabCourse Topic` c ON t.name = c.topic    
                 WHERE t.name NOT IN (SELECT topic FROM `tabPlanner Topic` WHERE (parent = %(planner_name)s)
                 AND (is_hidden = 0))'''
     else:
         sql = '''SELECT t.topic subject, c.parent, t.name record_key FROM `tabPlanner Topic` t
-                LEFT JOIN `tabCourse Topic` c ON t.topic = c.topic
+                INNER JOIN `tabCourse Topic` c ON t.topic = c.topic
                 WHERE (t.parent = %(planner_name)s) AND (is_hidden = 0)'''
     topics = frappe.db.sql(sql, {"planner_name": planner_name}, as_dict=True)
 
     return topics
+
+
 
 
 @frappe.whitelist()
