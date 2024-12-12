@@ -194,9 +194,21 @@ function open_settings() {
 
 
 // Write a function to receive data from index.html and use it to open another page
-function open_planner_detail(e = event) {
+// function open_planner_detail(e = event) {
     // open a new page and pass the planner name to the new page
-    window.open("planner-detail/index.html?planner-name=" + e.currentTarget.getAttribute('planner-name'), "_self");
+//    window.open("planner-detail/index.html?planner-name=" + e.currentTarget.getAttribute('planner-name'), "_self");
+//}
+
+//Resolving Problem Where The planner Name has ampersand in it
+function open_planner_detail(e = event) {
+    // Get the planner name from the clicked element
+    let plannerName = e.currentTarget.getAttribute('planner-name');
+    
+    // Replace '&' with '%26' in the planner name
+    plannerName = plannerName.replace(/&/g, '%26');
+    
+    // Open the new page with the encoded planner name
+    window.open("planner-detail/index.html?planner-name=" + plannerName, "_self");
 }
 
 
