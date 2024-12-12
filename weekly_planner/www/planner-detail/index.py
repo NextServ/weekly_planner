@@ -28,9 +28,9 @@ def get_context(context):
     context.start_date = context.planner.start_date.strftime("%m/%d/%Y")
     context.end_date = (context.planner.start_date + datetime.timedelta(days=7)).strftime("%m/%d/%Y")
     
-    # Remove %20 from planner_name
+    # Remove %20 and %26 from planner_name
     if planner_name:    
-        planner_name = planner_name.replace("%20", " ")
+        planner_name = planner_name.replace("%20", " ").replace("%26", "&")
 
     context.empty_planner = len(frappe.get_all("Planner Student", filters={"parent": planner_name}, fields=["name"])) + \
         len(frappe.get_all("Planner Topic", filters={"parent": planner_name}, fields=["name"]))
