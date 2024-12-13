@@ -1,5 +1,5 @@
 frappe.ready(function() {
-    planner_name = getQueryVariable("planner-name").replace(/%20/g, " ");  // remove %20s
+    planner_name = getQueryVariable("planner-name").replace(/%20/g, " ").replace(/%26/g, "&");  // remove %20s and %26
 
     // Build items table
     frappe.call({
@@ -293,7 +293,7 @@ function go_to_main() {
 
 
 function duplicate_planner(e) {
-    planner_name = getQueryVariable("planner-name").replace(/%20/g, " ");  // remove %20s
+    planner_name = getQueryVariable("planner-name").replace(/%20/g, " ").replace(/%26/g, "&");  // remove %20s and %26
     planner = frappe.get_doc("Weekly Planner", planner_name);
     
     // Open and build the modal
@@ -333,7 +333,7 @@ function duplicate_planner(e) {
 
 
 function delete_planner(e) {
-    planner_name = getQueryVariable("planner-name").replace(/%20/g, " ");  // remove %20s
+    planner_name = getQueryVariable("planner-name").replace(/%20/g, " ").replace(/%26/g, "&");  // remove %20s and %26
     planner = frappe.get_doc("Weekly Planner", planner_name);
     
     // Open and build the modal
@@ -354,13 +354,13 @@ function print_planner(e) {
     // This planner-name can be accessed by e.
     // onclick="print_planner(['{{ planner.name }}', 'A4'])"
     // console.log(e[0]) and console.log(e[1]) etc...
-    planner_name = getQueryVariable("planner-name").replace(/%20/g, " ");  // remove %20s
+    planner_name = getQueryVariable("planner-name").replace(/%20/g, " ").replace(/%26/g, "&");  // remove %20s and %26
     window.open("/api/method/weekly_planner.www.print-planner.planner_reports.build_planner_report?planner_name=" + planner_name + "&paper_size=" + e, "_blank");
 }
 
 
 function submit_planner(e) {
-    planner_name = getQueryVariable("planner-name").replace(/%20/g, " ");  // remove %20s
+    planner_name = getQueryVariable("planner-name").replace(/%20/g, " ").replace(/%26/g, "&");  // remove %20s and %26
     planner = frappe.get_doc("Weekly Planner", planner_name);
 
     var action_modal_title = document.getElementById("modal_action_title");
@@ -377,7 +377,7 @@ function submit_planner(e) {
 
 
 function approve_planner(e) {
-    planner_name = getQueryVariable("planner-name").replace(/%20/g, " ");  // remove %20s
+    planner_name = getQueryVariable("planner-name").replace(/%20/g, " ").replace(/%26/g, "&");  // remove %20s and %26
     planner = frappe.get_doc("Weekly Planner", planner_name);
 
     var action_modal_title = document.getElementById("modal_action_title");
@@ -394,7 +394,7 @@ function approve_planner(e) {
 
 
 function show_students(mode = "Add") {
-    var planner_name = getQueryVariable("planner-name").replace(/%20/g, " ");  // remove %20s
+    var planner_name = getQueryVariable("planner-name").replace(/%20/g, " ").replace(/%26/g, "&");  // remove %20s and %26
     var campus = (mode == "Add") ? document.getElementById("selected_campus").value : "";
     var group = (mode == "Add") ? document.getElementById("selected_group").value : "";
     
@@ -588,7 +588,7 @@ function delete_students(planner_name, del_list) {
 
 function show_topics(show_action) {
     // Retrieve topics from Frappe
-    planner_name = getQueryVariable("planner-name").replace(/%20/g, " ");  // remove %20s
+    planner_name = getQueryVariable("planner-name").replace(/%20/g, " ").replace(/%26/g, "&");  // remove %20s and %26
 
     frappe.call({
         method: "weekly_planner.www.planner-detail.planner_actions.get_topics_for_selection",
@@ -754,7 +754,7 @@ function show_lesson_modal(row, cell) {
     }
 
     // Values to be saved later
-    var planner_name = getQueryVariable("planner-name").replace(/%20/g, " ");  // remove %20s
+    var planner_name = getQueryVariable("planner-name").replace(/%20/g, " ").replace(/%26/g, "&");  // remove %20s and %26
     var lesson_name = cell.substring(lesson_pos, lesson_len);
     var student = cell.substring(student_pos, student_len);
     var topic = row[1]    
