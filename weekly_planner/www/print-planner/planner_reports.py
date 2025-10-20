@@ -37,11 +37,11 @@ def build_planner_report(planner_name, paper_size):
                             INNER JOIN `tabLesson Status` l ON p.lesson_status = l.name
                             WHERE parent = %(p_name)s''', {"p_name": planner_name}, as_dict=True)
 
-    courses = frappe.db.sql('''SELECT c.parent, l.topic 
-                            FROM `tabPlanner Lesson` l 
-                            LEFT JOIN `tabCourse Topic` c ON l.topic = c.topic_name 
-                            ORDER BY c.parent, l.topic
-                            ''', as_dict=True)
+    # courses = frappe.db.sql('''SELECT c.parent, l.topic 
+    #                         FROM `tabPlanner Lesson` l 
+    #                         LEFT JOIN `tabCourse Topic` c ON l.topic = c.topic_name 
+    #                         ORDER BY c.parent, l.topic
+    #                         ''', as_dict=True)
 
     studs_per_batch = 45 if paper_size == "Legal" else 35
     topics_per_batch = 12 if paper_size == "Legal" else 10
@@ -212,7 +212,22 @@ def build_planner_report(planner_name, paper_size):
         prev_course_name = ""
                             
         for topic in topics:
-            course_data = [entry['parent'] for entry in courses if entry['topic'] == topic.topic]
+            # Old code - slow
+            # course_data = [entry['parent'] for entry in courses if entry['topic'] == topic.topic]
+
+            # Fastest - May be inaccurate
+            # course_data = frappe.db.get_all('Course Topic', filters={'topic_name': topic.topic}, pluck='parent')
+
+            # 2nd fastest - accurate
+            course_data = frappe.db.sql('''
+                SELECT c.parent
+                FROM `tabPlanner Lesson` l
+                INNER JOIN `tabCourse Topic` c
+                ON l.topic = c.topic_name
+                WHERE l.topic = %s
+            ''', (topic.topic), as_dict=True)
+            course_data = [entry['parent'] for entry in course_data]
+            
             course_name = course_data[0] if course_data else "-"
 
             if course_name == prev_course_name:
