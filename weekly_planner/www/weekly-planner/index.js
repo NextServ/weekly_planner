@@ -1,5 +1,6 @@
 frappe.ready(function() {
-    new DataTable('#main_table');
+    // create a global DataTable variable so other functions can access it
+    new DataTable('#main_table', {stateSave: true});
 
     // Check for Approve Planner button click
     $("#modal_action_primary").on("click", function(e) {
